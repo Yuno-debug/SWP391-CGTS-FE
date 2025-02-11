@@ -1,0 +1,95 @@
+/* Background Gradient */
+.cdc-container {
+    background: linear-gradient(to right, #ebf8ff, #ffffff);
+    min-height: 100vh;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Main Content */
+  .cdc-content {
+    max-width: 80%;
+    margin: auto;
+  }
+  
+  /* Section Titles */
+  .cdc-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  
+  /* Featured Topics */
+  .cdc-featured-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .cdc-topic-button {
+    padding: 10px 16px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .cdc-topic-button:hover {
+    background: #f3f3f3;
+  }
+  
+  /* News Section */
+  .cdc-news-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .cdc-news-item {
+    color: #2563eb;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .cdc-news-item:hover {
+    text-decoration: underline;
+    color: #1d4ed8;
+  }
+  
+  /* Scientific Journals */
+  .cdc-journals {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  
+  .cdc-journal-card {
+    background: white;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cdc-journal-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .cdc-journal-text {
+    color: #6b7280;
+    font-size: 0.9rem;
+  }
+  
+  .cdc-journal-button {
+    margin-top: 8px;
+    color: #2563eb;
+    cursor: pointer;
+  }
+  
+  .cdc-journal-button:hover {
+    text-decoration: underline;
+  }
+  

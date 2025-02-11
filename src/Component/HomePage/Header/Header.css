@@ -1,0 +1,34 @@
+.topBar {
+    background-color:lightskyblue;
+    display: flex;
+    padding: 12px 0;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 337px;
+  }
+  
+  .topBarText {
+    display: flex;
+    gap: 5px;
+    font: 300 12px Poppins, sans-serif;
+  }
+  
+  .designText {
+    color: rgba(28, 29, 30, 1);
+  }
+  
+  .knowMoreText {
+    color: rgba(0, 94, 162, 1);
+  }
+  
+  .infoIcon {
+    aspect-ratio: 0.92;
+    object-fit: contain;
+    width: 11px;
+  }
+  
+  @media (max-width: 991px) {
+    .topBar {
+      padding-right: 10px;
+    }
+  }

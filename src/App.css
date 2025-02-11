@@ -1,0 +1,17 @@
+body {
+  background: linear-gradient(to right, #005ea2, #0b4778);
+  font-family: Arial, sans-serif; /* Use a clean font */
+  margin: 0;
+  color: #ffffff; /* Set default text color to white */
+  margin: 0; /* Xóa margin mặc định */
+  padding: 0; /* Xóa padding mặc định */
+  overflow-x: hidden; /* Ẩn thanh cuộn ngang */
+  background: url('./assets/image5.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
