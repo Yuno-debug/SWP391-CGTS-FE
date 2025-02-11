@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 /* Navbar Container */
 .nav {
     display: flex;
@@ -97,12 +99,12 @@
   
   .nav-menu li a {
     text-decoration: none;
-    color: black !important; /* Giữ màu trắng cố định */
+    color: white !important; /* Giữ màu trắng cố định */
     transition: color 0.3s ease;
     cursor: pointer;
   }
   .nav-menu li a:visited {
-    color: black !important; /* Ngăn đổi màu tím */
+    color: white !important; /* Ngăn đổi màu tím */
   }
   
   .nav-menu li a:hover {
@@ -133,8 +135,8 @@
     cursor: pointer;
   }
   .search-text {
-    font-size: 14px;
-    color: black;
+    font-size: 16px;
+    color: white;
   }
   .search-bar {
     width: 160px;
@@ -145,7 +147,37 @@
     font-size: 14px;
     margin-left: 8px;
   }
+  .nav-right{
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 20px; /* Space between menu items */
+    margin: 0;
+    padding: 0;
+    
+  }
+  .nav-right li a {
+    text-decoration: none;
+    color: black !important; /* Giữ màu trắng cố định */
+    transition: color 0.3s ease;
+    cursor: pointer;
+  }
+  .nav-right li a:visited {
+    color: black !important; /* Ngăn đổi màu tím */
+  }
   
+  .nav-right li a:hover {
+    color: grey !important; /* Màu khi di chuột vào */
+  }
+  
+  .nav-right li a:active {
+    color: white !important; /* Màu khi nhấn vào */
+  }
+  
+  .nav-right li:hover {
+    background-color: #007bff; /* Darker blue on hover */
+    color: #fff;
+  }
   
   
   /* Responsive Adjustments */

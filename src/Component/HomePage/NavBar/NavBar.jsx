@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import logo2 from "../../../assets/logo.png";
-import searchIcon from "../../../assets/magnifying-glass.png";
+import searchIcon from "../../../assets/searchIcon.png";
 
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -28,7 +28,6 @@ const Navbar = () => {
       <ul className="nav-menu">
         <li><Link to="/">HOME</Link></li>
         <li><Link to="/features">FEATURES</Link></li>
-        <li><Link to="/about">ABOUT US</Link></li>
         <li><Link to="/membership">MEMBERSHIP PLAN</Link></li>
 
         {/* Ô tìm kiếm */}
@@ -47,9 +46,10 @@ const Navbar = () => {
             />
           )}
         </div>
-
-        <li className="nav-contact"><Link to="/login">Log In</Link></li>
-        <li className="nav-contact"><Link to="/signup">Sign Up</Link></li>
+      </ul>
+      <ul className="nav-right">
+      <li className="nav-contact"><Link to="/login">Log In</Link></li>
+      <li className="nav-contact"><Link to="/signup">Sign Up</Link></li>
       </ul>
     </div>
   );

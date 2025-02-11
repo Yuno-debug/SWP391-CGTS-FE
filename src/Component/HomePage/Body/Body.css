@@ -1,95 +1,132 @@
-/* Background Gradient */
-.cdc-container {
-    background: linear-gradient(to right, #ebf8ff, #ffffff);
-    min-height: 100vh;
-    padding: 40px;
-    display: flex;
+.background-overlay {
+  background: url("../../../assets/BodyBack.jpg") no-repeat center center fixed;
+  background-size: cover;
+  width: 100%;
+  height: 100vh;
+  /* Ensure full viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: white;
+  text-align: center;
+}
+
+/* Background Overlay */
+.background-overlay {
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: blue;
+  text-align: center;
+}
+
+/* Overlay Effect */
+.background-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Main Content Wrapper */
+.main-content {
+  max-width: 800px;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  z-index: 2; /* Ensure content is above overlay */
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: left; /* Align title to the left */
+  margin-top: 40px; /* Add top margin for spacing */
+}
+
+/* Section Container */
+.section-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align content to the left */
+  margin-bottom: 40px; /* Add bottom margin for spacing */
+}
+
+/* Featured Topics Buttons */
+.featured-topics-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.featured-topic-btn {
+  padding: 12px 18px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.featured-topic-btn:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+/* News Section */
+.news-container {
+  text-align: center;
+}
+
+.news-item {
+  color: #2563eb;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.news-item:hover {
+  color: #1e40af;
+  text-decoration: underline;
+}
+
+/* Scientific Journals Grid */
+.journal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.journal-card {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.journal-card:hover {
+  transform: scale(1.05);
+}
+
+/* Mobile Responsive */
+@media (min-width: 768px) {
+  .journal-container {
+    flex-direction: row;
     justify-content: center;
   }
-  
-  /* Main Content */
-  .cdc-content {
-    max-width: 80%;
-    margin: auto;
-  }
-  
-  /* Section Titles */
-  .cdc-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-  
-  /* Featured Topics */
-  .cdc-featured-topics {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .cdc-topic-button {
-    padding: 10px 16px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
-  }
-  
-  .cdc-topic-button:hover {
-    background: #f3f3f3;
-  }
-  
-  /* News Section */
-  .cdc-news-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .cdc-news-item {
-    color: #2563eb;
-    cursor: pointer;
-    transition: color 0.2s ease-in-out;
-  }
-  
-  .cdc-news-item:hover {
-    text-decoration: underline;
-    color: #1d4ed8;
-  }
-  
-  /* Scientific Journals */
-  .cdc-journals {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px;
-  }
-  
-  .cdc-journal-card {
-    background: white;
-    padding: 16px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .cdc-journal-title {
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-  
-  .cdc-journal-text {
-    color: #6b7280;
-    font-size: 0.9rem;
-  }
-  
-  .cdc-journal-button {
-    margin-top: 8px;
-    color: #2563eb;
-    cursor: pointer;
-  }
-  
-  .cdc-journal-button:hover {
-    text-decoration: underline;
-  }
-  
+}

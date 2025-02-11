@@ -52,7 +52,7 @@ const socialIcons = [
         {/* Director Section */}
         <div className="footer-section director">
           <img
-            src="https://fap.fpt.edu.vn/temp/ImageRollNumber/HCM/92f1cfb3-6237-4b98-95e1-85a50d5b4252"
+            src="https://upload.wikimedia.org/wikipedia/commons/0/09/DoMixi1989.jpg"
             alt="CDC Director"
             className="director-image"
           />
