@@ -130,3 +130,28 @@
     justify-content: center;
   }
 }
+
+/* Additional Responsive Adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 10px;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  .section-container {
+    margin-bottom: 20px;
+  }
+
+  .featured-topic-btn {
+    padding: 10px 15px;
+  }
+
+  .journal-card {
+    padding: 12px;
+  }
+}
