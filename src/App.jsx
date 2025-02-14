@@ -5,7 +5,6 @@ import Navbar from './Component/HomePage/NavBar/NavBar';
 import Footer from './Component/HomePage/Footer/Footer';
 import Body from './Component/HomePage/Body/Body';
 import Membership from './Component/Membership/Membership';
-import Header from './Component/HomePage/Header/Header';
 import Login from './Component/LoginPage/Login';
 import Signup from './Component/SignUp/Signup'; // Ensure Signup component is correctly imported
 
@@ -16,7 +15,6 @@ const AppContent = () => {
 
   return (
     <>
-      <Header />
       <Navbar />
       <Routes>
         <Route path="/" element={<>
