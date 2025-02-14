@@ -9,7 +9,7 @@ const titles = ["Personal Child Tracking", "Avoid Obese", "Buy Membership"];
 const positions = [
   { top: '50%', right: '120px', transform: 'translateY(-50%)' }, // Position for image 1
   { top: '50%', right: '300px', transform: 'translateY(-50%)' }, // Position for image 2
-  { bottom: '300px', left: '200px' }  // Position for image 3
+  { bottom: '200px', left: '200px' }  // Position for image 3
 ];
 const urls = [
   "/membership", // URL for image 1

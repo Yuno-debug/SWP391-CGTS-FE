@@ -1,34 +1,31 @@
 .topBar {
-    background-color:lightskyblue;
-    display: flex;
-    padding: 12px 0;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 337px;
-  }
-  
-  .topBarText {
-    display: flex;
-    gap: 5px;
-    font: 300 12px Poppins, sans-serif;
-  }
-  
-  .designText {
-    color: rgba(28, 29, 30, 1);
-  }
-  
-  .knowMoreText {
-    color: rgba(0, 94, 162, 1);
-  }
-  
-  .infoIcon {
-    aspect-ratio: 0.92;
-    object-fit: contain;
-    width: 11px;
-  }
-  
-  @media (max-width: 991px) {
-    .topBar {
-      padding-right: 10px;
-    }
-  }
+  background-color: #f8f9fa;
+  padding: 10px 20px;
+  z-index: 1100; /* Ensure the header is above the navbar */
+  position: relative; /* Ensure z-index works */
+}
+
+.topBarText {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align items to the start */
+  gap: 10px; /* Add space between items */
+}
+
+.designText {
+  font-size: 14px;
+  color: #333;
+}
+
+.knowMoreText {
+  font-size: 14px;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.infoIcon {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  color: #007bff; /* Ensure the icon color matches the text */
+}
