@@ -7,6 +7,7 @@ import Body from './Component/HomePage/Body/Body';
 import Membership from './Component/Membership/Membership';
 import Login from './Component/LoginPage/Login';
 import Signup from './Component/SignUp/Signup'; // Ensure Signup component is correctly imported
+import AdminDashboard from './Component/AdminPage/Admin'; // Ensure AdminDashboard component is correctly imported
 
 const AppContent = () => {
   const [heroCount, setHeroCount] = useState(0);
@@ -15,7 +16,7 @@ const AppContent = () => {
 
   return (
     <>
-      <Navbar />
+      {location.pathname !== '/admin' && <Navbar />}
       <Routes>
         <Route path="/" element={<>
           <Background playStatus={playStatus} heroCount={heroCount} />
@@ -24,8 +25,9 @@ const AppContent = () => {
         <Route path="/membership" element={<Membership />} />
         <Route path="/login" element={<Login />} /> {/* Route for Login */}
         <Route path="/signup" element={<Signup />} /> {/* Route for Signup */}
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
-      {location.pathname !== '/login' && location.pathname !== '/signup' && <Footer />}
+      {location.pathname !== '/login' && location.pathname !== '/signup' && location.pathname !== '/admin' && <Footer />}
     </>
   );
 };

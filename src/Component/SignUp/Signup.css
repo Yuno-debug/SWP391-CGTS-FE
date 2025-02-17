@@ -22,6 +22,7 @@ body {
     min-height: 100vh;
     background: url('/path/to/your/background-image.jpg') no-repeat center center fixed;
     background-size: cover;
+    overflow-y: auto; /* Allow vertical scrolling */
 }
 
 #root {
