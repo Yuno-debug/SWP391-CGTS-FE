@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-const InputField = ({ type, placeholder }) => {
+const InputField = ({ type, placeholder, value, onChange }) => {
   const [inputType, setInputType] = useState(type);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -15,6 +15,8 @@ const InputField = ({ type, placeholder }) => {
       <input
         type={inputType}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
         className="input-field"
       />
       {type === 'password' && (

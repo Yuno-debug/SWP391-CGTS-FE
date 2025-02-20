@@ -29,7 +29,7 @@ const Navbar = () => {
         <li><Link to="/">HOME</Link></li>
         <li><Link to="/features">FEATURES</Link></li>
         <li><Link to="/membership">MEMBERSHIP PLAN</Link></li>
-
+        <li><Link to="/blog">BLOG</Link></li>
         {/* Ô tìm kiếm */}
         <div className="search-container" ref={searchRef}>
           <div className="search-toggle" onClick={() => setShowSearch(true)}>

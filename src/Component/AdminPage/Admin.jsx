@@ -79,12 +79,19 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-container">
+      {/* Nút mở sidebar đặt ngoài sidebar */}
+      {!sidebarOpen && (
+        <button className="menu-toggle fixed-toggle" onClick={() => setSidebarOpen(true)}>
+          <FontAwesomeIcon icon={faBars} />
+        </button>
+      )}
+      {/* Nội dung của sidebar và main content */}
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <Link to="/">
             <img src={logo} alt="Logo" className="logo" />
           </Link>
-          <div className="logoTitle"> <Link to = "/">Children Growth Tracking System</Link></div>
+          <div className="logoTitle"> <Link to="/">Children Growth Tracking System</Link></div>
           <button className="menu-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} />
           </button>
