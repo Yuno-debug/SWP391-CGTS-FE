@@ -4,10 +4,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://hungnguyenminh8-001-site1.ktempurl.com',
+        target: 'http://localhost:5200',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },

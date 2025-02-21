@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import InputField from './InputField';
-import './Signup.css'; // Import CSS
 import axios from 'axios';
+import './Signup.css';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -13,39 +13,54 @@ const Signup = () => {
   const [address, setAddress] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
-      return;
-    }
+  if (!username || !email || !password || !phoneNumber || !address) {
+    setError('All fields are required');
+    setLoading(false);
+    return;
+  }
 
-    try {
-      const response = await axios.post('/api/UserAccount/register', { username, email, password, phoneNumber, address });
+  if (password !== confirmPassword) {
+    setError('Passwords do not match');
+    setLoading(false);
+    return;
+  }
 
-      const data = response.data;
-      if (response.status !== 200) {
-        throw new Error(data.message || 'Sign up failed');
-      }
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5200';
 
+try {
+  const response = await axios.post(`${API_URL}/api/UserAccount/register`, {
+    username, email, password, phoneNumber, address
+  });
+
+
+    console.log("API Response:", response); // Debugging
+
+    if (response.status === 200) {
       alert('Sign up successful!');
-      console.log('User Data:', data); // Handle data if needed
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      navigate('/login');
+    } else {
+      throw new Error(response.data.message || 'Signup failed');
     }
-  };
+  } catch (err) {
+    console.error("Signup Error:", err.response || err.message);
+    setError(err.response?.data?.message || 'Signup failed. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="signup-container">
       <h2 className="form-title">Sign Up</h2>
-      {error && <p className="error-message">{error}</p>} {/* Display error */}
+      {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit} className="signup-form">
         <InputField type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
         <InputField type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />

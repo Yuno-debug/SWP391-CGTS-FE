@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './Background.css';
 import image1 from '../../../assets/image1.jpg';
 import image2 from '../../../assets/image2.jpg';
-import image3 from '../../../assets/image3.png';
+import image3 from '../../../assets/teen.jpg';
 
 const images = [image1, image2, image3];
-const titles = ["Personal Child Tracking", "Avoid Obese", "Buy Membership"];
+const titles = ["Personal Child Tracking", "Avoid Obese", "Support Till Teenager"];
 const positions = [
   { top: '50%', right: '120px', transform: 'translateY(-50%)' }, // Position for image 1
   { top: '50%', right: '300px', transform: 'translateY(-50%)' }, // Position for image 2
