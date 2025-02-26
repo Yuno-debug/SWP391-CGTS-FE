@@ -1,24 +1,11 @@
+/* Background Overlay */
 .background-overlay {
   background: url("../../../assets/BodyBack.jpg") no-repeat center center fixed;
   background-size: cover;
   width: 100%;
-  height: 100vh;
-  /* Ensure full viewport height */
+  min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  color: white;
-  text-align: center;
-}
-
-/* Background Overlay */
-.background-overlay {
-  background-size: cover;
-  background-position: center;
-  width: 100%;
-  min-height: 300px;
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
@@ -34,71 +21,127 @@
   left: 0;
   width: 100%;
   height: 100%;
+    z-index: 1; /* Ensure overlay is above background */
 }
 
 /* Main Content Wrapper */
 .main-content {
-  max-width: 800px;
+  max-width: 1200px;
   width: 100%;
   padding: 20px;
   text-align: center;
   position: relative;
-  z-index: 2; /* Ensure content is above overlay */
-}
-
-/* Section Titles */
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 20px;
-  text-align: left; /* Align title to the left */
-  margin-top: 40px; /* Add top margin for spacing */
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
 }
 
 /* Section Container */
 .section-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align content to the left */
-  margin-bottom: 40px; /* Add bottom margin for spacing */
+  align-items: center;
+  text-align: left;
+  margin: 60px 0;
 }
 
-/* Featured Topics Buttons */
+/* Section Title */
+.section-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #2563eb;
+  position: relative;
+  align-self: start;
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 920px;
+  height: 3px;
+  background: #2563eb;
+  margin: 8px 0;
+}
+
+/* Featured Topics */
 .featured-topics-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
 .featured-topic-btn {
-  padding: 12px 18px;
-  background: white;
-  border: 1px solid #ddd;
+  background-color: white;
+  border: 2px solid #2563eb;
+  color: black;
+  padding: 10px 16px;
+  font-size: 16px;
   border-radius: 8px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  transition: background 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  font-weight: bold;
 }
 
 .featured-topic-btn:hover {
-  background: #f0f0f0;
-  transform: translateY(-2px);
+  background-color: #2563eb;
+  color: white;
 }
 
-/* News Section */
-.news-container {
-  text-align: center;
+/* Two Column Layout */
+.two-column-layout {
+  display: flex;
+  justify-content: space-between;
+  gap: 100px;
+  width: 100%;
 }
 
-.news-item {
-  color: #2563eb;
+/* Blog Section */
+.blog-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 48%;
+}
+
+.blog-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1e293b;
+  margin-bottom: 16px;
+  align-self: flex-start; /* Align title to the left */
+}
+
+.blog-title::after {
+  content: "";
+  display: block;
+  width: 1300%;
+  height: 3px;
+  background: #2563eb;
+  margin-top: 4px;
+}
+
+/* Blog Items */
+.blog-item {
+  background-color: white;
+  border: 2px solid #2563eb;
+  color: black;
+  padding: 10px 16px;
+  font-size: 16px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease-in-out;
+  text-align: left; /* Align text to the left */
+  white-space: normal; /* Allow text to wrap */
+  margin-bottom: 20px;
 }
 
-.news-item:hover {
-  color: #1e40af;
-  text-decoration: underline;
+.blog-item:hover {
+  background-color: #2563eb;
+  color: white;
 }
 
 /* Scientific Journals Grid */
@@ -106,12 +149,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  width: 48%;
+  gap: 24px;
 }
 
 .journal-card {
   width: 100%;
-  max-width: 400px;
   background: white;
   padding: 16px;
   border-radius: 10px;
@@ -124,14 +167,6 @@
 }
 
 /* Mobile Responsive */
-@media (min-width: 768px) {
-  .journal-container {
-    flex-direction: row;
-    justify-content: center;
-  }
-}
-
-/* Additional Responsive Adjustments */
 @media (max-width: 768px) {
   .main-content {
     padding: 10px;
@@ -145,6 +180,7 @@
 
   .section-container {
     margin-bottom: 20px;
+    margin: 40px 0;
   }
 
   .featured-topic-btn {
@@ -153,5 +189,15 @@
 
   .journal-card {
     padding: 12px;
+  }
+
+  .blog-container,
+  .journal-container {
+    width: 100%;
+  }
+
+  .two-column-layout {
+    flex-direction: column;
+    align-items: center;
   }
 }

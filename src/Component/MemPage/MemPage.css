@@ -1,0 +1,198 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f8f9fa, #eef2f3);
+    color: #333;
+}
+
+/* Layout Styling */
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+nav ul li a:hover {
+    color: #d1ecf1;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+footer {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+}
+
+/* Content Wrapper */
+.content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    margin: 20px auto;
+}
+
+/* Section Styling */
+.add-child-section,
+.bmi-section,
+.profiles-section,
+.bmi-info-section,
+.bmi-tracking-section,
+.bmi-figures-section {
+    flex: 1 1 300px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.add-child-section:hover,
+.bmi-section:hover,
+.profiles-section:hover,
+.bmi-info-section:hover,
+.bmi-tracking-section:hover,
+.bmi-figures-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .add-child-section,
+    .bmi-section,
+    .profiles-section,
+    .bmi-info-section,
+    .bmi-tracking-section,
+    .bmi-figures-section {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Button Styling */
+button {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* BMI Result Styling */
+.bmi-result {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+/* Child Profiles Section */
+.profiles-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.profile-item {
+    background: #fff;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    transition: background 0.3s;
+}
+
+.profile-item:hover {
+    background: #e9f5ff;
+}
+
+.profile-item p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.mem-page {
+    padding: 20px;
+}

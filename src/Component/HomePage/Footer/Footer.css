@@ -20,6 +20,7 @@
 .footer-section {
     flex: 1;
     min-width: 250px;
+    text-align: left; /* Align text to the left */
 }
 
 .about h3,
@@ -57,14 +58,30 @@
 
 /* Director Section */
 .director {
-    text-align: center;
+    text-align: left; /* Align text to the left */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
 }
 
 .director-image {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     margin-bottom: 10px;
+    object-fit: cover;
+    image-rendering: crisp-edges;
+}
+
+.director h4 {
+    margin: 10px 0 5px;
+    color: #fdb813;
+}
+
+.director p {
+    font-size: 14px;
+    text-align: center;
 }
 
 /* Footer Navigation */
@@ -132,11 +149,4 @@
     margin-top: 20px;
     text-align: center;
     font-size: 12px;
-}
-.footer-section .director-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    image-rendering: crisp-edges;
 }

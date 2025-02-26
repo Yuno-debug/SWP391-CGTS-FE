@@ -1,0 +1,105 @@
+.dashboard-container {
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.dashboard-title {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  flex: 1;
+  min-width: 250px;
+}
+
+.stat-item.total-revenue {
+  flex: 2; /* Make the Total Revenue section wider */
+}
+
+.stat-icon {
+  font-size: 40px;
+  color: #007bff;
+  margin-right: 20px;
+}
+
+.stat-info {
+  text-align: left;
+}
+
+.stat-info h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.stat-info p {
+  margin: 5px 0 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.chart {
+  flex: 1;
+  min-width: 300px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+}
+
+.user-table-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.user-table th,
+.user-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.user-table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.user-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.user-table tr:hover {
+  background-color: #ddd;
+}

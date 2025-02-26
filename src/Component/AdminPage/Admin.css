@@ -39,47 +39,40 @@ body {
   /* Màu khi nhấn vào */
 }
 
-.logoTitle :hover {
+.logoTitle:hover {
   background-color: #007bff;
   /* Darker blue on hover */
   color: #fff;
 }
 
 .sidebar {
-  width: 320px;
-  background-color: #007bff;
-  color: white;
-  padding: 20px;
-  transition: width 0.3s ease, transform 0.3s ease;
-}
-
-.sidebar.open {
-  transform: translateX(0);
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar:not(.open) {
-  width: 0;
-  padding: 0;
-  overflow: hidden;
-  transform: translateX(-100%);
+  width: 290px;
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
 }
 
 .sidebar-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .logo {
-  max-width: 50px;
-  margin-right: 10px;
+  width: 50px;
+    height: 50px;
+    margin-right: 10px;
 }
 
-.logoTitle {
-  display: flex;
-  align-items: center;
+.logoTitle a {
+  color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
 }
 
 .menu-toggle {
@@ -94,10 +87,15 @@ body {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar nav ul li {
-  margin: 20px 0;
+  width: 100%;
+  /* Đảm bảo mục chiếm toàn bộ chiều rộng */
+  margin: 10px 0;
+  /* Khoảng cách giữa các mục */
 }
 
 .sidebar nav ul li a {
@@ -108,6 +106,8 @@ body {
   padding: 10px;
   border-radius: 4px;
   transition: background-color 0.3s;
+  width: 100%;
+  text-align: left;
 }
 
 .sidebar nav ul li a:hover {
@@ -144,26 +144,26 @@ body {
 
 .submenu {
   list-style: none;
-  padding: 0;
-  margin: 10px 0 0 20px;
+  padding-left: 15px;
+  margin-top: 5px;
 }
 
-.submenu li {
+.submenu li button {
   margin: 10px 0;
 }
 
 .sidebar .submenu li button {
-  font-size: 16px !important;
-  padding : 5px 10px ;
+    font-size: 16px !important;
+    padding: 5px 10px;
 }
 
 .content {
-  flex: 1;
-  padding: 20px;
-  background-color: #fff;
-  overflow-y: auto;
-  transition: width 0.3s ease;
+  flex-grow: 1;
+    margin-left: 250px;
+    padding: 20px;
+    overflow-y: auto;
 }
+
 .content.full-width {
   width: 100%;
 }
@@ -182,6 +182,7 @@ section p {
   font-size: 16px;
   color: #7f8c8d;
 }
+
 /* Nút menu mở sidebar khi sidebar đóng */
 .fixed-toggle {
   position: fixed;
@@ -215,15 +216,19 @@ section p {
 
 .user-table-container {
   margin-top: 20px;
+  overflow-x: auto;
+  width: 100%;
 }
 
 .user-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  min-width: 600px;
 }
 
-.user-table th, .user-table td {
+.user-table th,
+.user-table td {
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -239,4 +244,47 @@ section p {
 
 .user-table tr:hover {
   background-color: #ddd;
+}
+
+/* New styles for stats */
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  flex: 1;
+  min-width: 250px;
+}
+
+.stat-icon {
+  font-size: 40px;
+  color: #007bff;
+  margin-right: 20px;
+}
+
+.stat-info {
+  text-align: left;
+}
+
+.stat-info h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.stat-info p {
+  margin: 5px 0 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
 }

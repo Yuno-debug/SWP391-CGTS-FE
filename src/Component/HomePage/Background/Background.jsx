@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Background.css';
 import image1 from '../../../assets/image1.jpg';
 import image2 from '../../../assets/image2.jpg';
-import image3 from '../../../assets/teen.jpg';
+import image3 from '../../../assets/teen1.jpg';
 
 const images = [image1, image2, image3];
 const titles = ["Personal Child Tracking", "Avoid Obese", "Support Till Teenager"];

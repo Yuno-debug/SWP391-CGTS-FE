@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f4f4f4;
+  height: 100vh;
+}
+
+.profile-container {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  background-color: #fff;
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-cover {
+  width: 100%;
+  height: 180px;
+  position: relative;
+}
+
+.cover-gradient {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, #a18cd1, #3f87a6);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(to right, #3f87a6, #004e92);
+  position: relative;
+  gap: 15px;
+  justify-content: space-between;
+  /* Căn hai đầu */
+}
+
+.profile-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #ddd;
+  border: 3px solid white;
+  flex-shrink: 0;
+}
+
+.user-info {
+  color: white;
+  display: flex;
+  flex-direction: row;
+  /* Để nằm ngang */
+  align-items: center;
+  flex-grow: 1;
+  gap: 10px;
+}
+
+.username {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.edit-profile {
+  margin-left: auto;
+  padding: 7px 15px;
+  font-size: 14px;
+  border: none;
+  background: white;
+  color: #333;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.edit-profile:hover {
+  background: #eee;
+}
+
+.profile-content {
+  padding: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.profile-section {
+  padding: 15px;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.profile-section p {
+  font-size: 14px;
+  color: #555;
+}

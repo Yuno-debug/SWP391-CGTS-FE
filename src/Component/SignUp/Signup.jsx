@@ -16,46 +16,45 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError('');
-  setLoading(true);
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    console.log("Sending request with:", { username, email, password, confirmPassword, phoneNumber, address });
 
-  if (!username || !email || !password || !phoneNumber || !address) {
-    setError('All fields are required');
-    setLoading(false);
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    setError('Passwords do not match');
-    setLoading(false);
-    return;
-  }
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5200';
-
-try {
-  const response = await axios.post(`${API_URL}/api/UserAccount/register`, {
-    username, email, password, phoneNumber, address
-  });
-
-
-    console.log("API Response:", response); // Debugging
-
-    if (response.status === 200) {
-      alert('Sign up successful!');
-      navigate('/login');
-    } else {
-      throw new Error(response.data.message || 'Signup failed');
+    if (!username || !email || !password || !confirmPassword || !phoneNumber || !address) {
+      setError('All fields are required');
+      setLoading(false);
+      return;
     }
-  } catch (err) {
-    console.error("Signup Error:", err.response || err.message);
-    setError(err.response?.data?.message || 'Signup failed. Please try again.');
-  } finally {
-    setLoading(false);
-  }
-};
 
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5200';
+
+    try {
+      const response = await axios.post(`${API_URL}/api/UserAccount/register`, 
+        { username, email, password, confirmPassword, phoneNumber, address }, 
+        { headers: { "Content-Type": "application/json" } });
+
+      console.log("API Response:", response); // Debugging  
+
+      if (response.status === 200) {
+        alert('Sign up successful!');
+        navigate('/login');
+      } else {
+        throw new Error(response.data.message || 'Signup failed');
+      }
+    } catch (err) {
+      console.error("Signup Error:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Signup failed. Please check your inputs.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="signup-container">

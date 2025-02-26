@@ -1,50 +1,45 @@
 import React from "react";
 import "./Footer.css"; // Import without styles module for proper global styling
-import fbIcon from "../../../assets/social.png"
+import fbIcon from "../../../assets/social.png";
 import youtubeIcon from "../../../assets/video.png";
 import instagramIcon from "../../../assets/instagram.png";
-// import linkedinIcon from "../../assets/linkedin.png";
-export default function Footer() {
-const socialIcons = [
-  { src: fbIcon, alt: "Facebook" },
-  { src: youtubeIcon, alt: "Youtube" },
-  { src: instagramIcon, alt: "Instagram" },
-  // { src: linkedinIcon, alt: "LinkedIn" }
-];
 
+export default function Footer() {
+  const socialIcons = [
+    { src: fbIcon, alt: "Facebook" },
+    { src: youtubeIcon, alt: "Youtube" },
+    { src: instagramIcon, alt: "Instagram" },
+  ];
 
   return (
     <footer className="footer">
       <div className="footer-container">
         {/* About Section */}
         <div className="footer-section about">
-          <h3>About CDC</h3>
+          <h3>About Child Growth Tracking System</h3>
           <p>
-            CDC is the nation's leading science-based, data-driven, service
-            organization that protects the public's health. CDC works 24/7 to
-            protect America from health, safety, and security threats, both
-            foreign and in the U.S.
+            The Child Growth Tracking System (CGTS) is dedicated to helping parents and healthcare providers monitor and support the healthy growth and development of children. Our mission is to provide accurate and accessible tools for tracking children's growth milestones.
           </p>
         </div>
 
         {/* Links Section */}
         <div className="footer-section links">
           <div>
-            <h4>About CDC</h4>
+            <h4>About CGTS</h4>
             <ul>
-              <li>Organization</li>
+              <li>Our Mission</li>
               <li>Leadership</li>
-              <li>Lab Safety</li>
+              <li>Contact Us</li>
             </ul>
           </div>
 
           <div>
             <h4>Resources</h4>
             <ul>
-              <li>Funding and Grants</li>
-              <li>Careers at CDC</li>
-              <li>Fellowships and Training</li>
-              <li>CDC Museum</li>
+              <li>Growth Charts</li>
+              <li>Health Tips</li>
+              <li>Parenting Guides</li>
+              <li>Support Groups</li>
             </ul>
           </div>
         </div>
@@ -53,11 +48,11 @@ const socialIcons = [
         <div className="footer-section director">
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/0/09/DoMixi1989.jpg"
-            alt="CDC Director"
+            alt="CGTS Director"
             className="director-image"
           />
-          <h4>CDC Director</h4>
-          <p>Mandy K. Cohen, MD, MPH</p>
+          <h4>CGTS Director</h4>
+          <p>John Doe, MD, MPH</p>
         </div>
       </div>
 
@@ -65,10 +60,10 @@ const socialIcons = [
       <nav className="footer-nav">
         <ul>
           <li>Contact Us</li>
-          <li>About CDC</li>
-          <li>Policies</li>
-          <li>Languages</li>
-          <li>Archive</li>
+          <li>About CGTS</li>
+          <li>Privacy Policy</li>
+          <li>Terms of Service</li>
+          <li>FAQ</li>
         </ul>
       </nav>
 
@@ -89,7 +84,7 @@ const socialIcons = [
             <img
               key={index}
               src={icon.src}
-              alt= {icon.alt}
+              alt={icon.alt}
               className="social-icon"
             />
           ))}
@@ -98,8 +93,8 @@ const socialIcons = [
 
       {/* Copyright */}
       <div className="copyright">
-        <span>HHS.gov</span>
-        <span>USA.gov</span>
+        <span>&copy; 2025 Child Growth Tracking System</span>
+        <span>All rights reserved</span>
       </div>
     </footer>
   );
