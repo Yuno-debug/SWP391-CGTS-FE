@@ -1,0 +1,86 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+    color: #333;
+    text-align: center;
+}
+
+/* Layout Styling */
+header,
+footer {
+    background: #007bff;
+    color: white;
+    padding: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.content-wrapper {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Sections Styling */
+.section {
+    padding: 20px;
+    border-radius: 8px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Styling */
+button {
+    padding: 12px 25px;
+    background: #ff6b6b;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background: #ff4757;
+    transform: scale(1.05);
+}
+
+/* BMI Bar Styling */
+.bmi-bar {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    border-radius: 5px;
+}
+
+.bmi-bar.underweight {
+    background: #f39c12;
+}
+
+.bmi-bar.healthy-weight {
+    background: #2ecc71;
+}
+
+.bmi-bar.overweight {
+    background: #e67e22;
+}
+
+.bmi-bar.obese {
+    background: #e74c3c;
+}

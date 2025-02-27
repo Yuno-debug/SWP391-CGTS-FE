@@ -10,6 +10,7 @@ import MemPage from './MemPage/MemPage';
 import Login from './LoginPage/Login';
 import Signup from './SignUp/Signup';
 import AdminDashboard from './AdminPage/Admin';
+import AddChild from './MemPage/AddChild';
 
 const MainLayout = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Define isLoggedIn state

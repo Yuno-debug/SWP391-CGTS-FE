@@ -9,8 +9,8 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  color: blue;
   text-align: center;
+  padding: 40px 20px;
 }
 
 /* Overlay Effect */
@@ -21,48 +21,20 @@
   left: 0;
   width: 100%;
   height: 100%;
-    z-index: 1; /* Ensure overlay is above background */
+  z-index: 1;
 }
 
-/* Main Content Wrapper */
+/* Main Content */
 .main-content {
   max-width: 1200px;
   width: 100%;
-  padding: 20px;
   text-align: center;
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-grow: 1;
-}
-
-/* Section Container */
-.section-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: left;
-  margin: 60px 0;
-}
-
-/* Section Title */
-.section-title {
-  font-size: 28px;
-  font-weight: bold;
-  color: #2563eb;
-  position: relative;
-  align-self: start;
-}
-
-.section-title::after {
-  content: "";
-  display: block;
-  width: 920px;
-  height: 3px;
-  background: #2563eb;
-  margin: 8px 0;
+  gap: 40px;
 }
 
 /* Featured Topics */
@@ -70,17 +42,17 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 32px;
+  gap: 16px;
+  margin-bottom: 40px;
 }
 
 .featured-topic-btn {
   background-color: white;
   border: 2px solid #2563eb;
   color: black;
-  padding: 10px 16px;
+  padding: 12px 20px;
   font-size: 16px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   font-weight: bold;
@@ -95,7 +67,7 @@
 .two-column-layout {
   display: flex;
   justify-content: space-between;
-  gap: 100px;
+  gap: 60px;
   width: 100%;
 }
 
@@ -103,101 +75,111 @@
 .blog-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   width: 48%;
 }
 
 .blog-title {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: bold;
-  color: #1e293b;
-  margin-bottom: 16px;
-  align-self: flex-start; /* Align title to the left */
-}
-
-.blog-title::after {
-  content: "";
-  display: block;
-  width: 1300%;
-  height: 3px;
-  background: #2563eb;
-  margin-top: 4px;
+  margin-bottom: 24px;
 }
 
 /* Blog Items */
 .blog-item {
+  display: flex;
+  align-items: center;
   background-color: white;
-  border: 2px solid #2563eb;
-  color: black;
-  padding: 10px 16px;
-  font-size: 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  text-align: left; /* Align text to the left */
-  white-space: normal; /* Allow text to wrap */
+  border-radius: 10px;
+  padding: 16px;
   margin-bottom: 20px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.15);
 }
 
-.blog-item:hover {
-  background-color: #2563eb;
-  color: white;
+.blog-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  margin-right: 16px;
 }
 
-/* Scientific Journals Grid */
-.journal-container {
+.blog-content {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.blog-item-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.blog-description {
+  font-size: 15px;
+  color: #444;
+}
+
+/* Parenting Tips Section */
+.parenting-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 48%;
-  gap: 24px;
+  gap: 20px;
 }
 
-.journal-card {
-  width: 100%;
-  background: white;
-  padding: 16px;
-  border-radius: 10px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+.parenting-card {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
 }
 
-.journal-card:hover {
+.parenting-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.parenting-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 10px;
+}
+
+.parenting-text {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+/* Learn More Button */
+.learn-more-btn {
+  display: inline-block;
+  background-color: #2563eb;
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.learn-more-btn:hover {
+  background-color: #1e4bb8;
   transform: scale(1.05);
 }
 
-/* Mobile Responsive */
+/* Responsive */
 @media (max-width: 768px) {
-  .main-content {
-    padding: 10px;
-  }
-
-  .section-title {
-    font-size: 1.25rem;
-    margin-top: 20px;
-    margin-bottom: 10px;
-  }
-
-  .section-container {
-    margin-bottom: 20px;
-    margin: 40px 0;
-  }
-
-  .featured-topic-btn {
-    padding: 10px 15px;
-  }
-
-  .journal-card {
-    padding: 12px;
-  }
-
-  .blog-container,
-  .journal-container {
-    width: 100%;
-  }
-
   .two-column-layout {
     flex-direction: column;
     align-items: center;
+    gap: 40px;
+  }
+
+  .blog-container,
+  .parenting-container {
+    width: 100%;
   }
 }

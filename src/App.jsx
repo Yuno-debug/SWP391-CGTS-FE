@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import MembershipPage from "./Component/Membership/MembershipPage/MembershipPage.jsx";
 import About from "./Component/Features/About.jsx"; // Import the About component
 import Profile from "./Component/ProfilePage/Profile.jsx"; // Import the Profile component
+import AddChild from "./Component/MemPage/AddChild.jsx";
 const App = () => {
   const [prices, setPrices] = useState({
     free: '$0',
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/membership" element={<MembershipPage prices={prices} />} /> 
         <Route path="/profile" element={<Profile />} /> {/* Add route for Profile */}
         <Route path="/about" element={<About />} /> {/* Add the About route */}
+        <Route path="/add-child" element={<AddChild/>} />
       </Routes>
     </Router>
   );

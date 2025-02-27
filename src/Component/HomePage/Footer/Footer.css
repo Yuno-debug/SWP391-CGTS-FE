@@ -50,6 +50,7 @@
 .links li {
     margin-bottom: 5px;
     cursor: pointer;
+    font-weight: normal;
 }
 
 .links li:hover {
@@ -101,6 +102,7 @@
 .footer-nav li {
     cursor: pointer;
     transition: color 0.3s ease;
+    font-weight: normal;
 }
 
 .footer-nav li:hover {
