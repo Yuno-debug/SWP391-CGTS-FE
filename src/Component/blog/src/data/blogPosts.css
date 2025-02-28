@@ -1,0 +1,172 @@
+.blog-content {
+    font-family: Arial, sans-serif;
+    line-height: 1.8; /* Tăng khoảng cách dòng để dễ đọc hơn */
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: justify; /* Canh đều nội dung */
+    background: #f9f9f9; /* Tạo nền nhẹ nhàng */
+    border-radius: 10px; /* Bo góc nội dung */
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1); /* Thêm bóng giúp nổi bật */
+    transition: all 0.3s ease-in-out; /* Hiệu ứng chuyển động mượt */
+}
+
+.blog-content:hover {
+    transform: scale(1.02); /* Hiệu ứng phóng to nhẹ khi di chuột */
+}
+
+.blog-content h2 {
+    font-size: 2em;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.blog-content h2::after {
+    content: "";
+    width: 50px;
+    height: 4px;
+    background: #3498db;
+    display: block;
+    margin: 5px auto 0;
+    border-radius: 2px;
+}
+
+.blog-content h3 {
+    font-size: 1.5em;
+    color: #34495e;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    text-align: center;
+    position: relative;
+}
+
+.blog-content h3::after {
+    content: "";
+    width: 30px;
+    height: 3px;
+    background: #95a5a6;
+    display: block;
+    margin: 5px auto 0;
+    border-radius: 2px;
+}
+
+.blog-content p {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.blog-content img {
+    display: block;
+    max-width: 90%;
+    height: auto;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3); /* Tăng bóng đổ để ảnh nổi bật hơn */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.blog-content img:hover {
+    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi di chuột */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4); /* Làm nổi ảnh hơn khi hover */
+}
+.comment-section {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.comment-section h3 {
+    display: flex;
+    align-items: center;
+    font-size: 1.5em;
+    color: #2c3e50;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.comment-section h3::before {
+    content: "💬";
+    font-size: 1.3em;
+    margin-right: 10px;
+}
+
+.comment-section p {
+    font-style: italic;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.comment-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-input {
+    flex: 1;
+    padding: 12px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.comment-input:focus {
+    border-color: #3498db;
+    box-shadow: 0px 0px 8px rgba(52, 152, 219, 0.5);
+}
+
+.comment-button {
+    background: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s;
+}
+
+.comment-button:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+.comment-button:active {
+    transform: scale(0.95);
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    background: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background 0.3s ease-in-out;
+    margin-top: 20px;
+}
+
+.back-button:hover {
+    background: #0056b3;
+}
+
+.back-button::before {
+    content: "←";
+    margin-right: 8px;
+}
+.blog-content img {
+    display: block;
+    max-width: 70%;        
+}

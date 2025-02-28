@@ -1,0 +1,82 @@
+/* Phần bình luận */
+.comments-section {
+    margin-top: 30px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.comments-section h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.no-comments {
+    color: #777;
+    font-style: italic;
+}
+
+.comment-list {
+    list-style: none;
+    padding: 0;
+}
+
+.comment-item {
+    background: white;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.comment-form {
+    display: flex;
+    margin-top: 15px;
+}
+
+.comment-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.comment-button {
+    padding: 10px 15px;
+    margin-left: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.comment-button:hover {
+    background-color: #0056b3;
+}
+.back-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff; /* Màu xanh dương */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.back-button:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+    transform: scale(1.05);
+}
+
+.back-button:active {
+    background-color: #004494; /* Màu tối hơn khi nhấn */
+    transform: scale(0.98);
+}

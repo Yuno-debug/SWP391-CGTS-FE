@@ -1,0 +1,27 @@
+.pagination {
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    gap: 5px; /* Tạo khoảng cách giữa các nút */
+    padding: 20px 0; /* Thêm khoảng cách trên dưới */
+  }
+  
+  .pagination button {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .pagination button.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+  
+  .pagination button.prev-next:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  

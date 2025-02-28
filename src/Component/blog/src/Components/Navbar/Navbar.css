@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Navbar Container */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007bff; /* Navbar background color */
+    padding: 10px 20px;
+    color: #fff;
+    position: static; /* Make navbar static */
+    width: 100%; /* Full width of the viewport */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    z-index: 1000; /* Ensure it stays on top */
+}
+
+/* Logo and Title Container */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between the logo and the title */
+    text-decoration: none; /* Remove link underline */
+    color: inherit; /* Inherit text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: opacity 0.3s ease; /* Add a hover effect */
+}
+
+.nav-left:hover {
+    opacity: 0.8; /* Slight fade on hover */
+}
+
+/* Logo Styles */
+.nav-logo2 {
+    border-radius: 50%; /* Circular logo */
+    width: 50px; /* Adjust logo size */
+    height: 50px;
+    object-fit: cover; /* Ensure logo fits within bounds */
+}
+
+/* Title Styles */
+.nav-logo a {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    white-space: nowrap; /* Prevent title from wrapping */
+    text-decoration: none;
+    color: white !important; /* Giữ màu trắng cố định */
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+.nav-logo a:visited {
+    color: white !important; /* Ngăn đổi màu tím */
+}
+
+.nav-logo li a:hover {
+    color: grey !important; /* Màu khi di chuột vào */
+}
+
+.nav-logo li a:active {
+    color: white !important; /* Màu khi nhấn vào */
+}
+
+.nav-logo li:hover {
+    background-color: #007bff; /* Darker blue on hover */
+    color: #fff;
+}
+
+/* Navigation Menu */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 20px; /* Space between menu items */
+    margin: 0;
+    padding: 0;
+}
+
+/* Log In and Sign Up Buttons */
+.nav-contact {
+    font-size: 15px;
+    border-radius: 20px;
+    padding: 5px 15px;
+    background: #fff;
+    color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover Effect */
+.nav-contact:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    color: #fff;
+}
+
+.nav-menu li a {
+    text-decoration: none;
+    color: white !important; /* Giữ màu trắng cố định */
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+.nav-menu li a:visited {
+    color: white !important; /* Ngăn đổi màu tím */
+}
+
+.nav-menu li a:hover {
+    color: grey !important; /* Màu khi di chuột vào */
+}
+
+.nav-menu li a:active {
+    color: white !important; /* Màu khi nhấn vào */
+}
+
+.nav-menu li:hover {
+    background-color: #007bff; /* Darker blue on hover */
+    color: #fff;
+}
+
+.search-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.search-text {
+    font-size: 16px;
+    color: white;
+}
+
+.search-bar {
+    width: 160px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14px;
+    margin-left: 8px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 20px; /* Space between menu items */
+    margin: 0;
+    padding: 0;
+}
+
+.nav-right li a {
+    text-decoration: none;
+    color: black !important; /* Giữ màu trắng cố định */
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+.nav-right li a:visited {
+    color: black !important; /* Ngăn đổi màu tím */
+}
+
+.nav-right li a:hover {
+    color: grey !important; /* Màu khi di chuột vào */
+}
+
+.nav-right li a:active {
+    color: white !important; /* Màu khi nhấn vào */
+}
+
+.nav-right li:hover {
+    background-color: #007bff; /* Darker blue on hover */
+    color: #fff;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .nav-menu {
+        gap: 10px; /* Reduce gap for smaller screens */
+        font-size: 14px;
+    }
+
+    .nav-contact {
+        padding: 5px 10px;
+    }
+
+    .nav-logo {
+        font-size: 16px; /* Smaller title font size */
+    }
+}
