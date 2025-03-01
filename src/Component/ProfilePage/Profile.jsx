@@ -1,9 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Profile.css';
 import EditProfile from './EditProfile';
+import { AuthContext } from '../LoginPage/AuthContext';
+import axios from 'axios';
 
-const Profile = ({ username }) => {
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5200";
+
+const Profile = () => {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [userData, setUserData] = useState({});
+  const { userName } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${API_URL}/api/UserAccount/get-all`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        setUserData(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleEditProfileClick = () => {
     setIsEditProfileOpen(true);
@@ -25,23 +50,23 @@ const Profile = ({ username }) => {
           className="profile-photo" 
         />
         <div className="user-info">
-          <h2 className="username">{username}</h2>
+          <h2 className="username">{userData.username}</h2>
         </div>
         <button className="edit-profile" onClick={handleEditProfileClick}>✎ Edit Profile</button>
       </div>
       <div className="profile-content">
         <div className="profile-section">
           <h2>Personal Information</h2>
-          <p><strong>Name:</strong> {username}</p>
-          <p><strong>Email:</strong> user1@example.com</p>
-          <p><strong>Location:</strong> Unknown</p>
+          <p><strong>Name:</strong> {userData.username}</p>
+          <p><strong>Email:</strong> {userData.email}</p>
+          <p><strong>Location:</strong> {userData.location || "Unknown"}</p>
         </div>
       </div>
       {isEditProfileOpen && (
         <EditProfile
-          username={username}
-          email="user1@example.com"
-          location="Unknown"
+          username={userData.username}
+          email={userData.email}
+          location={userData.location || "Unknown"}
           onClose={handleCloseEditProfile}
         />
       )}

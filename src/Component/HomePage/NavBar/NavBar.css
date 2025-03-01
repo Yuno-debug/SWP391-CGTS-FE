@@ -199,3 +199,71 @@
         font-size: 16px; /* Smaller title font size */
     }
 }
+.nav-user {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-name {
+    font-size: 16px;
+    color: white;
+}
+
+.dropdown-arrow {
+    font-size: 12px;
+    color: white;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 1001;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: black;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .nav-menu {
+        gap: 10px; /* Reduce gap for smaller screens */
+        font-size: 14px;
+    }
+
+    .nav-contact {
+        padding: 5px 10px;
+    }
+
+    .nav-logo {
+        font-size: 16px; /* Smaller title font size */
+    }
+}

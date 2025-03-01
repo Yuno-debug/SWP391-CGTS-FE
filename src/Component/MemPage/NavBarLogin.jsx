@@ -30,11 +30,11 @@ const Navbar = () => {
       <div className="nav-left">
         <img className="nav-logo2" src={logo2} alt="" />
         <div className="nav-logo">
-          <Link to="/">Children Growth Tracking System</Link>
+          <Link to="/mempage">Children Growth Tracking System</Link>
         </div>
       </div>
       <ul className="nav-menu">
-        <li><Link to="/">HOME</Link></li>
+        <li><Link to="/mempage">HOME</Link></li>
         <li><Link to="/about">ABOUT US</Link></li>
         <li><Link to="/membership">MEMBERSHIP PLAN</Link></li>
         <li><Link to="/blog">BLOG</Link></li>

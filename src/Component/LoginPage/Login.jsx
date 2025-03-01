@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "./InputField";
 import "./Login.css";
+import { AuthContext } from "./AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5200";
 
@@ -15,6 +16,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setIsLoggedIn, setUserName } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setFormData({
@@ -29,7 +31,7 @@ const Login = () => {
     setLoading(true);
 
     const cleanedUsername = formData.username.trim();
-    const cleanedPassword = formData.password.trim(); // Loại bỏ khoảng trắng và ký tự thừa
+    const cleanedPassword = formData.password.trim();
 
     if (!cleanedUsername || !cleanedPassword) {
       setError("Username and password are required.");
@@ -49,6 +51,8 @@ const Login = () => {
 
       console.log("✅ Login successful:", response.data);
       localStorage.setItem("token", response.data.token);
+      setIsLoggedIn(true);
+      setUserName(response.data.username);
       navigate("/mempage");
     } catch (err) {
       console.error("❌ Login Error:", err.response?.data?.message || err.message);
