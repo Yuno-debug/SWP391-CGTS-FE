@@ -6,14 +6,13 @@ import axios from "axios";
 import logo from './../../assets/logo.png';
 import Dashboard from './Dashboard';
 import User from './User';
-import AdminPanel from './AdminPanel';
+import MembershipManage from './MembershipManage'; // Import MembershipManage
 import './Admin.css';
 
 const Admin = () => {
   const [selectedSection, setSelectedSection] = useState('dashboard');
   const [expandedSections, setExpandedSections] = useState({
     'user-management': false,
-    'child-profile': false,
     'doctor-management': false,
   });
   const [data, setData] = useState({
@@ -51,7 +50,6 @@ const Admin = () => {
         });
       } catch (error) {
         console.error("Error fetching data:", error);
-        console.error("Error response:", error.response);
       }
     };
 
@@ -71,24 +69,8 @@ const Admin = () => {
         return <Dashboard totalRevenue={data.totalRevenue} totalChildren={data.totalChildren} totalDoctors={data.totalDoctors} />;
       case 'user-management':
         return <User users={data.users} />;
-      case 'doctor-management':
-        return (
-          <section id="doctor-management">
-            <h1 className="section-title">Doctor Management</h1>
-            <ul>
-              {data.doctors.map(doctor => (
-                <li key={doctor.id}>{doctor.name}</li>
-              ))}
-            </ul>
-          </section>
-        );
       case 'membership-management':
-        return (
-          <section id="membership-management">
-            <h1 className="section-title">Membership Management</h1>
-            <AdminPanel memberships={data.memberships} />
-          </section>
-        );
+        return <MembershipManage />; // Hiển thị MembershipManage
       case 'settings':
         return (
           <section id="settings">
@@ -121,17 +103,6 @@ const Admin = () => {
               {expandedSections['user-management'] && (
                 <ul className="submenu">
                   <li><button onClick={() => setSelectedSection('user-management')}>Manage Users</button></li>
-                </ul>
-              )}
-            </li>
-            <li>
-              <button onClick={() => toggleSection('doctor-management')}>
-                Doctor Management
-                <FontAwesomeIcon icon={expandedSections['doctor-management'] ? faChevronUp : faChevronDown} className="chevron-icon" />
-              </button>
-              {expandedSections['doctor-management'] && (
-                <ul className="submenu">
-                  <li><button onClick={() => setSelectedSection('doctor-management')}>Manage Doctors</button></li>
                 </ul>
               )}
             </li>

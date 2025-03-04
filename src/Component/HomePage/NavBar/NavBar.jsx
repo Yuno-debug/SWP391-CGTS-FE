@@ -9,10 +9,11 @@ import { AuthContext } from "../../LoginPage/AuthContext";
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [username, setUsername] = useState(""); // State lưu username
   const searchRef = useRef(null);
   const dropdownRef = useRef(null);
-  const { isLoggedIn } = useContext(AuthContext);
+  
+  const { isLoggedIn, userName, setIsLoggedIn, setUserName } = useContext(AuthContext);
+  const userId = localStorage.getItem("userId"); // Lấy userId từ localStorage
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -27,41 +28,42 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Gọi API để lấy thông tin người dùng đang đăng nhập
   useEffect(() => {
-    const token = localStorage.getItem("token"); // Lấy token từ localStorage
-    console.log("isLoggedIn:", isLoggedIn);
-    console.log("token:", token);
-
-    if (isLoggedIn && token) {
-      fetch("http://localhost:5200/api/UserAccount/get-all", {
+    if (userId) {
+      fetch(`http://localhost:5200/api/UserAccount/${userId}`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       })
-        .then((response) => {
-          console.log("API response status:", response.status);
-          return response.json();
-        })
+        .then((res) => res.json())
         .then((data) => {
-          console.log("API response data:", data);
           if (data.success && data.user) {
-            setUsername(data.user.username);
-            console.log("Username set to:", data.user.username);
+            setUserName(data.user.username);
           } else {
-            console.error("API response error:", data);
+            setUserName("Guest");
           }
         })
-        .catch((error) => console.error("Error fetching user:", error));
+        .catch((err) => {
+          console.error("Error fetching user:", err);
+          setUserName("Guest");
+        });
     }
-  }, [isLoggedIn]);
+  }, [userId, setUserName]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("userId");
+    setIsLoggedIn(false);
+    setUserName("Guest");
+    window.location.reload();
+  };
 
   return (
     <div className="nav">
       <div className="nav-left">
-        <img className="nav-logo2" src={logo2} alt="" />
+        <img className="nav-logo2" src={logo2} alt="Logo" />
         <div className="nav-logo">
           <Link to="/">Children Growth Tracking System</Link>
         </div>
@@ -71,7 +73,6 @@ const Navbar = () => {
         <li><Link to="/about">ABOUT US</Link></li>
         <li><Link to="/membership">MEMBERSHIP PLAN</Link></li>
         <li><Link to="/blog">BLOG</Link></li>
-        {/* Ô tìm kiếm */}
         <div className="search-container" ref={searchRef}>
           <div className="search-toggle" onClick={() => setShowSearch(true)}>
             <img src={searchIcon} alt="Search" className="search-icon" />
@@ -93,16 +94,13 @@ const Navbar = () => {
           <li className="nav-user" ref={dropdownRef}>
             <div className="user-info" onClick={() => setShowDropdown(!showDropdown)}>
               <img src={userAvatar} alt="User Avatar" className="user-avatar" />
-              <span className="user-name">{username}</span>
+              <span className="user-name">{userName !== "Loading..." ? userName : "Guest"}</span>
               <span className="dropdown-arrow">{showDropdown ? '▲' : '▼'}</span>
             </div>
             {showDropdown && (
               <div className="dropdown-menu">
                 <Link to="/profile">Profile</Link>
-                <Link to="/logout" onClick={() => {
-                  localStorage.removeItem("token");
-                  window.location.reload();
-                }}>Logout</Link>
+                <Link to="/" onClick={handleLogout}>Logout</Link>
               </div>
             )}
           </li>
