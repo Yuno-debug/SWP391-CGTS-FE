@@ -104,20 +104,23 @@ const MembershipManage = () => {
               <td>{plan.durationMonths}</td>
               <td>{plan.status}</td>
               <td>
-                <div className="button-group">
-                  {plan.status !== "Active" ? (
-                    <button className="btn-active" onClick={() => handleStatusUpdate(plan.packageId, "Active")}>
-                      Active
-                    </button>
-                  ) : (
-                    <>
-                      <button className="btn-edit" onClick={() => openEditModal(plan)}>Edit</button>
-                      <button className="btn-inactive" onClick={() => handleStatusUpdate(plan.packageId, "Inactive")}>
-                        Inactive
-                      </button>
-                    </>
-                  )}
-                </div>
+              <td>
+  <div className="membership-button-group">
+    {plan.status !== "Active" ? (
+      <button className="membership-btn membership-btn-active" onClick={() => handleStatusUpdate(plan.packageId, "Active")}>
+        Approve
+      </button>
+    ) : (
+      <>
+        <button className="membership-btn membership-btn-edit" onClick={() => openEditModal(plan)}>Edit</button>
+        <button className="membership-btn membership-btn-inactive" onClick={() => handleStatusUpdate(plan.packageId, "Inactive")}>
+          Deactivate
+        </button>
+      </>
+    )}
+  </div>
+</td>
+
               </td>
             </tr>
           ))}
@@ -157,7 +160,7 @@ const MembershipManage = () => {
               onChange={(e) => setSelectedPlan({ ...selectedPlan, durationMonths: e.target.value })}
             />
 
-            <div className="button-group">
+            <div className="edit-button-group">
               <button className="btn-update" onClick={handleUpdate}>Update</button>
               <button className="btn-cancel" onClick={closeEditModal}>Cancel</button>
             </div>
