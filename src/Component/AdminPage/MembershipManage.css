@@ -7,7 +7,7 @@
   background: #ffffff;
   
  
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  
 }
 
 
@@ -273,5 +273,24 @@ th {
 
 .btn-update:hover,
 .btn-cancel:hover {
+  transform: scale(1.05);
+}
+.create-membership-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  font-size: 12px;
+  font-weight: bold;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.create-membership-btn:hover {
+  background: #2980b9;
   transform: scale(1.05);
 }
