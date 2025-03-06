@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect, useContext, useCallback } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import logo2 from "../../../assets/logo.png";
@@ -6,42 +6,40 @@ import searchIcon from "../../../assets/searchIcon.png";
 import userAvatar from "../../../assets/userAvatar.svg";
 import { AuthContext } from "../../LoginPage/AuthContext";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5200";
+
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const searchRef = useRef(null);
   const dropdownRef = useRef(null);
-  
-  const { isLoggedIn, userName, setIsLoggedIn, setUserName } = useContext(AuthContext);
-  const userId = localStorage.getItem("userId"); // Lấy userId từ localStorage
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSearch(false);
-      }
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
+  const { isLoggedIn, userName, setUserName, userId, handleLogout } = useContext(AuthContext);
+
+  // Xử lý click ngoài Search & Dropdown
+  const handleClickOutside = useCallback((event) => {
+    if (searchRef.current && !searchRef.current.contains(event.target)) {
+      setShowSearch(false);
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowDropdown(false);
+    }
   }, []);
 
   useEffect(() => {
     if (userId) {
-      fetch(`http://localhost:5200/api/UserAccount/${userId}`, {
+      fetch(`${API_URL}/api/UserAccount/${userId}`, {
         method: "GET",
         headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
       })
-        .then((res) => res.json())
+        .then((res) => res.ok ? res.json() : Promise.reject(`HTTP error! Status: ${res.status}`))
         .then((data) => {
           if (data.success && data.user) {
             setUserName(data.user.username);
-          } else {
-            setUserName("Guest");
+        
           }
         })
         .catch((err) => {
@@ -50,15 +48,6 @@ const Navbar = () => {
         });
     }
   }, [userId, setUserName]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userId");
-    setIsLoggedIn(false);
-    setUserName("Guest");
-    window.location.reload();
-  };
 
   return (
     <div className="nav">
@@ -94,7 +83,7 @@ const Navbar = () => {
           <li className="nav-user" ref={dropdownRef}>
             <div className="user-info" onClick={() => setShowDropdown(!showDropdown)}>
               <img src={userAvatar} alt="User Avatar" className="user-avatar" />
-              <span className="user-name">{userName !== "Loading..." ? userName : "Guest"}</span>
+              <span className="user-name">{userName || "Guest"}</span>
               <span className="dropdown-arrow">{showDropdown ? '▲' : '▼'}</span>
             </div>
             {showDropdown && (

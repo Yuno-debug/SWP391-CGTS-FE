@@ -12,7 +12,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setIsLoggedIn, setUserName, setUserId } = useContext(AuthContext);  // Thêm setUserId
+  const { setIsLoggedIn, setUserName, setUserId } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,14 +39,14 @@ const Login = () => {
       console.log("✅ Login successful:", response.data);
       
       // Lưu token, username, userId vào localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("username", response.data.username);
-      localStorage.setItem("userId", response.data.userId);  // Lưu userId
+      localStorage.setItem("userId", response.data.user?.userId ?? "");
+      localStorage.setItem("username", response.data.user?.username ?? "");
+      localStorage.setItem("token", response.data.token ?? "");
 
       // Cập nhật context
       setIsLoggedIn(true);
-      setUserName(response.data.username);
-      setUserId(response.data.userId);  // Cập nhật userId vào context
+      setUserName(response.data.user?.username || "");
+      setUserId(response.data.user?.userId || "");
 
       navigate("/mempage");
     } catch (err) {
