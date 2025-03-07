@@ -1,7 +1,7 @@
 /* Container Styling */
 .bmi-tool-container {
   padding: 20px;
-  background: linear-gradient(135deg, #f8f9fa, #eef2f3);
+  background: #f9f9f9;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -10,11 +10,16 @@
 
 .bmi-content-wrapper {
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
+  margin: auto;
   background: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row; /* Change to row for horizontal alignment */
+  gap: 20px;
+  flex-wrap: wrap; /* Allow wrapping for responsive design */
 }
 
 /* BMI Section Styling */
@@ -23,27 +28,27 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
   text-align: left; /* Align text to the left */
+  flex: 1 1 calc(50% - 20px); /* Adjust flex properties for horizontal alignment */
+  min-width: 300px; /* Ensure minimum width for sections */
+}
 
-  h2 {
-    font-size: 22px;
-    color: #333;
-    margin-bottom: 10px;
-  }
+.bmi-section h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
 
-  p {
-    font-size: 16px;
-    line-height: 1.5;
-    color: #555;
-  }
+.bmi-section p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #555;
 }
 
 /* Button Styling */
 .use-tool-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
+  display: inline-block;
+  padding: 10px 20px;
   font-size: 16px;
   color: white;
   background-color: #007bff;
@@ -58,14 +63,91 @@
   background-color: #0056b3;
 }
 
+/* Growth Record Styling */
+.growth-record {
+  margin-top: 40px;
+}
+
+.growth-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  flex: 1 1 calc(33% - 10px);
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-growth-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.add-growth-button:hover {
+  background-color: #0056b3;
+}
+
+.growth-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.growth-table th,
+.growth-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.growth-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+.growth-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.growth-table tr:hover {
+  background-color: #ddd;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .bmi-content-wrapper {
+    flex-direction: column; /* Change to column for smaller screens */
     padding: 15px;
   }
 
   .bmi-section {
     padding: 15px;
+    flex: 1 1 100%; /* Full width for smaller screens */
   }
 
   .use-tool-button {

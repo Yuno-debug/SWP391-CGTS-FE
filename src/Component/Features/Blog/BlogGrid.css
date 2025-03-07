@@ -1,0 +1,63 @@
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    position: relative;
+    /* Đảm bảo không bị đè lên nhau */
+    z-index: 1;
+}
+
+/* Căn chỉnh danh mục */
+.category-filter {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.category-filter label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.category-filter select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Định dạng blog card để tránh chồng lên nhau */
+.blog-card {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+}
+
+.blog-card:hover {
+    transform: scale(1.03);
+}
+
+/* Giữ kích thước ảnh đồng nhất */
+.blog-card img {
+    width: 100%;
+    height: 200px;
+    /* Đảm bảo ảnh không bị méo */
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+    /* Bo tròn góc trên */
+}
+
+/* Căn chỉnh thẻ tag */
+.tag {
+    background-color: #f3f3f3;
+    color: #333;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 5px;
+    display: inline-block;
+}

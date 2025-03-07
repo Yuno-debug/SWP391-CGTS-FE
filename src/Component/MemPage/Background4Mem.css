@@ -41,7 +41,7 @@ footer {
 }
 
 /* Button Styling */
-button {
+.learn-more-button button {
     padding: 12px 25px;
     background: #ff6b6b;
     color: white;

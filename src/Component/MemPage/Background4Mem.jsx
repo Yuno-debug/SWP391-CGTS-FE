@@ -12,9 +12,9 @@ const positions = [
   { bottom: '200px', left: '200px' }  // Position for image 3
 ];
 const urls = [
-  "/membership", // URL for image 1
-  "/membership", // URL for image 2
-  "/membership" // URL for image 3
+  "/add-child", // URL for image 1
+  "/add-child", // URL for image 2
+  "/add-child" // URL for image 3
 ];
 
 const Background = ({ playStatus }) => {

@@ -20,12 +20,17 @@
 .footer-section {
     flex: 1;
     min-width: 250px;
-    text-align: left; /* Align text to the left */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Align items to the left */
+    text-align: left;
+    /* Align text to the left */
 }
 
 .about h3,
-.links h4,
-.director h4 {
+.quick-links h4,
+.contact h4 {
     margin-bottom: 10px;
     color: #fdb813;
 }
@@ -36,59 +41,39 @@
     line-height: 1.5;
 }
 
-/* Links Section */
-.links {
-    display: flex;
-    justify-content: space-between;
+/* Quick Links Section */
+.quick-links {
+    align-items: center;
+    /* Center-align items */
+    text-align: left;
+    /* Center-align text */
 }
 
-.links ul {
+.quick-links ul {
     list-style: none;
     padding: 0;
 }
 
-.links li {
+.quick-links li {
     margin-bottom: 5px;
     cursor: pointer;
-    font-weight: normal;
 }
 
-.links li:hover {
+.quick-links li:hover {
     text-decoration: underline;
 }
 
-/* Director Section */
-.director {
-    text-align: left; /* Align text to the left */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
-
-.director-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-    object-fit: cover;
-    image-rendering: crisp-edges;
-}
-
-.director h4 {
-    margin: 10px 0 5px;
-    color: #fdb813;
-}
-
-.director p {
+/* Contact Section */
+.contact p {
     font-size: 14px;
-    text-align: center;
+    line-height: 1.5;
 }
 
 /* Footer Navigation */
 .footer-nav {
     margin-top: 20px;
     text-align: center;
+    /* Center-align text */
 }
 
 .footer-nav ul {
@@ -96,13 +81,13 @@
     padding: 0;
     display: flex;
     justify-content: center;
+    /* Center-align items */
     gap: 15px;
 }
 
 .footer-nav li {
     cursor: pointer;
     transition: color 0.3s ease;
-    font-weight: normal;
 }
 
 .footer-nav li:hover {
@@ -123,6 +108,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    font-weight: bold;
 }
 
 .logo {

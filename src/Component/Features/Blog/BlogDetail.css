@@ -1,0 +1,95 @@
+/* Vùng nội dung chính của bài viết */
+.blog-content {
+    max-width: 800px;
+    /* Giới hạn chiều rộng để dễ đọc trên màn hình lớn */
+    margin: 20px auto;
+    /* Căn giữa và tạo khoảng cách phía trên/dưới */
+    padding: 20px;
+    /* Khoảng trống bên trong */
+    background-color: #ffffff;
+    /* Nền trắng */
+    border-radius: 8px;
+    /* Bo góc nhẹ */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Hiệu ứng đổ bóng */
+    font-family: "Arial", sans-serif;
+    font-size: 17px;
+    /* Tăng nhẹ kích thước chữ */
+    line-height: 1.8;
+    /* Giãn dòng cho dễ đọc */
+    color: #333;
+}
+
+/* Cách dòng giữa các đoạn văn */
+.blog-content p {
+    margin-bottom: 16px;
+}
+
+/* Định dạng tiêu đề con (h2, h3) */
+.blog-content h2,
+.blog-content h3 {
+    color: #222;
+    margin-top: 24px;
+    /* Khoảng cách trước tiêu đề */
+    margin-bottom: 12px;
+    /* Khoảng cách sau tiêu đề */
+    font-weight: bold;
+}
+
+/* Tùy chọn: Thêm phong cách cho h4, h5, h6 nếu muốn */
+.blog-content h4,
+.blog-content h5,
+.blog-content h6 {
+    color: #444;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Định dạng danh sách */
+.blog-content ul,
+.blog-content ol {
+    padding-left: 40px;
+    /* Thụt lề cho danh sách */
+    margin-bottom: 16px;
+}
+
+.blog-content li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+    /* Tăng khoảng cách giữa các item */
+}
+
+/* Định dạng chữ in đậm, nghiêng */
+.blog-content strong {
+    color: #000;
+    font-weight: bold;
+}
+
+.blog-content em {
+    font-style: italic;
+    color: #555;
+}
+
+/* Link trong nội dung */
+.blog-content a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.blog-content a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* Blockquote (nếu có) */
+.blog-content blockquote {
+    border-left: 4px solid #ccc;
+    margin: 20px 0;
+    padding-left: 16px;
+    color: #666;
+    font-style: italic;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}

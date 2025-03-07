@@ -68,10 +68,10 @@ const UserTable = () => {
               <td>{user.status}</td>
               <td>{user.registrationDate}</td>
               <td>
-                <button onClick={() => handleEdit(user.id)}>Edit</button>
+                <button className="Edit-btn" onClick={() => handleEdit(user.id)}>Edit</button>
               </td>
               <td>
-                <button onClick={() => handleDelete(user.id)}>Delete</button>
+                <button className="Delete-btn" onClick={() => handleDelete(user.id)}>Delete</button>
               </td>
             </tr>
           ))}

@@ -3,16 +3,22 @@ import { Link } from "react-router-dom";
 import "./Navbar.css";
 import logo2 from "../../../assets/logo.png";
 import searchIcon from "../../../assets/searchIcon.png";
+import userAvatar from "../../../assets/userAvatar.svg"; // Assuming you have a user avatar image
 
-const Navbar = () => {
+const Navbar = ({ isLoggedIn }) => {
   const [showSearch, setShowSearch] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const searchRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   // Đóng ô tìm kiếm khi bấm ra ngoài
   useEffect(() => {
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSearch(false);
+      }
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -30,26 +36,28 @@ const Navbar = () => {
         <li><Link to="/about">ABOUT US</Link></li>
         <li><Link to="/membership">MEMBERSHIP PLAN</Link></li>
         <li><Link to="/blog">BLOG</Link></li>
-        {/* Ô tìm kiếm */}
-        <div className="search-container" ref={searchRef}>
-          <div className="search-toggle" onClick={() => setShowSearch(true)}>
-            <img src={searchIcon} alt="Search" className="search-icon" />
-            <span className="search-text">SEARCH</span>
-          </div>
-          {showSearch && (
-            <input
-              type="text"
-              className="search-bar"
-              placeholder="Type to search..."
-              autoFocus
-              onKeyDown={(e) => e.key === "Enter" && setShowSearch(false)}
-            />
-          )}
-        </div>
       </ul>
       <ul className="nav-right">
-      <li className="nav-contact"><Link to="/login">Log In</Link></li>
-      <li className="nav-contact"><Link to="/signup">Sign Up</Link></li>
+        {isLoggedIn ? (
+          <li className="nav-user" ref={dropdownRef}>
+            <div className="user-info" onClick={() => setShowDropdown(!showDropdown)}>
+              <img src={userAvatar} alt="User Avatar" className="user-avatar" />
+              <span className="user-name">User Name</span>
+              <span className="dropdown-arrow">{showDropdown ? '▲' : '▼'}</span>
+            </div>
+            {showDropdown && (
+              <div className="dropdown-menu">
+                <Link to="/profile">Profile</Link>
+                <Link to="/logout">Logout</Link>
+              </div>
+            )}
+          </li>
+        ) : (
+          <>
+            <li className="nav-contact"><Link to="/login">Log In</Link></li>
+            <li className="nav-contact"><Link to="/signup">Sign Up</Link></li>
+          </>
+        )}
       </ul>
     </div>
   );

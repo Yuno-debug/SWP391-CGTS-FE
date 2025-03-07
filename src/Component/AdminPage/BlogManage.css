@@ -1,0 +1,160 @@
+/* Tổng thể trang quản lý Blog */
+.blog-management {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+/* Tiêu đề chính của trang */
+.blog-management h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Nút tạo blog mới */
+.create-blog-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.create-blog-btn:hover {
+    background-color: #218838;
+}
+
+/* Table hiển thị danh sách blog */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+}
+
+table,
+th,
+td {
+    border: 1px solid #ddd;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+/* Nút trong table */
+td button {
+    padding: 5px 10px;
+    margin: 2px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: opacity 0.3s ease;
+}
+
+td button:hover {
+    opacity: 0.8;
+}
+
+td button:first-child {
+    background-color: #007bff;
+    color: white;
+}
+
+td button:nth-child(2) {
+    background-color: #ffc107;
+    color: black;
+}
+
+td button:nth-child(3) {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Nhóm nút chỉnh sửa trong modal */
+.edit-button-group {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.edit-button-group button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button-group button:first-child {
+    background-color: #28a745;
+    color: white;
+}
+
+.edit-button-group button:last-child {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Modal (các class của react-modal có thể dùng chung) */
+.ReactModal__Overlay {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.ReactModal__Content {
+    max-width: 800px;
+    /* Tăng từ 600px lên 800px để modal rộng hơn */
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    position: relative;
+}
+
+/* Các class tùy chỉnh trong modal */
+.modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    /* đảm bảo form chiếm hết chiều rộng modal */
+}
+
+.modal-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.modal-quill {
+    width: 100%;
+    height: 300px;
+    /* Tăng chiều cao từ 200px lên 300px để có diện tích nhập rộng hơn */
+    margin-bottom: 10px;
+}

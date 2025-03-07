@@ -26,8 +26,8 @@
   background-color: #ddd;
 }
 
-.user-table button {
-  background-color: #007bff;
+.user-table .Edit-btn button {
+  background-color: #007bff !important;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -35,6 +35,22 @@
   border-radius: 3px;
 }
 
-.user-table button:hover {
-  background-color: #0056b3;
+.user-table .Edit-btn button:hover {
+  background-color: #0056b3 !important;
+}
+.user-table .Delete-btn button {
+  background-color: red !important;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.Delete-btn button:hover {
+  background-color: red !important;
+}
+
+.user-table button.Delete-btn:hover {
+  background-color: darkred !important;
 }

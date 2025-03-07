@@ -1,128 +1,86 @@
 .add-child-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; /* Center content vertically */
+  max-width: 900px;
+  margin: auto;
   padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
+  background: #f9f9f9;
+  border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  min-height: calc(100vh - 160px); /* Adjust height to account for NavBar and Footer */
 }
 
-.add-child-section,
-.bmi-section,
-.profiles-section {
-  width: 100%;
-  max-width: 600px;
-  margin-bottom: 20px;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
-  color: #333;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #555;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.add-child-button,
-.calculate-bmi-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
-}
-
-.add-child-button:hover,
-.calculate-bmi-button:hover {
-  background-color: #0056b3;
-}
-
-.bmi-result {
-  margin-top: 20px;
+.add-child-content {
   text-align: center;
 }
 
-.bmi-status {
-  margin-top: 10px;
-}
-
-.bmi-bar {
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 4px;
-  color: #fff;
-}
-
-.bmi-bar.underweight {
-  background-color: #ffc107;
-}
-
-.bmi-bar.normal-weight {
-  background-color: #28a745;
-}
-
-.bmi-bar.overweight {
-  background-color: #fd7e14;
-}
-
-.bmi-bar.obesity {
-  background-color: #dc3545;
-}
-
-.profiles-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.profile-item {
-  background-color: #f1f1f1;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
-
-.profile-item p {
-  margin: 5px 0;
-}
-
-/* Horizontal Layout for Content */
-.add-child-content {
+.add-child-form {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 15px;
   justify-content: space-between;
-  gap: 20px;
-  width: 100%;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.add-child-section,
-.bmi-section,
-.profiles-section {
-  flex: 1;
+.form-group {
+  flex: 1 1 calc(50% - 10px);
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-child-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.add-child-button:hover {
+  background-color: #0056b3;
+}
+
+.child-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.child-table th,
+.child-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.child-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+.child-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.child-table tr:hover {
+  background-color: #ddd;
 }

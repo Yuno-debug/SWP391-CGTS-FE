@@ -3,11 +3,10 @@ import Navbar from "./NavBar/NavBar";
 import Footer from "./Footer/Footer";
 import Body from "./Body/Body";
 import Background from "./Background/Background";
-
-const HomePage = () => {
+const HomePage = (isLoggedIn) => {
   return (
     <div>
-      <Navbar />
+      <Navbar isLoggedIn={false} />
       <Background />
       <Body />
       <Footer />

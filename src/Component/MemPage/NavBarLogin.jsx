@@ -38,22 +38,6 @@ const Navbar = () => {
         <li><Link to="/about">ABOUT US</Link></li>
         <li><Link to="/membership">MEMBERSHIP PLAN</Link></li>
         <li><Link to="/blog">BLOG</Link></li>
-        {/* Ô tìm kiếm */}
-        <div className="search-container" ref={searchRef}>
-          <div className="search-toggle" onClick={() => setShowSearch(true)}>
-            <img src={searchIcon} alt="Search" className="search-icon" />
-            <span className="search-text">SEARCH</span>
-          </div>
-          {showSearch && (
-            <input
-              type="text"
-              className="search-bar"
-              placeholder="Type to search..."
-              autoFocus
-              onKeyDown={(e) => e.key === "Enter" && setShowSearch(false)}
-            />
-          )}
-        </div>
       </ul>
       <ul className="nav-right">
         <li className="nav-user" ref={dropdownRef}>

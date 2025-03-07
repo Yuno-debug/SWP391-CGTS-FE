@@ -22,41 +22,47 @@ const Login = () => {
       [e.target.name]: e.target.value,
     });
   };
+  const mapRoleToString = (role) => {
+  switch (role) {
+    case 1: return "admin";
+    case 2: return "member";
+    default: return "guest";
+  }
+};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
 
-    const cleanedUsername = formData.username.trim();
-    const cleanedPassword = formData.password.trim(); // Loại bỏ khoảng trắng và ký tự thừa
+  try {
+    const response = await axios.post(`${API_URL}/api/UserAccount/login`, {
+      userName: formData.username.trim(),
+      password: formData.password.trim(),
+    });
 
-    if (!cleanedUsername || !cleanedPassword) {
-      setError("Username and password are required.");
-      setLoading(false);
-      return;
-    }
+    console.log("✅ Login successful:", response.data);
 
-    try {
-      const response = await axios.post(
-        `${API_URL}/api/UserAccount/login`,
-        JSON.stringify({ userName: cleanedUsername, password: cleanedPassword }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+    const roleString = mapRoleToString(response.data.role);
+    
+    // 🛠 Sửa lại: Lưu userId từ `response.data.user.userId`
+    localStorage.setItem("userId", response.data.user.userId);
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("role", roleString);
 
-      console.log("✅ Login successful:", response.data);
-      localStorage.setItem("token", response.data.token);
-      navigate("/mempage");
-    } catch (err) {
-      console.error("❌ Login Error:", err.response?.data?.message || err.message);
-      setError(err.response?.data?.message || "Invalid username or password.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    navigate(roleString === "admin" ? "/admin" : "/mempage");
+
+  } catch (err) {
+    console.error("❌ Login Error:", err);
+    setError("Invalid username or password.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+
 
   return (
     <div className="login-container">
