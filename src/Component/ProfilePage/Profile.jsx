@@ -84,11 +84,12 @@ const Profile = () => {
       </div>
       {isEditProfileOpen && (
         <EditProfile
-          username={userData.username}
-          email={userData.email}
-          location={userData.address || "Không xác định"}
-          onClose={handleCloseEditProfile}
-        />
+        username={userData.username}
+        email={userData.email}  // ❌ Bỏ email
+        location={userData.address || "Không xác định"} // ❌ Sai prop name
+        onClose={handleCloseEditProfile}
+      />
+      
       )}
     </div>
   );

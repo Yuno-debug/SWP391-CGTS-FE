@@ -13,26 +13,32 @@ import AdminDashboard from './AdminPage/Admin';
 import AddChild from './MemPage/AddChild';
 
 const MainLayout = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Define isLoggedIn state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
 
   return (
     <>
       {isLoggedIn ? <NavbarLogin /> : location.pathname !== '/admin' && <Navbar />}
-      <Routes>
-        <Route path="/" element={<>
-          <Background />
-          <Body />
-        </>} />
-        <Route path="/mempage" element={isLoggedIn ? <MemPage /> : <Navigate to="/login" />} />
-        <Route path="/membership" element={<Membership />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-      </Routes>
+      
+      {/* Bọc toàn bộ nội dung trong một div */}
+      <div className="main-content">
+        <Routes>
+          <Route path="/" element={<>
+            <Background />
+            <Body />
+          </>} />
+          <Route path="/mempage" element={isLoggedIn ? <MemPage /> : <Navigate to="/login" />} />
+          <Route path="/membership" element={<Membership />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Routes>
+      </div>
+
       {location.pathname !== '/login' && location.pathname !== '/signup' && location.pathname !== '/admin' && <Footer />}
     </>
   );
 };
+
 
 export default MainLayout;

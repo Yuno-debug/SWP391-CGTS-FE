@@ -1,96 +1,87 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+import axios from "axios";
 import "./PaymentModal.css";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5200/api";
+const API_MEMBERSHIP_URL = `${API_BASE_URL}/UserMembership/create`;
+const API_PAYMENT_URL = `${API_BASE_URL}/Payment/create`;
+const API_VNPAY_URL = `${API_BASE_URL}/VNPay/CreatePaymentUrl`;
+
+const getUserId = () => {
+  const userId = localStorage.getItem("userId");
+  return userId ? Number(userId) : 1;
+};
+
 const PaymentModal = ({ isOpen, onClose, packageInfo }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedMethod, setSelectedMethod] = useState("vnpay");
-  const [showQR, setShowQR] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   if (!isOpen || !packageInfo) return null;
 
-  const paymentMethods = {
-    vnpay: {
-      name: "VNPay",
-      icon: "https://vinadesign.vn/uploads/images/2023/05/vnpay-logo-vinadesign-25-12-57-55.jpg",
-    },
-    momo: {
-      name: "Momo",
-      icon: "https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png",
-    },
-  };
+  const processPayment = async () => {
+    setLoading(true);
+    setError(null);
+    const userId = getUserId();
+  
+    try {
+      // 🛒 Bước 1: Tạo Membership
+      const { data: membershipData } = await axios.post(API_MEMBERSHIP_URL, { userId, packageId: packageInfo.packageId });
+      if (!membershipData?.success) throw new Error("Không thể tạo Membership.");
+      const membershipId = membershipData?.data?.membershipid;
+      if (!membershipId) throw new Error("Không nhận được Membership ID.");
+  
+      // 💰 Bước 2: Tạo Payment (membershipId gửi qua query)
+      const { data: paymentData } = await axios.post(`${API_PAYMENT_URL}?membershipId=${membershipId}`);
+      if (!paymentData?.paymentId) throw new Error("Không nhận được Payment ID.");
+      const paymentId = paymentData.paymentId;
+  
+      // 🔗 Bước 3: Lấy URL thanh toán VNPay
+      const { data: paymentUrl } = await axios.get(`${API_VNPAY_URL}?paymentId=${paymentId}`);
+if (!paymentUrl) throw new Error("Không nhận được URL thanh toán.");
 
-  const handleMethodSelect = (method) => {
-    setSelectedMethod(method);
-    setIsDropdownOpen(false);
-  };
+console.log("🔗 Redirecting to:", paymentUrl);
+window.location.href = paymentUrl;
 
-  const handleContinue = () => {
-    setShowQR(true);
+    } catch (error) {
+      console.error("❌ Lỗi thanh toán:", error);
+      setError(error.response?.data?.message || "Thanh toán thất bại!");
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const handleBack = () => {
-    setShowQR(false);
-  };
-
-  const handlePaymentSuccess = () => {
-    setPaymentSuccess(true);
-  };
+  
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        {!showQR && !paymentSuccess ? (
-          <>
-            <h2>{packageInfo.packageName} Package</h2>
-            <div className="payment-info">
-              <p>Giá: {packageInfo.price} VND</p>
-              <p>Thời gian: {packageInfo.durationMonths} tháng</p>
-            </div>
-            <div className="payment-method">
-              <span>Chọn phương thức thanh toán:</span>
-              <div className="payment-select" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-                <div className="selected-method">
-                  <img src={paymentMethods[selectedMethod].icon} alt={paymentMethods[selectedMethod].name} width="24" height="24" />
-                  <span>{paymentMethods[selectedMethod].name}</span>
-                </div>
-                <span className={`dropdown-icon ${isDropdownOpen ? "open" : ""}`}>▾</span>
-              </div>
-              {isDropdownOpen && (
-                <div className="payment-dropdown">
-                  {Object.entries(paymentMethods).map(([key, method]) => (
-                    <div key={key} className={`payment-option ${selectedMethod === key ? "selected" : ""}`} onClick={() => handleMethodSelect(key)}>
-                      <img src={method.icon} alt={method.name} width="24" height="24" />
-                      <span>{method.name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="modal-buttons">
-              <button className="cancel-btn" onClick={onClose}>Hủy</button>
-              <button className="continue-btn" onClick={handleContinue}>Tiếp tục</button>
-            </div>
-          </>
-        ) : showQR && !paymentSuccess ? (
-          <div className="qr-screen">
-            <h2>Quét mã để thanh toán</h2>
-            <img src="https://tiencuatoi.vn/wp-content/uploads/2019/07/t%E1%BA%A3i-xu%E1%BB%91ng.png" alt="QR Code" className="qr-code" />
-            <div className="modal-buttons">
-              <button className="back-btn" onClick={handleBack}>Quay lại</button>
-              <button className="confirm-btn" onClick={handlePaymentSuccess}>Xác nhận thanh toán</button>
-            </div>
-          </div>
-        ) : (
-          <div className="payment-success">
-            <h2>Thanh toán thành công</h2>
-            <p>Bạn đã thanh toán {packageInfo.price} VND qua {paymentMethods[selectedMethod].name}.</p>
-            <button className="close-btn" onClick={onClose}>Đóng</button>
-          </div>
-        )}
+    <div className="payment-modal-overlay">
+      <div className="payment-modal">
+        <h2>{packageInfo.packageName} Package</h2>
+        <div className="payment-details">
+          <div className="payment-row"><span>Package Name:</span><span>{packageInfo.packageName}</span></div>
+          <div className="payment-row"><span>Price:</span><span>{packageInfo.price} VND</span></div>
+          <div className="payment-row"><span>Description:</span><span>{packageInfo.description}</span></div>
+        </div>
+        {error && <p className="error-message">{error}</p>}
+        <div className="button-group">
+          <button className="cancel-btn" onClick={onClose} disabled={loading}>Cancel</button>
+          <button className="continue-btn" onClick={processPayment} disabled={loading}>
+            {loading ? "Processing..." : "Thanh toán VNPay"}
+          </button>
+        </div>
       </div>
     </div>
   );
+};
+
+PaymentModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  packageInfo: PropTypes.shape({
+    packageName: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    description: PropTypes.string,
+    packageId: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 export default PaymentModal;

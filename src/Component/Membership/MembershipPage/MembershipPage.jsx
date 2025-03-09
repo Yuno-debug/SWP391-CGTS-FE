@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
-import PaymentModal from "../Modal/PaymentModal";
+import PaymentModal from "../PaymentPage/PaymentModal";
 import "./MembershipPage.css";
 import MainLayout4Mem from "./MainLayout4Mem";
 
