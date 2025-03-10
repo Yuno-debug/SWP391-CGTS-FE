@@ -80,7 +80,14 @@ const MembershipPage = () => {
             )}
           </div>
         </div>
-        <PaymentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} packageInfo={selectedPackage} />
+
+        {isModalOpen && selectedPackage && (
+          <PaymentModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            packageInfo={selectedPackage}
+          />
+        )}
       </div>
     </MainLayout4Mem>
   );

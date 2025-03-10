@@ -15,7 +15,8 @@ import BlogPage from "./Component/Features/Blog/BlogPage.jsx";
 import UpdateGrowthMetrics from "./Component/MemPage/UpdateGrowthMetrics.jsx";
 import LoginPage from "./Component/LoginPage/Login.jsx";
 import SignupPage from "./Component/SignUp/Signup";
-
+import PaymentModal from './Component/Membership/PaymentPage/PaymentModal.jsx';
+import PaymentSuccess from "./Component/Membership/PaymentSuccess/PaymentSuccess.jsx";
 const App = () => {
   const [prices, setPrices] = useState({
     free: '$0',
@@ -43,6 +44,7 @@ const App = () => {
           <Route path="/add-child" element={<AddChild />} />
           <Route path="/update-growth-metrics/:childId" element={<UpdateGrowthMetrics />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} /> 
         </Routes>
       </Router>
     </AuthProvider>
