@@ -129,12 +129,12 @@ const DoctorTable = () => {
   };
 
   return (
-    <div className="user-table-container">
+    <div className="doctor-table-container">
       <h2>Doctors</h2>
       <button className="Add-btn" onClick={openAddModal}>Add More Doctor</button>
       {error && <p className="error-message">{error}</p>}
       {loading ? <p>Loading...</p> : (
-        <table className="user-table">
+        <table className="doctor-table">
           <thead>
             <tr>
               <th>Full Name</th>
@@ -145,8 +145,7 @@ const DoctorTable = () => {
               <th>Hospital</th>
               <th>License Number</th>
               <th>Biography</th>
-              <th>Edit</th>
-              <th>Delete</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -162,8 +161,6 @@ const DoctorTable = () => {
                 <td>{doctor.biography}</td>
                 <td>
                   <button className="Edit-btn" onClick={() => openEditModal(doctor)}>Edit</button>
-                </td>
-                <td>
                   <button className="Delete-btn" onClick={() => handleDelete(doctor.doctorId)}>Delete</button>
                 </td>
               </tr>

@@ -35,26 +35,20 @@ const MembershipManage = () => {
 
   const handleStatusUpdate = async (id, newStatus) => {
     if (newStatus === "Active") {
-      // Đếm số lượng gói đang ở trạng thái Active
       const activeCount = plans.filter(plan => plan.status === "Active").length;
-  
-      // Kiểm tra nếu đã có 3 gói Active, không cho phép kích hoạt thêm
       if (activeCount >= 3) {
         alert("Chỉ được kích hoạt tối đa 3 gói Membership!");
         return;
       }
     }
-  
-    // Xác định API endpoint phù hợp
+
     const apiUrl = newStatus === "Active"
       ? `http://localhost:5200/api/MembershipPackage/${id}/approve`
       : `http://localhost:5200/api/MembershipPackage/${id}/deactivate`;
-  
+
     try {
       await axios.patch(apiUrl);
       alert(`Gói ${id} đã chuyển sang trạng thái ${newStatus}!`);
-  
-      // Cập nhật danh sách sau khi đổi trạng thái
       setPlans((prevPlans) =>
         prevPlans.map((plan) =>
           plan.packageId === id ? { ...plan, status: newStatus } : plan
@@ -96,14 +90,14 @@ const MembershipManage = () => {
 
   return (
     <div className="membership-management">
-      <h2>Membership Management</h2>
-      <h3>Admin Panel</h3>
+      <h2 className="title-center">Membership Management</h2>
+      <h3 className="subtitle-center">Admin Panel</h3>
 
       <button className="create-membership-btn" onClick={openCreateModal}>
         Tạo Mới Package
       </button>
 
-      <table>
+      <table className="membership-table">
         <thead>
           <tr>
             <th>Package Name</th>
@@ -143,20 +137,30 @@ const MembershipManage = () => {
         </tbody>
       </table>
 
-      <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Create Membership Package">
-        <h2>Tạo Mới Membership Package</h2>
-        <label>Package Name:</label>
-        <input type="text" value={newPackage.packageName} onChange={(e) => setNewPackage({ ...newPackage, packageName: e.target.value })} />
-        <label>Description:</label>
-        <input type="text" value={newPackage.description} onChange={(e) => setNewPackage({ ...newPackage, description: e.target.value })} />
-        <label>Price (VND):</label>
-        <input type="number" value={newPackage.price} onChange={(e) => setNewPackage({ ...newPackage, price: Number(e.target.value) })} />
-        <label>Duration (Months):</label>
-        <input type="number" value={newPackage.durationMonths} onChange={(e) => setNewPackage({ ...newPackage, durationMonths: Number(e.target.value) })} />
-        <label>Features:</label>
-        <input type="text" value={newPackage.features} onChange={(e) => setNewPackage({ ...newPackage, features: e.target.value })} />
-        <label>Max Children Allowed:</label>
-        <input type="number" value={newPackage.maxChildrenAllowed} onChange={(e) => setNewPackage({ ...newPackage, maxChildrenAllowed: Number(e.target.value) })} />
+      <Modal 
+        isOpen={modalIsOpen} 
+        onRequestClose={closeModal} 
+        contentLabel="Create Membership Package"
+        className="ReactModal__Content form-container"
+        overlayClassName="ReactModal__Overlay"
+      >
+        <h2 className="modal-title">Tạo Mới Membership Package</h2>
+        <div className="form-group">
+          <label>Package Name:</label>
+          <input type="text" value={newPackage.packageName} onChange={(e) => setNewPackage({ ...newPackage, packageName: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Description:</label>
+          <input type="text" value={newPackage.description} onChange={(e) => setNewPackage({ ...newPackage, description: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Price (VND):</label>
+          <input type="number" value={newPackage.price} onChange={(e) => setNewPackage({ ...newPackage, price: Number(e.target.value) })} />
+        </div>
+        <div className="form-group">
+          <label>Duration (Months):</label>
+          <input type="number" value={newPackage.durationMonths} onChange={(e) => setNewPackage({ ...newPackage, durationMonths: Number(e.target.value) })} />
+        </div>
         <div className="edit-button-group">
           <button className="btn-create" onClick={handleCreatePackage}>Create</button>
           <button className="btn-cancel" onClick={closeModal}>Cancel</button>

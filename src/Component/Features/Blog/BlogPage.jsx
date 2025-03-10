@@ -3,7 +3,7 @@ import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 import BlogGrid from "./BlogGrid";
 import BlogDetail from "./BlogDetail";
-import Navbar from "../../MemPage/NavBarLogin";
+import Navbar from "../../HomePage/NavBar/NavBar";
 import Footer from "../../HomePage/Footer/Footer";
 
 function BlogPage() {
@@ -28,10 +28,10 @@ function BlogPage() {
 
   return (
     <>
-    <Navbar/>
+    <Navbar isLoggedIn={true}/>
     <Routes>
       <Route path="/" element={<BlogGrid posts={posts} />} />
-      <Route path="/:id" element={<BlogDetail posts={posts} />} />
+      <Route path="/blog/:id" element={<BlogDetail posts={posts} />} />
     </Routes>
     <Footer/>
     </>

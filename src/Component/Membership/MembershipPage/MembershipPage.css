@@ -5,44 +5,46 @@
   box-sizing: border-box;
 }
 
-body,
-html {
+body, html {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb);
+  background: linear-gradient(135deg, #ff758c, #ff7eb3, #ff85a1);
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Centering Membership Page */
+/* Trang membership */
 .membership-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-}
-
-.membership-container {
-  flex: 1;
-  display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
+  min-height: 100vh;
   padding: 2rem;
 }
 
-.main-content {
-  max-width: 2500px;
-  width: 100%;
+/* Container chính giữa */
+.membership-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 2rem;
+  margin: auto; /* Căn giữa */
 }
 
+/* Nội dung membership */
 .membership-content {
   background: linear-gradient(135deg, #ffffff, #f8f9fa);
   border-radius: 15px;
-  padding: 10rem;
+  padding: 3rem;
   width: 100%;
-  max-width: 1200px;
-  box-shadow: 0 10px 40px rgba(63, 51, 238, 0.1);
+  max-width: 900px;
+  box-shadow: 0 10px 40px rgba(63, 51, 238, 0.2);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -50,79 +52,82 @@ html {
   align-items: center;
 }
 
+/* Tiêu đề */
 .membership-title {
-  font-size: 3rem;
+  font-size: 2.5rem;
   background: linear-gradient(to right, #6a11cb, #2575fc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 2rem;
+  text-transform: uppercase;
 }
 
-/* Plans Layout */
+/* Khu vực chứa gói membership */
+.membership-packages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Layout của các gói */
 .membership-plans {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap; /* Đảm bảo không bị lệch khi màn hình lớn */
   gap: 2rem;
-  flex-wrap: wrap;
+  width: 100%;
+  max-width: 800px;
+  margin: auto; /* Căn giữa */
 }
 
-.plan-card-free {
+/* Style chung cho gói */
+.plan-card {
   border-radius: 15px;
   padding: 2rem;
-  width: 320px;
+  width: 280px;
   text-align: center;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: all 0.4s ease-in-out;
-  border: 1px solid #ddd;
+  border: 2px solid transparent;
   position: relative;
   overflow: hidden;
   color: black;
+  font-weight: bold;
 }
-.plan-card-basic {
-  border-radius: 15px;
-  padding: 2rem;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: all 0.4s ease-in-out;
-  border: 1px solid #ddd;
-  position: relative;
-  overflow: hidden;
-  color: black;
-}
-.plan-card-premium {
-  border-radius: 15px;
-  padding: 2rem;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: all 0.4s ease-in-out;
-  border: 1px solid #ddd;
-  position: relative;
-  overflow: hidden;
-  color: black;
+
+/* Hover hiệu ứng */
+.plan-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 /* Gói Free */
 .plan-card-free {
-  background: linear-gradient(135deg, #56ccf2, #2f80ed);
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  border: 2px solid #00f2fe;
 }
 
-.plan-card-free .plan-price {
-  color: black;
+.plan-card-free:hover {
+  border-color: #ffffff;
+  box-shadow: 0 0 20px #00f2fe;
 }
 
 /* Gói Basic */
 .plan-card-basic {
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  background: linear-gradient(135deg, #ff9a9e, #fecfef);
+  border: 2px solid #ff9a9e;
 }
 
-.plan-card-basic .plan-price {
-  color: #6a11cb;
+.plan-card-basic:hover {
+  border-color: #ffffff;
+  box-shadow: 0 0 20px #ff9a9e;
 }
 
 /* Gói Premium */
@@ -131,27 +136,27 @@ html {
   border: 2px solid #ffd700;
 }
 
-.plan-card-premium .plan-price {
-  background: linear-gradient(to right, #6a11cb, #2575fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.plan-card-premium:hover {
+  border-color: #ffffff;
+  box-shadow: 0 0 20px #ffd700;
 }
 
-/* Định dạng phần giá */
+/* Định dạng giá */
 .plan-price {
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
   .membership-container {
     padding: 1rem;
   }
 
   .membership-content {
     width: 90%;
-    padding: 4rem;
+    padding: 2rem;
   }
 
   .membership-plans {
@@ -160,17 +165,18 @@ html {
     gap: 1.5rem;
   }
 
-  .plan-card-free {
+  .plan-card {
     width: 100%;
     max-width: 320px;
   }
-  
-  .plan-card-basic {
-    width: 100%;
-    max-width: 320px;
-  }
-  .plan-card-premium {
-    width: 100%;
-    max-width: 320px;
-  }
+}
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px; /* Hoặc giá trị phù hợp với thiết kế */
+  margin: auto; /* Giúp căn giữa */
+  padding: 2rem 0;
 }

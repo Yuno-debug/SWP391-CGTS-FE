@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Pagination from "../Pagination"; // Import Pagination
 import "./BlogGrid.css";
 
 function BlogGrid({ posts = [], activePage = 1 }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [currentPage, setCurrentPage] = useState(activePage);
 
   const postsPerPage = 6;
-  const startIndex = (activePage - 1) * postsPerPage;
+  const startIndex = (currentPage - 1) * postsPerPage;
 
   // Đảm bảo posts là mảng hợp lệ
   const validPosts = Array.isArray(posts) ? posts : [];
@@ -16,6 +18,9 @@ function BlogGrid({ posts = [], activePage = 1 }) {
     selectedCategory === "All"
       ? validPosts
       : validPosts.filter((post) => post.category === selectedCategory);
+
+  // Tính tổng số trang
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
   // Lấy danh mục từ bài viết
   const categories = ["All", ...new Set(validPosts.map((post) => post.category))];
@@ -80,6 +85,15 @@ function BlogGrid({ posts = [], activePage = 1 }) {
           <p>No posts found in this category.</p>
         )}
       </div>
+
+      {/* Pagination Component */}
+      {totalPages > 1 && (
+        <Pagination
+          activePage={currentPage}
+          setActivePage={setCurrentPage} // Đổi thành setCurrentPage
+          totalPages={totalPages}
+        />
+      )}
     </div>
   );
 }

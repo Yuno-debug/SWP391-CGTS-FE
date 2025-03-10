@@ -1,14 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 
-export const AuthContext = createContext({
-  isLoggedIn: false,
-  setIsLoggedIn: () => {},
-  userName: "Guest",
-  setUserName: () => {},
-  userId: null,
-  setUserId: () => {},
-  handleLogout: () => {},
-});
+export const AuthContext = createContext();
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5200";
 
@@ -18,23 +10,24 @@ export const AuthProvider = ({ children }) => {
   const [userId, setUserId] = useState(localStorage.getItem("userId") || null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem("token");
-      const storedUserId = localStorage.getItem("userId");
-
-      if (token && storedUserId) {
-        try {
-          const res = await fetch(`${API_URL}/api/UserAccount/${storedUserId}`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
+    const token = localStorage.getItem("token");
+    const storedUserId = localStorage.getItem("userId");
+  
+    if (token && storedUserId) { // Chỉ gọi API khi có userId hợp lệ
+      fetch(`${API_URL}/api/UserAccount/${storedUserId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
           if (!res.ok) {
             throw new Error(`HTTP error! Status: ${res.status}`);
           }
-          const data = await res.json();
+          return res.json();
+        })
+        .then((data) => {
           if (data.success && data.data) {
             setUserName(data.data.username);
             setUserId(data.data.userId);
@@ -43,14 +36,11 @@ export const AuthProvider = ({ children }) => {
           } else {
             console.error("Lỗi: Không tìm thấy dữ liệu người dùng");
           }
-        } catch (err) {
-          console.error("Lỗi khi lấy dữ liệu user:", err);
-        }
-      }
-    };
-
-    fetchUserData();
+        })
+        .catch((err) => console.error("Lỗi khi lấy dữ liệu user:", err));
+    }
   }, []);
+  
 
   // Hàm logout
   const handleLogout = () => {
@@ -62,18 +52,8 @@ export const AuthProvider = ({ children }) => {
     setUserId(null);
   };
 
-  const authContextValue = {
-    isLoggedIn,
-    setIsLoggedIn,
-    userName,
-    setUserName,
-    userId,
-    setUserId,
-    handleLogout,
-  };
-
   return (
-    <AuthContext.Provider value={authContextValue}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, userName, setUserName, userId, setUserId, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );

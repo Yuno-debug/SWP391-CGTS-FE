@@ -1,5 +1,5 @@
 /* Container Styling */
-.user-table-container {
+.doctor-table-container {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
@@ -9,48 +9,49 @@
 }
 
 /* Move Add button to the right */
-.user-table-container .Add-btn {
+.doctor-table-container .Add-btn {
     background-color: #0056b3;
     color: white;
     border: none;
     padding: 8px 12px;
     cursor: pointer;
     border-radius: 5px;
-    margin-left: auto;
+    margin-left: 900px;
 }
 
-.user-table-container .Add-btn:hover {
+.doctor-table-container .Add-btn:hover {
     background-color: #003f7f;
 }
 
 /* Table Styling */
-.user-table {
+.doctor-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-.user-table th,
-.user-table td {
+.doctor-table th,
+.doctor-table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
+    color: black;
 }
 
-.user-table th {
+.doctor-table th {
     background-color: #f2f2f2;
 }
 
-.user-table tr:nth-child(even) {
+.doctor-table tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-.user-table tr:hover {
+.doctor-table tr:hover {
     background-color: #ddd;
 }
 
 /* Edit Button */
-.user-table .Edit-btn {
+.doctor-table .Edit-btn {
     background-color: #007bff;
     color: white;
     border: none;
@@ -59,12 +60,12 @@
     border-radius: 3px;
 }
 
-.user-table .Edit-btn:hover {
+.doctor-table .Edit-btn:hover {
     background-color: #0056b3;
 }
 
 /* Delete Button */
-.user-table .Delete-btn {
+.doctor-table .Delete-btn {
     background-color: red;
     color: white;
     border: none;
@@ -73,7 +74,7 @@
     border-radius: 3px;
 }
 
-.user-table .Delete-btn:hover {
+.doctor-table .Delete-btn:hover {
     background-color: darkred;
 }
 

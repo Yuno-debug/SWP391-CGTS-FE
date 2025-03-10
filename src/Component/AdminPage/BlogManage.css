@@ -51,6 +51,7 @@ td {
 
 th {
     background-color: #f4f4f4;
+    color: black;
 }
 
 /* Nút trong table */
@@ -111,6 +112,10 @@ td button:nth-child(3) {
 /* Modal (các class của react-modal có thể dùng chung) */
 .ReactModal__Overlay {
     background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 1000 !important; /* Ensure the overlay is on top */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .ReactModal__Content {
@@ -121,6 +126,7 @@ td button:nth-child(3) {
     border-radius: 8px;
     background-color: #fff;
     position: relative;
+    z-index: 1001 !important; /* Ensure the content is on top */
 }
 
 /* Các class tùy chỉnh trong modal */

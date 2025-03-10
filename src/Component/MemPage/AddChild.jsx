@@ -1,102 +1,113 @@
-import React, { useState, useEffect } from 'react';
-import './AddChild.css';
-import Layout4MemP from './Layout4MemP';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "./AddChild.css";
+import Layout4MemP from "./Layout4MemP";
+import axios from "axios";
 
 const AddChild = () => {
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState("");
   const [childData, setChildData] = useState({
-    name: '',
-    dateOfBirth: '',
-    gender: '',
-    birthWeight: '',
-    birthHeight: '',
-    bloodType: '',
-    allergies: '',
-    relationship: '',
+    name: "",
+    dateOfBirth: "",
+    gender: "",
+    birthWeight: "",
+    birthHeight: "",
+    bloodType: "",
+    allergies: "",
+    relationship: "",
   });
 
   const [children, setChildren] = useState([]);
 
-  // ✅ Lấy userId từ localStorage khi component mount
+  // Get userId from localStorage on component mount
   useEffect(() => {
-  const storedUserId = localStorage.getItem("userId");
-  console.log("Retrieved userId:", storedUserId); // 🔥 Debug xem userId có được lấy không?
+    const storedUserId = localStorage.getItem("userId");
+    console.log("Retrieved userId:", storedUserId);
 
-  if (!storedUserId) {
-    alert("User ID not found! Please log in.");
-    return;
-  }
+    if (!storedUserId) {
+      alert("User ID not found! Please log in.");
+      return;
+    }
 
-  setUserId(storedUserId); // Cập nhật state userId
-}, []);
+    setUserId(Number(storedUserId)); // Convert to number if needed
 
+    // Fetch existing child information for the user
+    const fetchChildren = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5200/api/Child/by-user/${storedUserId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
 
+        console.log("Fetched Children:", response.data);
+        setChildren(response.data.data.$values || []); // Ensure the response is an array
+      } catch (error) {
+        console.error("Error fetching children:", error);
+      }
+    };
+
+    fetchChildren();
+  }, []);
 
   const handleChange = (e) => {
     setChildData({ ...childData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!userId) {
-    alert("User ID is missing. Please log in again.");
-    return;
-  }
-
-  if (!childData.name || !childData.dateOfBirth || !childData.gender || !childData.relationship) {
-    alert("Please fill all required fields!");
-    return;
-  }
-
-  // ✅ Chắc chắn userId được thêm vào requestData
-  const requestData = {
-    ...childData,
-    userId: Number(userId), // Convert từ string về số nếu cần
-    birthWeight: parseFloat(childData.birthWeight) || 0,
-    birthHeight: parseFloat(childData.birthHeight) || 0,
-  };
-
-  console.log("📤 Submitting Data:", requestData); // 🔥 Debug kiểm tra requestData có userId chưa
-
-  try {
-    const response = await fetch("http://localhost:5200/api/Child/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`, // ✅ Thêm token nếu API yêu cầu
-      },
-      body: JSON.stringify(requestData),
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      console.error("❌ Server Error:", responseData);
-      alert(`Error: ${responseData.title || "Unknown error"}`);
+    if (!userId) {
+      alert("User ID is missing. Please log in again.");
       return;
     }
 
-    console.log("✅ Child Added:", responseData);
-    setChildren([...children, responseData]); // Cập nhật danh sách trẻ
+    if (!childData.name || !childData.dateOfBirth || !childData.gender || !childData.relationship) {
+      alert("Please fill all required fields!");
+      return;
+    }
 
-    // ✅ Reset form sau khi thêm thành công
-    setChildData({
-      name: "",
-      dateOfBirth: "",
-      gender: "",
-      birthWeight: "",
-      birthHeight: "",
-      bloodType: "",
-      allergies: "",
-      relationship: "",
-    });
+    // Ensure userId is included and numerical fields are correctly parsed
+    const requestData = {
+      ...childData,
+      userId: userId, // Use userId directly
+      birthWeight: parseFloat(childData.birthWeight) || 0,
+      birthHeight: parseFloat(childData.birthHeight) || 0,
+    };
 
-  } catch (error) {
-    console.error("❌ Network or Server Error:", error);
-    alert(`Network error: ${error.message}`);
-  }
-};
+    console.log("📤 Submitting Data:", JSON.stringify(requestData, null, 2));
+
+    try {
+      const response = await axios.post("http://localhost:5200/api/Child/create", requestData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      console.log("✅ Child Added:", response.data);
+      setChildren([...children, response.data]);
+
+      setChildData({
+        name: "",
+        dateOfBirth: "",
+        gender: "",
+        birthWeight: "",
+        birthHeight: "",
+        bloodType: "",
+        allergies: "",
+        relationship: "",
+      });
+    } catch (error) {
+      console.error("❌ Error:", error.response ? error.response.data : error.message);
+      if (error.response) {
+        console.error("Server Response:", error.response.data);
+        alert(`Error: ${JSON.stringify(error.response.data, null, 2)}`);
+      } else {
+        alert(`Error: ${error.message}`);
+      }
+    }
+  };
 
   return (
     <Layout4MemP>
@@ -110,7 +121,7 @@ const AddChild = () => {
             </div>
             <div className="form-group">
               <label>Date of Birth:</label>
-              <input type="month" name="dateOfBirth" value={childData.dateOfBirth} onChange={handleChange} required />
+              <input type="date" name="dateOfBirth" value={childData.dateOfBirth} onChange={handleChange} required />
             </div>
             <div className="form-group">
               <label>Gender:</label>
@@ -138,11 +149,7 @@ const AddChild = () => {
             </div>
             <div className="form-group">
               <label>Relationship:</label>
-              <select name="relationship" value={childData.relationship} onChange={handleChange} required>
-                <option value="">Select</option>
-                <option value="Dad">Dad</option>
-                <option value="Mom">Mom</option>
-              </select>
+              <input type="text" name="relationship" value={childData.relationship} onChange={handleChange} required />
             </div>
             <button type="submit" className="add-child-button">Add Child</button>
           </form>
@@ -159,19 +166,23 @@ const AddChild = () => {
                 <th>Blood Type</th>
                 <th>Allergies</th>
                 <th>Relationship</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {children.map((child, index) => (
+              {Array.isArray(children) && children.map((child, index) => (
                 <tr key={index}>
                   <td>{child.name}</td>
-                  <td>{child.dateOfBirth}</td>
+                  <td>{new Date(child.dateOfBirth).toLocaleDateString()}</td>
                   <td>{child.gender}</td>
                   <td>{child.birthWeight}</td>
                   <td>{child.birthHeight}</td>
-                  <td>{child.bloodType}</td>
-                  <td>{child.allergies}</td>
+                  <td>{child.bloodType || "N/A"}</td>
+                  <td>{child.allergies || "None"}</td>
                   <td>{child.relationship}</td>
+                  <td>
+                    <Link to={`/update-growth-metrics/${child.childId}`}>Update Growth</Link>
+                  </td>
                 </tr>
               ))}
             </tbody>

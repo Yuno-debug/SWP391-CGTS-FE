@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Container chính của giao diện Doctor */
+.doctor-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar của Doctor */
+.doctor-sidebar {
+    width: 230px;
+    background-color: #007bff;
+    /* Màu xanh lá thay vì xanh dương */
+    color: white;
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+}
+
+/* Tiêu đề sidebar */
+.sidebar-header {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.logoDoctor a {
+    color: white !important;
+    text-decoration: none !important;
+    /* Xóa gạch chân */
+    font-size: 1.2rem;
+}
+
+.logoDoctor a:hover,
+.logoDoctor a:focus,
+.logoDoctor a:active,
+.logoDoctor a:visited {
+    color: white !important;
+    text-decoration: none !important;
+}
+
+/* Menu bên trái */
+.doctor-sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.doctor-sidebar nav ul li {
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* Nút trong sidebar */
+.doctor-sidebar nav ul li button {
+    color: white;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    display: block;
+    padding: 12px;
+    width: 100%;
+    text-align: left;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Hover menu */
+.doctor-sidebar nav ul li button:hover {
+    background-color: #218838;
+    /* Màu xanh đậm hơn khi hover */
+}
+
+/* Mục đang được chọn */
+.doctor-sidebar nav ul li button.active {
+    background-color: #1e7e34;
+}
+
+/* Biểu tượng mũi tên submenu */
+.chevron-icon {
+    margin-left: 10px;
+}
+
+/* Nội dung chính của trang */
+.doctor-content {
+    flex-grow: 1;
+    margin-left: 250px;
+    /* Khoảng cách bằng sidebar */
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Tiêu đề */
+.section-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+section p {
+    font-size: 16px;
+    color: #7f8c8d;
+}
+
+/* Nút mở sidebar khi sidebar đóng */
+.fixed-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.fixed-toggle:hover {
+    background: #218838;
+}
+
+/* Thống kê cho Doctor */
+.stats-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    flex: 1;
+    min-width: 250px;
+}
+
+.stat-icon {
+    font-size: 40px;
+    color: #28a745;
+    margin-right: 20px;
+}
+
+.stat-info {
+    text-align: left;
+}
+
+.stat-info h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.stat-info p {
+    margin: 5px 0 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #28a745;
+}

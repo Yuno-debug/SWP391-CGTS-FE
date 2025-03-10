@@ -1,16 +1,21 @@
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./Component/LoginPage/AuthContext.jsx";
+import Navbar from "./Component/HomePage/NavBar/NavBar";
 import MainLayout from "./Component/MainLayout.jsx";
 import HomePage from "./Component/HomePage/HomePage";
 import MemPage from "././Component/MemPage/MemPage";
-// import Search from "././Component/Search/Search";
-import React, { useState } from 'react';
 import MembershipPage from "./Component/Membership/MembershipPage/MembershipPage.jsx";
-import About from "./Component/Features/About.jsx"; // Import the About component
-import Profile from "./Component/ProfilePage/Profile.jsx"; // Import the Profile component
+import About from "./Component/Features/About.jsx";
+import Profile from "./Component/ProfilePage/Profile.jsx";
 import AddChild from "./Component/MemPage/AddChild.jsx";
 import BlogGrid from "./Component/Features/Blog/BlogGrid.jsx";
 import BlogDetail from "./Component/Features/Blog/BlogDetail.jsx";
 import BlogPage from "./Component/Features/Blog/BlogPage.jsx";
+import UpdateGrowthMetrics from "./Component/MemPage/UpdateGrowthMetrics.jsx";
+import LoginPage from "./Component/LoginPage/Login.jsx";
+import SignupPage from "./Component/SignUp/Signup";
+
 const App = () => {
   const [prices, setPrices] = useState({
     free: '$0',
@@ -26,18 +31,21 @@ const App = () => {
   };
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/*" element={<MainLayout />} />
-        <Route path="/MemPage" element={<MemPage />} /> 
-        <Route path="/" element={<HomePage />} /> 
-        <Route path="/membership" element={<MembershipPage prices={prices} />} /> 
-        <Route path="/profile" element={<Profile />} /> {/* Add route for Profile */}
-        <Route path="/about" element={<About />} /> {/* Add the About route */}
-        <Route path="/add-child" element={<AddChild/>} />
-        <Route path="/blog" element={<BlogPage />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/*" element={<MainLayout />} />
+          <Route path="/MemPage" element={<MemPage />} /> 
+          <Route path="/" element={<HomePage />} /> 
+          <Route path="/membership" element={<MembershipPage prices={prices} />} /> 
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/add-child" element={<AddChild />} />
+          <Route path="/update-growth-metrics/:childId" element={<UpdateGrowthMetrics />} />
+          <Route path="/blog" element={<BlogPage />} />
         </Routes>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 };
 

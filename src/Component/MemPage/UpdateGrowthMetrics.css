@@ -1,4 +1,4 @@
-.add-child-container {
+.update-growth-metrics-container {
   max-width: 900px;
   margin: auto;
   padding: 20px;
@@ -7,12 +7,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.add-child-content {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.add-child-form {
+.update-growth-metrics-form {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
@@ -37,8 +32,7 @@
   margin-bottom: 5px;
 }
 
-.form-group input,
-.form-group select {
+.form-group input {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
@@ -46,7 +40,7 @@
   border-radius: 5px;
 }
 
-.add-child-button {
+.update-growth-metrics-button {
   width: 100%;
   padding: 10px 15px;
   background-color: #007bff;
@@ -59,11 +53,11 @@
   transition: background-color 0.3s;
 }
 
-.add-child-button:hover {
+.update-growth-metrics-button:hover {
   background-color: #0056b3;
 }
 
-.child-table {
+.growth-records-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
@@ -72,23 +66,23 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.child-table th,
-.child-table td {
+.growth-records-table th,
+.growth-records-table td {
   padding: 12px;
   border: 1px solid #ddd;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
-.child-table th {
+.growth-records-table th {
   background-color: #007bff;
   color: white;
 }
 
-.child-table tr:nth-child(even) {
+.growth-records-table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-.child-table tr:hover {
+.growth-records-table tr:hover {
   background-color: #f1f1f1;
 }

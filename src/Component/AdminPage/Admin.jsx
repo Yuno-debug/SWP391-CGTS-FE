@@ -157,7 +157,7 @@ const Admin = () => {
             </li>
             <li>
               <button onClick={() => toggleSection('doctor-management')}>
-                Doctor Management
+                Doctor Manage
                 <FontAwesomeIcon icon={expandedSections['doctor-management'] ? faChevronUp : faChevronDown} className="chevron-icon" />
               </button>
               {expandedSections['doctor-management'] && (

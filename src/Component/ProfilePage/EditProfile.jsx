@@ -1,23 +1,61 @@
-import React, { useState } from 'react';
-import './EditProfile.css';
+import React, { useState, useEffect } from 'react';
 
-const EditProfile = ({ username, email, address, phone, onClose }) => {
+const EditProfile = ({ username, onClose }) => {
   const [newUsername, setNewUsername] = useState(username);
-  const [newEmail, setNewEmail] = useState(email);
-  const [newAddress, setNewAddress] = useState(address);
-  const [newPhone, setNewPhone] = useState(phone);
+  const [newAddress, setNewAddress] = useState('');
+  const [newPhone, setNewPhone] = useState('');
+  const [profileImage, setProfileImage] = useState(null);
   const [profileImageName, setProfileImageName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setProfileImageName(file.name);
-    setErrorMessage('');
-  };
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      setErrorMessage('User ID not found in localStorage');
+      return;
+    }
 
-  const handleSave = () => {
-    // Handle save logic here
-    onClose();
+    // Gọi API để lấy thông tin user
+    fetch(`/api/UserAccount/${userId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setNewAddress(data.address || '');
+        setNewPhone(data.phoneNumber || '');
+      })
+      .catch((error) => {
+        setErrorMessage('Failed to fetch user data');
+      });
+  }, []);
+
+  const handleSave = async () => {
+    setErrorMessage('');
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      setErrorMessage('User ID not found in localStorage');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('username', newUsername);
+    formData.append('phoneNumber', newPhone);
+    formData.append('address', newAddress);
+    if (profileImage) {
+      formData.append('profilePicture', profileImage);
+    }
+
+    try {
+      const response = await fetch(`/api/UserAccount/update/${userId}`, {
+        method: 'PUT',
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Failed to update profile');
+
+      alert('Profile updated successfully!');
+      onClose();
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   return (
@@ -30,14 +68,6 @@ const EditProfile = ({ username, email, address, phone, onClose }) => {
             type="text"
             value={newUsername}
             onChange={(e) => setNewUsername(e.target.value)}
-          />
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
           />
         </label>
         <label>
@@ -61,7 +91,13 @@ const EditProfile = ({ username, email, address, phone, onClose }) => {
           <input
             type="file"
             accept="image/*"
-            onChange={handleImageChange}
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                setProfileImage(file);
+                setProfileImageName(file.name);
+              }
+            }}
           />
         </label>
         {errorMessage && <p className="error-message">{errorMessage}</p>}

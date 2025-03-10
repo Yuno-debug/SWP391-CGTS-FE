@@ -122,10 +122,7 @@
   margin-top: 20px;
 }
 
-.back-btn,
-.confirm-btn,
-.continue-btn,
-.cancel-btn {
+.back-btn, .confirm-btn, .continue-btn, .cancel-btn {
   padding: 10px 30px;
   border-radius: 5px;
   cursor: pointer;
@@ -139,8 +136,7 @@
   color: #333;
 }
 
-.confirm-btn,
-.continue-btn {
+.confirm-btn, .continue-btn {
   background: #0066cc;
   color: white;
   font-weight: 500;
@@ -156,8 +152,7 @@
   background: #e5e5e5;
 }
 
-.confirm-btn:hover,
-.continue-btn:hover {
+.confirm-btn:hover, .continue-btn:hover {
   background: #0052a3;
 }
 
