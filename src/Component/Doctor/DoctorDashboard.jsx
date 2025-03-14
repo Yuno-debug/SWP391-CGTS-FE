@@ -4,10 +4,13 @@ import axios from 'axios';
 import Chart from 'chart.js/auto';
 import './DoctorDashboard.css';
 
-const DoctorDashboard = ({ totalChildren, totalConsultationResponses, totalConsultationRequests }) => {
+const DoctorDashboard = () => {
   const chartRef = useRef(null);
   const [users, setUsers] = useState([]);
-  const [totalRevenue, setTotalRevenue] = useState(0); // State for total revenue
+  const [totalGrowthRecords, setTotalGrowthRecords] = useState(0);
+  const [totalChildren, setTotalChildren] = useState(0);
+  const [totalConsultationRequests, setTotalConsultationRequests] = useState(0);
+  const [totalConsultationResponses, setTotalConsultationResponses] = useState(0);
 
   const getRoleName = (role) => {
     switch (role) {
@@ -19,25 +22,80 @@ const DoctorDashboard = ({ totalChildren, totalConsultationResponses, totalConsu
   };
 
   useEffect(() => {
-    const fetchTotalRevenue = async () => {
+    const fetchTotalGrowthRecords = async () => {
+  try {
+    const response = await axios.get("http://localhost:5200/api/growth-records/count");
+    
+    console.log("API Response:", response.data); // Debug API response
+
+    // Kiểm tra nếu API trả về số nguyên
+    if (typeof response.data === "number") {
+      setTotalGrowthRecords(response.data);
+    } 
+    // Kiểm tra nếu API trả về object có `data.totalGrowthRecords`
+    else if (typeof response.data === "object" && response.data?.totalGrowthRecords !== undefined) {
+      setTotalGrowthRecords(response.data.totalGrowthRecords);
+    } 
+    // API trả về object có `data.$values`
+    else if (typeof response.data === "object" && response.data?.$values?.[0]?.count !== undefined) {
+      setTotalGrowthRecords(response.data.$values[0].count);
+    } 
+    // API không có định dạng mong đợi
+    else {
+      console.error("Unexpected API response format:", response.data);
+      setTotalGrowthRecords(0); // Đặt mặc định là 0 để tránh lỗi
+    }
+
+  } catch (error) {
+    console.error("Error fetching total growth records:", error);
+    setTotalGrowthRecords(0); // Đặt mặc định là 0 nếu có lỗi
+  }
+};
+
+
+
+    const fetchTotalChildren = async () => {
       try {
-        const response = await axios.get('http://localhost:5200/api/Payment/total-revenue'); // Replace with your actual API endpoint
-        console.log("Total Revenue Response:", response.data);
-        setTotalRevenue(response.data.totalRevenue); // Adjust based on actual API response format
+        const response = await axios.get('http://localhost:5200/api/Child/count');
+        console.log("Total Children Response:", response.data);
+        setTotalChildren(response.data.count || 0);
       } catch (error) {
-        console.error("Error fetching total revenue:", error);
+        console.error("Error fetching total children:", error);
       }
     };
 
-    fetchTotalRevenue();
+    const fetchTotalConsultationRequests = async () => {
+      try {
+        const response = await axios.get('http://localhost:5200//api/ConsultationRequest/count');
+        console.log("Total Consultation Requests Response:", response.data);
+        setTotalConsultationRequests(response.data.count || 0);
+      } catch (error) {
+        console.error("Error fetching total consultation requests:", error);
+      }
+    };
+
+    const fetchTotalConsultationResponses = async () => {
+      try {
+        const response = await axios.get('http://localhost:5200/api/ConsultationResponse/count');
+        console.log("Total Consultation Responses Response:", response.data);
+        setTotalConsultationResponses(response.data.count || 0);
+      } catch (error) {
+        console.error("Error fetching total consultation responses:", error);
+      }
+    };
+
+    fetchTotalGrowthRecords();
+    fetchTotalChildren();
+    fetchTotalConsultationRequests();
+    fetchTotalConsultationResponses();
   }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/api/UserAccount/get-all', {
+        const response = await axios.get('http://localhost:5200/api/UserAccount/get-all', {
           headers: {
-            'Authorization': 'Bearer YOUR_ACCESS_TOKEN' // Replace with actual token
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
           }
         });
 
@@ -74,10 +132,10 @@ const DoctorDashboard = ({ totalChildren, totalConsultationResponses, totalConsu
       <h1 className="dashboard-title">Doctor Dashboard</h1>
       <div className="stats-container">
         <div className="stat-item">
-          <div className="stat-icon">💰</div>
+          <div className="stat-icon">📈</div>
           <div className="stat-info">
-            <h2>Total Revenue</h2>
-            <p>{totalRevenue.toLocaleString()} VND</p>
+            <h2>Total Growth Records</h2>
+            <p>{totalGrowthRecords.toLocaleString()} Records</p>
           </div>
         </div>
         <div className="stat-item">

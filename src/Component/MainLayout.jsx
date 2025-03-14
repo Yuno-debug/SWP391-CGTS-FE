@@ -12,6 +12,7 @@ import Signup from './SignUp/Signup';
 import AdminDashboard from './AdminPage/Admin';
 import AddChild from './MemPage/AddChild';
 import Doctor from './Doctor/Doctor';
+import Profile from './ProfilePage/Profile';
 
 const MainLayout = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -37,6 +38,7 @@ const MainLayout = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/doctor" element={<Doctor />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
 

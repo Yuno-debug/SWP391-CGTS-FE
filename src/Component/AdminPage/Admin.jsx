@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -11,6 +11,8 @@ import './Admin.css';
 import Doctor from "./Doctor";
 import MembershipManage from "./MembershipManage";
 import Blog from "./BlogManage";
+import { AuthContext } from "../../Component/LoginPage/AuthContext";
+import { useNavigate } from "react-router-dom"; 
 
 const Admin = () => {
   const [selectedSection, setSelectedSection] = useState('dashboard');
@@ -19,6 +21,13 @@ const Admin = () => {
     'child-profile': false,
     'doctor-management': false,
   });
+  const navigate = useNavigate(); // Khởi tạo điều hướng
+  const { handleLogout } = useContext(AuthContext);
+
+  const handleLogoutAndRedirect = () => {
+    handleLogout();  // Gọi hàm logout
+    navigate("/");   // Điều hướng về trang chủ
+  };
   const [data, setData] = useState({
     totalRevenue: 0,
     totalChildren: 0,
@@ -33,40 +42,40 @@ const Admin = () => {
   const [maintenanceMode, setMaintenanceMode] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const childrenResponse = await axios.get('http://localhost:5200/api/Child/count');
-        const doctorsResponse = await axios.get('http://localhost:5200/api/Doctor/count');
-        const usersResponse = await axios.get('');
-        const membershipsResponse = await axios.get('');
-        const settingsResponse = await axios.get('');
-
-        console.log("Children Response:", childrenResponse.data);
-        console.log("Doctors Response:", doctorsResponse.data);
-        console.log("Users Response:", usersResponse.data);
-        console.log("Memberships Response:", membershipsResponse.data);
-        console.log("Settings Response:", settingsResponse.data);
-
-        setData({
-          totalChildren: childrenResponse.data.count,
-          totalDoctors: doctorsResponse.data,  // Ensure this matches the API response
-          users: usersResponse.data,
-          doctors: doctorsResponse.data,
-          memberships: membershipsResponse.data,
-          settings: settingsResponse.data
+  const fetchData = async () => {
+    try {
+      // Gọi API lấy số lượng Child
+      const childrenResponse = await axios.get('http://localhost:5200/api/Child/count')
+        .then(res => res.data)
+        .catch(err => {
+          console.error("Error fetching child count:", err.response?.data || err.message);
+          return { count: 0 };
         });
 
-        setSiteTitle(settingsResponse.data.siteTitle || '');
-        setMaintenanceMode(settingsResponse.data.maintenanceMode || false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        console.error("Error response:", error.response);
-      }
-    };
+      // Gọi API lấy số lượng Doctor
+      const doctorsResponse = await axios.get('http://localhost:5200/api/Doctor/count')
+        .then(res => res.data)
+        .catch(err => {
+          console.error("Error fetching doctor count:", err.response?.data || err.message);
+          return 0; // Nếu API trả về số thay vì object, trả về 0 nếu lỗi
+        });
 
-    fetchData();
-  }, []);
+      console.log("Children Response:", childrenResponse);
+      console.log("Doctors Response:", doctorsResponse);
 
+      setData(prevData => ({
+        ...prevData,
+        totalChildren: childrenResponse.count || 0,
+        totalDoctors: typeof doctorsResponse === 'number' ? doctorsResponse : (doctorsResponse.count || 0), // Kiểm tra nếu là số nguyên
+      }));
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  fetchData();
+}, []);
   const toggleSection = (section) => {
     setExpandedSections(prevState => ({
       ...prevState,
@@ -107,26 +116,6 @@ const Admin = () => {
         return <MembershipManage />;
       case 'blog-management':
         return <Blog />;
-      case 'settings':
-        return (
-          <section id="settings">
-            <h1 className="section-title">Settings</h1>
-            <div>
-              <label>
-                Site Title:
-                <input type="text" value={siteTitle} onChange={handleSiteTitleChange} />
-              </label>
-            </div>
-            <div>
-              <label>
-                Maintenance Mode:
-                <input type="checkbox" checked={maintenanceMode} onChange={handleMaintenanceModeToggle} />
-              </label>
-            </div>
-            <button onClick={saveSettings}>Save Settings</button>
-            <pre>{JSON.stringify(data.settings, null, 2)}</pre>
-          </section>
-        );
       default:
         return null;
     }
@@ -136,10 +125,8 @@ const Admin = () => {
     <div className="admin-container">
       <aside className="sidebar">
         <div className="sidebar-header">
-          <Link to="/">
             <img src={logo} alt="Logo" className="logo" />
-          </Link>
-          <div className="logoTitle"> <Link to="/">Admin CGTS</Link></div>
+          <div className="logoTitle"> Admin CGTS</div>
         </div>
         <nav>
           <ul>
@@ -168,7 +155,7 @@ const Admin = () => {
             </li>
             <li><button onClick={() => setSelectedSection('membership-management')}>Manage Membership</button></li>
             <li><button onClick={() => setSelectedSection('blog-management')}>Blog Manage</button></li>
-            <li><button onClick={() => setSelectedSection('settings')}>Settings</button></li>
+            <li><button onClick={handleLogoutAndRedirect}>Logout</button></li>
           </ul>
         </nav>
       </aside>

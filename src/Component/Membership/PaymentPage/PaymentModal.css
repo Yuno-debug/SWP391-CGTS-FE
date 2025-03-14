@@ -1,161 +1,162 @@
 .payment-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-}
-
-/* Khi modal mở, hiển thị overlay */
-.payment-modal-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.payment-modal {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 400px;
-  text-align: center;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-  transform: translateY(-30px);
-  opacity: 0;
-  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-
-/* Khi modal mở, hiển thị với hiệu ứng pop-up */
-.payment-modal-overlay.active .payment-modal {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-/* Các style khác không thay đổi */
-.payment-details, .payment-method {
-  margin: 15px 0;
-  text-align: left;
-}
-
-.payment-row {
-  display: flex;
-  justify-content: space-between;
-  margin: 5px 0;
-}
-
-.payment-row span:first-child {
-  font-weight: bold;
-}
-
-select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-}
-
-.button-group {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
-}
-
-.cancel-btn {
-  background: #ccc;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  width: 45%;
-  border-radius: 5px;
-  transition: background 0.2s;
-}
-
-.cancel-btn:hover {
-  background: #b3b3b3;
-}
-
-.continue-btn {
-  background: #28a745;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  width: 45%;
-  border-radius: 5px;
-  transition: background 0.2s;
-}
-
-.continue-btn:hover:not(:disabled) {
-  background: #218838;
-}
-
-.continue-btn:disabled {
-  background: #b5e0b7;
-  cursor: not-allowed;
-}
-
-.continue-btn:disabled::after {
-  content: " 🔄";
-  font-size: 14px;
-}
-
-.error-message {
-  color: red;
-  font-size: 14px;
-  margin-top: 10px;
-}
-
-@media (max-width: 480px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  }
+  
+  /* Khi modal mở, hiển thị overlay */
+  .payment-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
   .payment-modal {
-    width: 90%;
-    padding: 15px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-30px);
+    opacity: 0;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  
+  /* Khi modal mở, hiển thị với hiệu ứng pop-up */
+  .payment-modal-overlay.active .payment-modal {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  /* Các style khác không thay đổi */
+  .payment-details, .payment-method {
+    margin: 15px 0;
+    text-align: left;
+  }
+  
+  .payment-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+  }
+  
+  .payment-row span:first-child {
+    font-weight: bold;
+  }
+  
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
   }
   
   .button-group {
-    flex-direction: column;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
   }
-
-  .cancel-btn, .continue-btn {
-    width: 100%;
+  
+  .cancel-btn {
+    background: #ccc;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    width: 45%;
+    border-radius: 5px;
+    transition: background 0.2s;
+  }
+  
+  .cancel-btn:hover {
+    background: #b3b3b3;
+  }
+  
+  .continue-btn {
+    background: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    width: 45%;
+    border-radius: 5px;
+    transition: background 0.2s;
+  }
+  
+  .continue-btn:hover:not(:disabled) {
+    background: #218838;
+  }
+  
+  .continue-btn:disabled {
+    background: #b5e0b7;
+    cursor: not-allowed;
+  }
+  
+  .continue-btn:disabled::after {
+    content: " 🔄";
+    font-size: 14px;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 14px;
     margin-top: 10px;
   }
-}
-.payment-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.payment-modal {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 400px;
-  text-align: center;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-  transform: translateY(-30px);
-  opacity: 0;
-  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-
-/* Khi modal mở, áp dụng hiệu ứng */
-.payment-modal-overlay.active .payment-modal {
-  transform: translateY(0);
-  opacity: 1;
-}
+  
+  @media (max-width: 480px) {
+    .payment-modal {
+      width: 90%;
+      padding: 15px;
+    }
+    
+    .button-group {
+      flex-direction: column;
+    }
+  
+    .cancel-btn, .continue-btn {
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+  .payment-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .payment-modal {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-30px);
+    opacity: 0;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  
+  /* Khi modal mở, áp dụng hiệu ứng */
+  .payment-modal-overlay.active .payment-modal {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  

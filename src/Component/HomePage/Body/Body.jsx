@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./Body.css";
 import BodyBack from "../../../assets/BodyBack.jpg";
 import GrowthImage from "../../../assets/growth.jpg";
@@ -7,8 +8,14 @@ import MilestoneImage from "../../../assets/milestones.png";
 import DevelopmentImage from "../../../assets/milestone.jpg";
 
 const CDCBody = () => {
+  const navigate = useNavigate();
+
   const handleTopicClick = (topic) => {
-    alert(`You have selected the topic: ${topic}`);
+    navigate("/blog", { state: { topic } });
+  };
+
+  const handleLearnMoreClick = () => {
+    navigate("/blog");
   };
 
   return (
@@ -35,7 +42,7 @@ const CDCBody = () => {
           {/* Blog Section */}
           <div className="section-container two-column-layout">
             <div className="blog-container">
-              <h2 className="blog-title">Blog</h2>
+              <h2 className="blog-title">Advertise</h2>
               {[
                 {
                   title: "How to Track Your Child's Growth Effectively",
@@ -74,21 +81,21 @@ const CDCBody = () => {
             </div>
 
             {/* Parenting Tips Section */}
-<div className="parenting-container">
-  <h2 className="section-title">Parenting Tips</h2>
-  {[
-    "Healthy Eating Habits",
-    "Encouraging Physical Activity",
-    "Managing Screen Time",
-    "Promoting Good Sleep Routines",
-  ].map((tip) => (
-    <div key={tip} className="parenting-card">
-      <h3 className="parenting-title">{tip}</h3>
-      <p className="parenting-text">
-        Useful strategies to help with {tip.toLowerCase()}.
-      </p>
-      <button className="mt-2 text-blue-600 hover:underline">Learn More</button>
-    </div>
+            <div className="parenting-container">
+              <h2 className="section-title">Parenting Tips</h2>
+              {[
+                "Healthy Eating Habits",
+                "Encouraging Physical Activity",
+                "Managing Screen Time",
+                "Promoting Good Sleep Routines",
+              ].map((tip) => (
+                <div key={tip} className="parenting-card">
+                  <h3 className="parenting-title">{tip}</h3>
+                  <p className="parenting-text">
+                    Useful strategies to help with {tip.toLowerCase()}.
+                  </p>
+                  <button className="mt-2 text-blue-600 hover:underline" onClick={handleLearnMoreClick}>Learn More</button>
+                </div>
               ))}
             </div>
           </div>

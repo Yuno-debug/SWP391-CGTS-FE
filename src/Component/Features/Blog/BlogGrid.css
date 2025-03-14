@@ -21,9 +21,17 @@
 }
 
 .category-filter select {
+    max-width: 200px;
+    /* Giới hạn chiều rộng */
+    width: 100%;
+    /* Để responsive */
     padding: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Nếu nội dung quá dài, nó sẽ hiển thị dấu "..." */
+    white-space: nowrap;
 }
 
 /* Định dạng blog card để tránh chồng lên nhau */

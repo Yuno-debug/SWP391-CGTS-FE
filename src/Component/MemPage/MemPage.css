@@ -17,9 +17,11 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: row; /* Change to row for horizontal alignment */
+  flex-direction: row;
+  /* Change to row for horizontal alignment */
   gap: 20px;
-  flex-wrap: wrap; /* Allow wrapping for responsive design */
+  flex-wrap: wrap;
+  /* Allow wrapping for responsive design */
 }
 
 /* BMI Section Styling */
@@ -28,9 +30,12 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: left; /* Align text to the left */
-  flex: 1 1 calc(50% - 20px); /* Adjust flex properties for horizontal alignment */
-  min-width: 300px; /* Ensure minimum width for sections */
+  text-align: left;
+  /* Align text to the left */
+  flex: 1 1 calc(50% - 20px);
+  /* Adjust flex properties for horizontal alignment */
+  min-width: 300px;
+  /* Ensure minimum width for sections */
 }
 
 .bmi-section h2 {
@@ -138,19 +143,109 @@
   background-color: #ddd;
 }
 
+/* Growth Chart Styling */
+.growth-chart-container {
+  margin-top: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Overlay (Pop-up) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+  margin-bottom: 15px;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.submit-button,
+.cancel-button {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.submit-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.submit-button:hover {
+  background-color: #218838;
+}
+
+.cancel-button:hover {
+  background-color: #c82333;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .bmi-content-wrapper {
-    flex-direction: column; /* Change to column for smaller screens */
+    flex-direction: column;
+    /* Change to column for smaller screens */
     padding: 15px;
   }
 
   .bmi-section {
     padding: 15px;
-    flex: 1 1 100%; /* Full width for smaller screens */
+    flex: 1 1 100%;
+    /* Full width for smaller screens */
   }
 
   .use-tool-button {
     font-size: 14px;
+  }
+
+  .modal-content {
+    width: 90%;
   }
 }

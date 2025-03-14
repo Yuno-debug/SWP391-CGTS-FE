@@ -36,8 +36,8 @@ const ConsultationRequests = () => {
         <thead>
           <tr>
             <th>Request ID</th>
-            <th>Child Name</th>
-            <th>Parent Name</th>
+            <th>Child ID</th>
+            <th>Description</th>
             <th>Request Date</th>
             <th>Status</th>
           </tr>
@@ -45,9 +45,9 @@ const ConsultationRequests = () => {
         <tbody>
           {requests.map(request => (
             <tr key={request.id}>
-              <td>{request.id}</td>
-              <td>{request.childName}</td>
-              <td>{request.parentName}</td>
+              <td>{request.requestId}</td>
+              <td>{request.childId}</td>
+              <td>{request.description}</td>
               <td>{new Date(request.requestDate).toLocaleDateString()}</td>
               <td>{request.status}</td>
             </tr>

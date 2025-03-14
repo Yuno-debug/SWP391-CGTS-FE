@@ -118,8 +118,8 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
-              <tr key={user.id}>
+            {users.map((user, index) => (
+              <tr key={user.id || index}>
                 <td>{user.username}</td>
                 <td>{user.email}</td>
                 <td>{getRoleName(user.role)}</td>

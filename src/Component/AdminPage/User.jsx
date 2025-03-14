@@ -33,50 +33,91 @@ const UserTable = () => {
     fetchUsers();
   }, []);
 
-  const handleEdit = (userId) => {
-    // Handle edit user
-    console.log(`Edit user with ID: ${userId}`);
-  };
+  const API_BASE_URL = "/api/UserAccount";
 
-  const handleDelete = (userId) => {
-    // Handle delete user
-    console.log(`Delete user with ID: ${userId}`);
-  };
+// Ban tài khoản người dùng
+const handleBan = async (id) => {
+  console.log("Banning User ID:", id); // Debug
 
+  if (!id) {
+    alert("Error: User ID is missing.");
+    return;
+  }
+
+  if (!window.confirm("Are you sure you want to ban this user?")) return;
+
+  try {
+    const response = await axios.put(`/api/UserAccount/ban/${id}`, null, {
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+
+    console.log("User banned successfully!", response.data);
+    alert("User banned successfully!");
+    fetchUsers(); // Reload danh sách người dùng
+  } catch (error) {
+    console.error("Error banning user:", error.response?.data || error.message);
+    alert(`Error: ${error.response?.data?.message || "Failed to ban user"}`);
+  }
+};
+
+const handleDelete = async (id) => {
+  console.log("Deleting User ID:", id); // Debug
+
+  if (!id) {
+    alert("Error: User ID is missing.");
+    return;
+  }
+
+  if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+  try {
+    const response = await axios.delete(`/api/UserAccount/remove/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+
+    console.log("User deleted successfully!", response.data);
+    alert("User deleted successfully!");
+    fetchUsers(); // Reload danh sách người dùng
+  } catch (error) {
+    console.error("Error deleting user:", error.response?.data || error.message);
+    alert(`Error: ${error.response?.data?.message || "Failed to delete user"}`);
+  }
+};
   return (
     <div className="user-table-container">
       <h2>Users</h2>
       {error && <p className="error-message">{error}</p>}
       <table className="user-table">
-        <thead>
-          <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Status</th>
-            <th>Date of Joining</th>
-            <th>Edit</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(user => (
-            <tr key={user.id}>
-              <td>{user.username}</td>
-              <td>{user.email}</td>
-              <td>{user.phoneNumber}</td>
-              <td>{user.status}</td>
-              <td>{user.registrationDate}</td>
-              <td>
-                <button className="Edit-btn" onClick={() => handleEdit(user.id)}>Edit</button>
-              </td>
-              <td>
-                <button className="Delete-btn" onClick={() => handleDelete(user.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  <thead>
+    <tr>
+      <th>Full Name</th>
+      <th>Email</th>
+      <th>Phone Number</th>
+      <th>Date of Joining</th>
+      <th>Status</th>
+      <th>Last Login</th>
+    </tr>
+  </thead>
+  <tbody>
+    {users.filter(user => user.role !== 1).map(user => (
+      <tr key={user.id}>
+        <td>{user.username}</td>
+        <td>{user.email}</td>
+        <td>{user.phoneNumber}</td>
+        <td>{new Date(user.registrationDate).toLocaleDateString("en-GB", { month: "2-digit", year: "numeric" })}</td>
+        <td style={{ color: user.status === "Active" ? "green" : "red", fontWeight: "bold" }}>{user.status}</td>
+        <td>{user.lastLogin ? new Date(user.lastLogin).toLocaleString("en-GB", {
+          day: "2-digit", month: "2-digit", year: "numeric",
+          hour: "2-digit", minute: "2-digit", hour12: false
+        }) : ""}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
     </div>
   );
 };

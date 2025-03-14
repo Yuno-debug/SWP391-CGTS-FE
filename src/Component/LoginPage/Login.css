@@ -180,3 +180,17 @@ body {
 .login-container a:hover {
     text-decoration: underline;
 }
+.signup-link {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.signup-link a {
+    color: #3c1ad4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,28 @@
+.payment-result-container {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+}
+
+.payment-success h1 {
+    color: green;
+}
+
+.payment-failed h1 {
+    color: red;
+}
+
+.btn-back-home {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-back-home:hover {
+    background-color: #0056b3;
+}

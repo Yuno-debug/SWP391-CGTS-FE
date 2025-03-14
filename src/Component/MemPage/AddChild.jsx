@@ -40,8 +40,9 @@ const AddChild = () => {
           },
         });
 
-        console.log("Fetched Children:", response.data);
-        setChildren(response.data.data.$values || []); // Ensure the response is an array
+        const childrenData = response.data?.data?.$values || []; 
+        console.log("Fetched Children:", childrenData);
+        setChildren(childrenData);
       } catch (error) {
         console.error("Error fetching children:", error);
       }
@@ -55,59 +56,63 @@ const AddChild = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!userId) {
-      alert("User ID is missing. Please log in again.");
-      return;
-    }
+  if (!userId) {
+    alert("User ID is missing. Please log in again.");
+    return;
+  }
 
-    if (!childData.name || !childData.dateOfBirth || !childData.gender || !childData.relationship) {
-      alert("Please fill all required fields!");
-      return;
-    }
+  if (!childData.name || !childData.dateOfBirth || !childData.gender || !childData.relationship) {
+    alert("Please fill all required fields!");
+    return;
+  }
 
-    // Ensure userId is included and numerical fields are correctly parsed
-    const requestData = {
-      ...childData,
-      userId: userId, // Use userId directly
-      birthWeight: parseFloat(childData.birthWeight) || 0,
-      birthHeight: parseFloat(childData.birthHeight) || 0,
-    };
-
-    console.log("📤 Submitting Data:", JSON.stringify(requestData, null, 2));
-
-    try {
-      const response = await axios.post("http://localhost:5200/api/Child/create", requestData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      console.log("✅ Child Added:", response.data);
-      setChildren([...children, response.data]);
-
-      setChildData({
-        name: "",
-        dateOfBirth: "",
-        gender: "",
-        birthWeight: "",
-        birthHeight: "",
-        bloodType: "",
-        allergies: "",
-        relationship: "",
-      });
-    } catch (error) {
-      console.error("❌ Error:", error.response ? error.response.data : error.message);
-      if (error.response) {
-        console.error("Server Response:", error.response.data);
-        alert(`Error: ${JSON.stringify(error.response.data, null, 2)}`);
-      } else {
-        alert(`Error: ${error.message}`);
-      }
-    }
+  const requestData = {
+    ...childData,
+    userId: userId,
+    birthWeight: parseFloat(childData.birthWeight) || 0,
+    birthHeight: parseFloat(childData.birthHeight) || 0,
   };
+
+  console.log("📤 Submitting Data:", JSON.stringify(requestData, null, 2));
+
+  try {
+    await axios.post("http://localhost:5200/api/Child/create", requestData, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    console.log("✅ Child Added Successfully!");
+
+    // Gọi lại API để lấy danh sách mới
+    fetchChildren();
+
+    // Reset form
+    setChildData({
+      name: "",
+      dateOfBirth: "",
+      gender: "",
+      birthWeight: "",
+      birthHeight: "",
+      bloodType: "",
+      allergies: "",
+      relationship: "",
+    });
+
+  } catch (error) {
+    console.error("❌ Error:", error.response ? error.response.data : error.message);
+    if (error.response) {
+      console.error("Server Response:", error.response.data);
+      alert(`Error: ${JSON.stringify(error.response.data, null, 2)}`);
+    } else {
+      alert(`Error: ${error.message}`);
+    }
+  }
+};
+
 
   return (
     <Layout4MemP>
@@ -170,22 +175,32 @@ const AddChild = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(children) && children.map((child, index) => (
-                <tr key={index}>
-                  <td>{child.name}</td>
-                  <td>{new Date(child.dateOfBirth).toLocaleDateString()}</td>
-                  <td>{child.gender}</td>
-                  <td>{child.birthWeight}</td>
-                  <td>{child.birthHeight}</td>
-                  <td>{child.bloodType || "N/A"}</td>
-                  <td>{child.allergies || "None"}</td>
-                  <td>{child.relationship}</td>
-                  <td>
-                    <Link to={`/update-growth-metrics/${child.childId}`}>Update Growth</Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+  {Array.isArray(children) && children.length > 0 ? (
+    children.map((child, index) => (
+      <tr key={index}>
+        <td>{child.name}</td>
+        <td>{new Date(child.dateOfBirth).toLocaleDateString()}</td>
+        <td>{child.gender}</td>
+        <td>{child.birthWeight}</td>
+        <td>{child.birthHeight}</td>
+        <td>{child.bloodType || "N/A"}</td>
+        <td>{child.allergies || "None"}</td>
+        <td>
+          {/* Chuyển đổi D => Dad, M => Mom */}
+          {child.relationship === "D" ? "Dad" : child.relationship === "M" ? "Mom" : child.relationship}
+        </td>
+        <td>
+          <Link to={`/update-growth-metrics/${child.childId}`}>Update Growth</Link>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="9">No children found.</td>
+    </tr>
+  )}
+</tbody>
+
           </table>
         </div>
       </div>

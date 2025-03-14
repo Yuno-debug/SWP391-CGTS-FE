@@ -98,7 +98,7 @@ body, html {
   border: 2px solid transparent;
   position: relative;
   overflow: hidden;
-  color: black;
+  color: white !important;
   font-weight: bold;
 }
 

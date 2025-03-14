@@ -51,7 +51,7 @@
 }
 
 /* Edit Button */
-.doctor-table .Edit-btn {
+.doctor-table .edit-btn {
     background-color: #007bff;
     color: white;
     border: none;
@@ -60,12 +60,12 @@
     border-radius: 3px;
 }
 
-.doctor-table .Edit-btn:hover {
+.doctor-table .edit-btn:hover {
     background-color: #0056b3;
 }
 
 /* Delete Button */
-.doctor-table .Delete-btn {
+.doctor-table .del-btn {
     background-color: red;
     color: white;
     border: none;
@@ -74,7 +74,7 @@
     border-radius: 3px;
 }
 
-.doctor-table .Delete-btn:hover {
+.doctor-table .del-btn:hover {
     background-color: darkred;
 }
 
