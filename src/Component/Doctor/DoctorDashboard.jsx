@@ -63,7 +63,11 @@ const DoctorDashboard = () => {
 
     const fetchTotalConsultationRequests = async () => {
       try {
+<<<<<<< Updated upstream
         const response = await axios.get('http://localhost:5200/api/ConsultationRequest/get-all', { // Changed to /get-all
+=======
+        const response = await axios.get('http://localhost:5200/api/ConsultationRequest/get-all', {
+>>>>>>> Stashed changes
           headers: {
             'Authorization': `Bearer ${localStorage.getItem("token")}`
           }
@@ -82,13 +86,22 @@ const DoctorDashboard = () => {
 
     const fetchTotalConsultationResponses = async () => {
       try {
+<<<<<<< Updated upstream
         const response = await axios.get('http://localhost:5200/api/ConsultationResponse/count', {
+=======
+        const response = await axios.get('http://localhost:5200/api/ConsultationResponse/get-all', {
+>>>>>>> Stashed changes
           headers: {
             'Authorization': `Bearer ${localStorage.getItem("token")}`
           }
         });
         console.log("Total Consultation Responses Response:", response.data);
-        setTotalConsultationResponses(response.data.count || 0);
+        if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
+          setTotalConsultationResponses(response.data.data.$values.length);
+        } else {
+          console.error("Unexpected response format:", response.data);
+          setTotalConsultationResponses(0);
+        }
       } catch (error) {
         console.error("Error fetching total consultation responses:", error);
       }
@@ -193,7 +206,11 @@ const DoctorDashboard = () => {
           </thead>
           <tbody>
             {users.map((user, index) => (
+<<<<<<< Updated upstream
               <tr key={user.id || index}> {/* Fallback to index if user.id is missing */}
+=======
+              <tr key={user.id || index}>
+>>>>>>> Stashed changes
                 <td>{user.username || 'N/A'}</td>
                 <td>{user.email || 'N/A'}</td>
                 <td>{getRoleName(user.role) || 'N/A'}</td>
