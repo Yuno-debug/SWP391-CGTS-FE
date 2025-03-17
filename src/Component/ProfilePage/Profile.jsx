@@ -75,11 +75,12 @@ const Profile = (isLoggedIn) => {
           <div className="cover-gradient"></div>
         </div>
         <div className="profile-header">
-          <img
-            src={userData.profilePicture || "https://via.placeholder.com/150"}
-            alt="Profile"
-            className="profile-photo"
-          />
+        <img
+  src={userData.profilePicture || "https://via.placeholder.com/150"}
+  alt="Profile"
+  className="profile-avatar" // ✅ Đã đổi class mới
+/>
+
           <div className="user-info">
             <h2 className="username">{userData.username}</h2>
           </div>

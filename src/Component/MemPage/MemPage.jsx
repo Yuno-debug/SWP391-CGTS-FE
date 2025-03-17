@@ -166,16 +166,15 @@ const MemPage = () => {
           </div>
           
           <div className="bmi-section tool-definition">
-            <h2>Tool Definition</h2>
-            <p>
-              This tool allows users to track and analyze BMI (Body Mass Index) for children.
-              It provides insights into whether a child is underweight, has a healthy weight,
-              is overweight, or obese based on their height and weight.
-            </p>
-            <button onClick={() => navigate("/add-child")} className="use-tool-button">
-              Use the Tool
-            </button>
-          </div>
+  <h2>Add Your Child's Information</h2>
+  <p>
+    To start tracking your child's growth and health insights, you need to add their details. 
+    Click the button below to add your child’s profile, including birth details, height, weight, and more.
+  </p>
+  <button onClick={() => navigate("/add-child")} className="use-tool-button">
+    Add a Child
+  </button>
+</div>
 
           <h2>Child Information</h2>
           <table className="child-table">

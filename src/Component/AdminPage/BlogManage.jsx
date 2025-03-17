@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { lazy, Suspense } from "react";
 import Modal from "react-modal";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./BlogManage.css";
+
+// Import ReactQuill chỉ khi chạy trên client-side
+// Dùng lazy loading để tránh lỗi SSR
+const ReactQuill = lazy(() => import("react-quill"));
 
 const BlogManage = () => {
   const [blogs, setBlogs] = useState([]);
@@ -79,10 +83,34 @@ const BlogManage = () => {
     }
   };
 
+  // Config ReactQuill để tránh lỗi cảnh báo
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["bold", "italic", "underline"],
+      ["link", "image"],
+      ["clean"],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "font",
+    "list",
+    "bold",
+    "italic",
+    "underline",
+    "link",
+    "image",
+  ];
+
   return (
     <div className="blog-management">
       <h2>Blog Management</h2>
-      <button className="create-blog-btn" onClick={openCreateModal}>Add New Blog</button>
+      <button className="create-blog-btn" onClick={openCreateModal}>
+        Add New Blog
+      </button>
       <div className="table-container">
         <table>
           <thead>
@@ -113,14 +141,52 @@ const BlogManage = () => {
       </div>
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Manage Blog">
         <h2>{selectedBlog ? "Edit Blog" : "New Blog"}</h2>
-        <input type="text" value={newBlog.title} onChange={(e) => setNewBlog({ ...newBlog, title: e.target.value })} placeholder="Title" />
-        <input type="text" value={newBlog.subtitle} onChange={(e) => setNewBlog({ ...newBlog, subtitle: e.target.value })} placeholder="Subtitle" />
-        <ReactQuill theme="snow" value={newBlog.content} onChange={(content) => setNewBlog({ ...newBlog, content })} />
-        <input type="text" value={newBlog.tags} onChange={(e) => setNewBlog({ ...newBlog, tags: e.target.value })} placeholder="Tags" />
-        <input type="text" value={newBlog.image} onChange={(e) => setNewBlog({ ...newBlog, image: e.target.value })} placeholder="Image URL" />
-        <input type="text" value={newBlog.category} onChange={(e) => setNewBlog({ ...newBlog, category: e.target.value })} placeholder="Category" />
-        <button className= "create" onClick={handleCreateOrUpdateBlog}>Update</button>
-        <button className= "cancel" onClick={closeModal}>Cancel</button>
+        <input
+          type="text"
+          value={newBlog.title}
+          onChange={(e) => setNewBlog({ ...newBlog, title: e.target.value })}
+          placeholder="Title"
+        />
+        <input
+          type="text"
+          value={newBlog.subtitle}
+          onChange={(e) => setNewBlog({ ...newBlog, subtitle: e.target.value })}
+          placeholder="Subtitle"
+        />
+        <Suspense fallback={<div>Loading editor...</div>}>
+  <ReactQuill
+    theme="snow"
+    value={newBlog.content}
+    onChange={(content) => setNewBlog((prev) => ({ ...prev, content }))}
+    modules={modules}
+    formats={formats}
+    style={{ height: "200px", marginBottom: "35px" }} 
+  />
+</Suspense>
+        <input
+          type="text"
+          value={newBlog.tags}
+          onChange={(e) => setNewBlog({ ...newBlog, tags: e.target.value })}
+          placeholder="Tags"
+        />
+        <input
+          type="text"
+          value={newBlog.image}
+          onChange={(e) => setNewBlog({ ...newBlog, image: e.target.value })}
+          placeholder="Image URL"
+        />
+        <input
+          type="text"
+          value={newBlog.category}
+          onChange={(e) => setNewBlog({ ...newBlog, category: e.target.value })}
+          placeholder="Category"
+        />
+        <button className="create" onClick={handleCreateOrUpdateBlog}>
+          Update
+        </button>
+        <button className="cancel" onClick={closeModal}>
+          Cancel
+        </button>
       </Modal>
     </div>
   );

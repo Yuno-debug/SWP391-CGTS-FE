@@ -1,201 +1,181 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-/* Navbar Container */
+/* ======= Navbar Container ======= */
 .nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #007bff; /* Navbar background color */
-    padding: 10px 20px;
-    color: #fff;
-    position: static; /* Make navbar static */
-    width: 100%; /* Full width of the viewport */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-    z-index: 1000; /* Ensure it stays on top */
+    padding: 10px 30px;
+    background-color: #007bff;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Logo and Title Container */
+/* ======= Logo ======= */
 .nav-left {
     display: flex;
     align-items: center;
-    gap: 10px; /* Space between the logo and the title */
-    text-decoration: none; /* Remove link underline */
-    color: inherit; /* Inherit text color */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: opacity 0.3s ease; /* Add a hover effect */
 }
 
-.nav-left:hover {
-    opacity: 0.8; /* Slight fade on hover */
-}
-
-/* Logo Styles */
 .nav-logo2 {
-    border-radius: 50%; /* Circular logo */
-    width: 50px; /* Adjust logo size */
-    height: 50px;
-    object-fit: cover; /* Ensure logo fits within bounds */
+    height: 40px;
+    margin-right: 10px;
 }
 
-/* Title Styles */
 .nav-logo a {
-    font-family: 'Poppins', sans-serif;
+    color: white;
     font-size: 20px;
-    font-weight: 500;
-    white-space: nowrap; /* Prevent title from wrapping */
+    font-weight: bold;
     text-decoration: none;
-    color: white !important; /* Giữ màu trắng cố định */
-    transition: color 0.3s ease;
-    cursor: pointer;
+    white-space: nowrap;
 }
 
-.nav-logo a:visited {
-    color: white !important; /* Ngăn đổi màu tím */
-}
-
-.nav-logo li a:hover {
-    color: grey !important; /* Màu khi di chuột vào */
-}
-
-.nav-logo li a:active {
-    color: white !important; /* Màu khi nhấn vào */
-}
-
-.nav-logo li:hover {
-    background-color: #007bff; /* Darker blue on hover */
-    color: #fff;
-}
-
-/* Navigation Menu */
+/* ======= Menu ======= */
 .nav-menu {
     display: flex;
-    align-items: center;
     list-style: none;
-    gap: 20px; /* Space between menu items */
+    gap: 20px;
     margin: 0;
     padding: 0;
 }
 
-/* Log In and Sign Up Buttons */
-.nav-contact {
-    font-size: 15px;
-    border-radius: 20px;
-    padding: 5px 15px;
-    background: #fff;
-    color: #007bff;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Hover Effect */
-.nav-contact:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    color: #fff;
-}
-
 .nav-menu li a {
+    color: white;
     text-decoration: none;
-    color: white !important; /* Giữ màu trắng cố định */
-    transition: color 0.3s ease;
-    cursor: pointer;
-}
-
-.nav-menu li a:visited {
-    color: white !important; /* Ngăn đổi màu tím */
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
 .nav-menu li a:hover {
-    color: grey !important; /* Màu khi di chuột vào */
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-.nav-menu li a:active {
-    color: white !important; /* Màu khi nhấn vào */
-}
-
-.nav-menu li:hover {
-    background-color: #007bff; /* Darker blue on hover */
-    color: #fff;
-}
-
-.search-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
-}
-
-.search-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.search-toggle {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.search-text {
-    font-size: 16px;
-    color: white;
-}
-
-.search-bar {
-    width: 160px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
-    font-size: 14px;
-    margin-left: 8px;
-}
-
+/* ======= Right Section (Login / User Info) ======= */
 .nav-right {
     display: flex;
     align-items: center;
     list-style: none;
-    gap: 20px; /* Space between menu items */
+    gap: 15px;
     margin: 0;
     padding: 0;
 }
 
-.nav-right li a {
+.nav-contact a {
+    color: white;
     text-decoration: none;
-    color: black !important; /* Giữ màu trắng cố định */
-    transition: color 0.3s ease;
+    font-weight: 500;
+    padding: 8px 16px;
+    border: 1px solid white;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-contact a:hover {
+    background-color: white;
+    color: #007bff;
+}
+
+/* ======= User Info Dropdown ======= */
+.nav-user {
+    position: relative;
+}
+
+.user-infor {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 20px;
 }
 
-.nav-right li a:visited {
-    color: black !important; /* Ngăn đổi màu tím */
+.user-info:hover {
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
-.nav-right li a:hover {
-    color: grey !important; /* Màu khi di chuột vào */
+.navbar-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
 }
 
-.nav-right li a:active {
-    color: white !important; /* Màu khi nhấn vào */
+.user-name {
+    font-weight: 500;
+    white-space: nowrap;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.nav-right li:hover {
-    background-color: #007bff; /* Darker blue on hover */
-    color: #fff;
+.dropdown-arrow {
+    font-size: 12px;
+    margin-left: 2px;
 }
 
-/* Responsive Adjustments */
+/* ======= Dropdown Menu ======= */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    min-width: 150px;
+    z-index: 1000;
+    padding: 5px 0;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f1f1f1;
+    color: #007bff;
+}
+
+/* ======= Responsive Design ======= */
 @media (max-width: 768px) {
+    .nav {
+        padding: 10px 15px;
+    }
+
     .nav-menu {
-        gap: 10px; /* Reduce gap for smaller screens */
-        font-size: 14px;
+        gap: 10px;
     }
 
-    .nav-contact {
-        padding: 5px 10px;
+    .nav-logo a {
+        font-size: 16px;
     }
 
-    .nav-logo {
-        font-size: 16px; /* Smaller title font size */
+    .nav-contact a {
+        padding: 6px 12px;
+    }
+
+    .navbar-avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    .user-info {
+        padding: 4px 8px;
+    }
+
+    .user-name {
+        max-width: 80px;
+    }
+
+    .dropdown-menu {
+        min-width: 120px;
     }
 }

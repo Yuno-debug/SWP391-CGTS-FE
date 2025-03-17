@@ -21,6 +21,7 @@ const UpdateGrowthMetrics = () => {
     recordedByUser: "",
     old: "",
   });
+  const [childBirthDate, setChildBirthDate] = useState(null);
 
   useEffect(() => {
     if (!childId) {
@@ -28,6 +29,47 @@ const UpdateGrowthMetrics = () => {
       return;
     }
 
+    const fetchChildInfo = async () => {
+      try {
+        const userId = localStorage.getItem("userId"); // Retrieve userId
+
+        if (!userId) {
+          console.error("❌ Error: userId is missing from localStorage");
+          setErrorMessage("User ID not found. Please log in again.");
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:5200/api/Child/${childId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (response.data?.data) {
+          const child = response.data.data;
+          if (child && child.dateOfBirth) {
+            setChildBirthDate(new Date(child.dateOfBirth));
+          } else {
+            console.error("❌ Birth date missing from API response:", response.data);
+            setErrorMessage("Child birth date is missing. Cannot proceed.");
+          }
+        } else {
+          console.error("❌ Unexpected response format:", response.data);
+          setErrorMessage("Unexpected response format. Please try again later.");
+        }
+      } catch (error) {
+        console.error("❌ Error fetching child info:", error);
+        setErrorMessage("Error fetching child info. Please try again later.");
+      }
+    };
+
+    fetchChildInfo();
+  }, [childId]);
+
+  useEffect(() => {
     const fetchGrowthRecords = async () => {
       try {
         const response = await axios.get(
@@ -50,7 +92,6 @@ const UpdateGrowthMetrics = () => {
         setErrorMessage("Error fetching growth records. Please try again later.");
       }
     };
-
     fetchGrowthRecords();
   }, [childId]);
 
@@ -108,25 +149,27 @@ const UpdateGrowthMetrics = () => {
     console.log("📤 Submitting Growth Data:", JSON.stringify(growthData, null, 2));
 
     if (!growthData.month) {
-      setErrorMessage("Please select a valid month.");
+      setErrorMessage("Please enter a valid month (1-12).");
       return;
     }
 
-    // Tìm bản ghi gần nhất nếu có
-    const lastRecord = growthRecords.length > 0 ? growthRecords[growthRecords.length - 1] : null;
+    // Kiểm tra xem ngày sinh của trẻ có tồn tại không
+    if (!childBirthDate) {
+      setErrorMessage("Child birth date is missing. Cannot proceed.");
+      return;
+    }
 
-    // Nếu có bản ghi cũ, giữ nguyên ngày & năm, chỉ đổi tháng
-    let originalDate = lastRecord ? new Date(lastRecord.month) : new Date(); // Dùng bản ghi cũ hoặc ngày hôm nay
-    let newMonth = parseInt(growthData.month.split("-")[1], 10); // Lấy tháng từ input
+    // Lấy ngày sinh của trẻ và cập nhật chỉ tháng
+    const birthDate = new Date(childBirthDate);
+    birthDate.setMonth(parseInt(growthData.month, 10) - 1); // Cập nhật tháng
 
-    // Giữ nguyên ngày & năm, chỉ đổi tháng
-    originalDate.setMonth(newMonth - 1);
-    const formattedMonth = originalDate.toISOString(); // Chuyển về định dạng ISO
-
+    // Chuyển về chuỗi ISO
+    const formattedMonth = Number(growthData.month);
+    
     const requestData = {
       ...growthData,
-      month: formattedMonth, // Chỉ thay đổi tháng, giữ nguyên ngày & năm
-      childId: childId,
+      month: formattedMonth, // Dùng tháng mới nhưng giữ nguyên ngày & năm
+      childId: parseInt(childId, 10),
       old: parseInt(growthData.old, 10),
     };
 
@@ -166,7 +209,6 @@ const UpdateGrowthMetrics = () => {
         }
       });
 
-      // Reset form sau khi gửi thành công
       setGrowthData({
         recordId: "",
         weight: "",
@@ -185,22 +227,20 @@ const UpdateGrowthMetrics = () => {
   };
 
   const handleDeleteRecord = async (recordId) => {
-    if (!window.confirm("Are you sure you want to delete this record?")) {
-      return;
-    }
-
     try {
-      await axios.delete(`http://localhost:5200/api/growth-records/delete/${recordId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+      const response = await fetch(`/api/growth-records/delete/${recordId}`, {
+        method: "DELETE",
       });
 
-      // Cập nhật lại danh sách sau khi xóa
+      if (!response.ok) {
+        throw new Error("Failed to delete record");
+      }
+
+      // Xử lý cập nhật UI sau khi xóa thành công
+      console.log(`Record ${recordId} deleted successfully!`);
       setGrowthRecords((prevRecords) => prevRecords.filter(record => record.recordId !== recordId));
     } catch (error) {
-      console.error("❌ Error deleting record:", error.response ? error.response.data : error.message);
-      setErrorMessage("Failed to delete record. Please try again.");
+      console.error("Error deleting record:", error);
     }
   };
 
@@ -214,8 +254,16 @@ const UpdateGrowthMetrics = () => {
 
         <form onSubmit={handleSubmit} className="update-growth-metrics-form">
           <div className="form-group">
-            <label>Month:</label>
-            <input type="month" name="month" value={growthData.month} onChange={handleChange} required />
+            <label>Month (1-12):</label>
+            <input
+              type="number"
+              name="month"
+              value={growthData.month}
+              onChange={handleChange}
+              min="1"
+              max="12"
+              required
+            />
           </div>
           <div className="form-group">
             <label>Age (years):</label>
@@ -271,7 +319,9 @@ const UpdateGrowthMetrics = () => {
                 return (
                   <tr key={record.recordId}>
                     <td>{record.old}</td>
-                    <td>{new Date(record.month).toLocaleDateString("en-GB", { month: "long" })}</td>
+                    <td>
+  {new Date(childBirthDate.getFullYear(), record.month - 1, 1).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}
+</td>
                     <td>{record.weight}</td>
                     <td>{record.height}</td>
                     <td>{bmi}</td>
@@ -284,27 +334,27 @@ const UpdateGrowthMetrics = () => {
                   </tr>
                 );
               })}
-              </tbody>
+            </tbody>
           </table>
-              {/* Improved Growth Chart */}
-<div className="growth-chart-container">
-  <h3>Growth Chart</h3>
-  <ResponsiveContainer width="100%" height={350}>
-    <LineChart data={growthRecords} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
-      <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-      <XAxis 
-        dataKey="month" 
-        tickFormatter={(tick) => new Date(tick).toLocaleDateString("vi-VN", { month: "short", year: "2-digit" })} 
-        tick={{ fontSize: 14 }}
-      />
-      <YAxis label={{ value: 'Value', angle: -90, position: 'insideLeft', offset: -5 }} />
-      <Tooltip labelFormatter={(label) => new Date(label).toLocaleDateString("vi-VN", { month: "short", year: "numeric" })} />
-      <Legend verticalAlign="top" height={36} />
-      <Line type="monotone" dataKey="weight" stroke="#8884d8" strokeWidth={2} name="Weight (kg)" dot={{ r: 4 }} />
-      <Line type="monotone" dataKey="height" stroke="#82ca9d" strokeWidth={2} name="Height (cm)" dot={{ r: 4 }} />
-    </LineChart>
-  </ResponsiveContainer>
-</div>
+          {/* Improved Growth Chart */}
+          <div className="growth-chart-container">
+            <h3>Growth Chart</h3>
+            <ResponsiveContainer width="100%" height={350}>
+              <LineChart data={growthRecords} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                <XAxis
+                  dataKey="month"
+                  tickFormatter={(tick) => new Date(tick).toLocaleDateString("vi-VN", { month: "short", year: "2-digit" })}
+                  tick={{ fontSize: 14 }}
+                />
+                <YAxis label={{ value: 'Value', angle: -90, position: 'insideLeft', offset: -5 }} />
+                <Tooltip labelFormatter={(label) => new Date(label).toLocaleDateString("vi-VN", { month: "short", year: "numeric" })} />
+                <Legend verticalAlign="top" height={36} />
+                <Line type="monotone" dataKey="weight" stroke="#8884d8" strokeWidth={2} name="Weight (kg)" dot={{ r: 4 }} />
+                <Line type="monotone" dataKey="height" stroke="#82ca9d" strokeWidth={2} name="Height (cm)" dot={{ r: 4 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
           <div className="who-bmi-table-container">
             <h3>WHO BMI-for-Age Classification (0-19 years)</h3>
             <table className="who-bmi-table">

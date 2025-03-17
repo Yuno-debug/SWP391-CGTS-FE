@@ -8,12 +8,13 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
   const [userName, setUserName] = useState(localStorage.getItem("username") || "Guest");
   const [userId, setUserId] = useState(localStorage.getItem("userId") || null);
+  const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || ""); // Avatar
 
-  useEffect(() => {
+  // ✅ Hàm fetch user info (kèm avatar)
+  const fetchUserInfo = (storedUserId = localStorage.getItem("userId")) => {
     const token = localStorage.getItem("token");
-    const storedUserId = localStorage.getItem("userId");
-  
-    if (token && storedUserId) { // Chỉ gọi API khi có userId hợp lệ
+
+    if (token && storedUserId) {
       fetch(`${API_URL}/api/UserAccount/${storedUserId}`, {
         method: "GET",
         headers: {
@@ -22,38 +23,64 @@ export const AuthProvider = ({ children }) => {
         },
       })
         .then((res) => {
-          if (!res.ok) {
-            throw new Error(`HTTP error! Status: ${res.status}`);
-          }
+          if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
           return res.json();
         })
         .then((data) => {
           if (data.success && data.data) {
             setUserName(data.data.username);
             setUserId(data.data.userId);
+            setAvatar(data.data.profilePicture || "");
+
+            // Lưu localStorage để giữ khi reload
             localStorage.setItem("username", data.data.username);
             localStorage.setItem("userId", data.data.userId);
+            localStorage.setItem("avatar", data.data.profilePicture || "");
           } else {
             console.error("Lỗi: Không tìm thấy dữ liệu người dùng");
           }
         })
         .catch((err) => console.error("Lỗi khi lấy dữ liệu user:", err));
     }
-  }, []);
-  
+  };
 
-  // Hàm logout
+  // ✅ Fetch user info khi app load lần đầu
+  useEffect(() => {
+    if (userId) fetchUserInfo(userId);
+  }, [userId]);
+
+  // ✅ Hàm logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
     localStorage.removeItem("userId");
+    localStorage.removeItem("avatar");
+
     setIsLoggedIn(false);
     setUserName("Guest");
     setUserId(null);
+    setAvatar("");
   };
 
+  // ✅ Alias hàm refetch (cho dễ nhớ khi dùng)
+  const refetchUserInfo = () => fetchUserInfo(userId);
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, userName, setUserName, userId, setUserId, handleLogout }}>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn,
+        setIsLoggedIn,
+        userName,
+        setUserName,
+        userId,
+        setUserId,
+        avatar,
+        setAvatar,
+        handleLogout,
+        fetchUserInfo, // Dùng khi cần fetch theo ID khác
+        refetchUserInfo, // Dùng lại chính user hiện tại
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

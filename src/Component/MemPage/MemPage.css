@@ -53,19 +53,29 @@
 /* Button Styling */
 .use-tool-button {
   display: inline-block;
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: 16px 32px;
+  /* Nút lớn hơn */
+  font-size: 20px;
+  /* Chữ to hơn */
+  font-weight: bold;
   color: white;
-  background-color: #007bff;
+  background: linear-gradient(45deg, #cb01fd, #2500f8);  /* Hiệu ứng màu gradient */
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  /* Bo góc mềm mại hơn */
   cursor: pointer;
   text-align: center;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 10px rgba(255, 102, 102, 0.4);
+  /* Đổ bóng tạo chiều sâu */
 }
 
+/* Hover Effect */
 .use-tool-button:hover {
-  background-color: #0056b3;
+  transform: scale(1.1);
+  /* Phóng to nhẹ khi hover */
+  background: linear-gradient(45deg, #cb01fd, #2500f8);
+  box-shadow: 0 6px 14px rgba(255, 102, 102, 0.6);
 }
 
 /* Growth Record Styling */

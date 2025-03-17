@@ -6,31 +6,35 @@ const GrowthData = () => {
   const [growthRecords, setGrowthRecords] = useState([]);
 
   useEffect(() => {
-  const fetchGrowthRecords = async () => {
-    try {
-      const response = await axios.get("http://localhost:5200/api/growth-records", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+    const fetchGrowthRecords = async () => {
+      try {
+        const response = await axios.get("http://localhost:5200/api/growth-records", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
 
-      console.log("Full API Response:", response.data);
+        console.log("Full API Response:", response.data);
 
-      // Kiểm tra nếu có $values và nó là mảng
-      if (response.data?.$values && Array.isArray(response.data.$values)) {
-        setGrowthRecords(response.data.$values);
-      } else {
-        console.error("Unexpected response format:", response.data);
+        // Kiểm tra nếu có $values và nó là mảng
+        if (response.data?.$values && Array.isArray(response.data.$values)) {
+          setGrowthRecords(response.data.$values);
+        } else {
+          console.error("Unexpected response format:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching growth records:", error);
       }
-    } catch (error) {
-      console.error("Error fetching growth records:", error);
-    }
+    };
+
+    fetchGrowthRecords();
+  }, []);
+
+  const formatMonth = (month) => {
+    const date = new Date();
+    date.setMonth(month - 1);
+    return date.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
   };
-
-  fetchGrowthRecords();
-}, []);
-
-
 
   return (
     <div className="growth-data-container">
@@ -53,7 +57,7 @@ const GrowthData = () => {
           {growthRecords.map(record => (
             <tr key={record.recordId}>
               <td>{record.recordId}</td>
-              <td>{new Date(record.month).toLocaleDateString()}</td>
+              <td>{formatMonth(record.month)}</td>
               <td>{record.weight}</td>
               <td>{record.height}</td>
               <td>{record.bmi}</td>

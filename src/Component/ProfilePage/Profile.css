@@ -31,6 +31,7 @@ body {
   background: linear-gradient(to right, #a18cd1, #3f87a6);
 }
 
+/* HEADER chỉnh sửa lại để hợp lý với avatar */
 .profile-header {
   display: flex;
   align-items: center;
@@ -38,53 +39,63 @@ body {
   background: linear-gradient(to right, #3f87a6, #004e92);
   position: relative;
   gap: 15px;
-  justify-content: space-between;
-  /* Căn hai đầu */
+  justify-content: flex-start;
+  padding-left: 150px;
+  min-height: 80px;
 }
 
-.profile-photo {
-  width: 100px;
-  height: 100px;
+/* ✅ AVATAR riêng cho trang Profile */
+.profile-avatar {
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   background-color: #ddd;
-  border: 3px solid white;
-  flex-shrink: 0;
+  border: 5px solid white;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: -60px;
+  left: 20px;
 }
 
+/* Thông tin người dùng chỉnh gọn */
 .user-info {
   color: white;
   display: flex;
-  flex-direction: row;
-  /* Để nằm ngang */
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
   flex-grow: 1;
-  gap: 10px;
 }
 
+/* Tên người dùng */
 .username {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   margin: 0;
 }
 
+/* Nút chỉnh sửa */
 .edit-profile {
   margin-left: auto;
-  padding: 7px 15px;
+  padding: 8px 18px;
   font-size: 14px;
   border: none;
   background: white;
   color: #333;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .edit-profile:hover {
   background: #eee;
 }
 
+/* Phần nội dung */
 .profile-content {
   padding: 20px;
   flex-grow: 1;
@@ -92,18 +103,30 @@ body {
 }
 
 .profile-section {
-  padding: 15px;
-  border-radius: 5px;
+  padding: 20px;
+  border-radius: 8px;
   background: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
 }
 
 .profile-section h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+  text-align: center;
 }
 
-.profile-section p {
-  font-size: 14px;
+.profile-info p {
+  font-size: 15px;
   color: #555;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-info svg {
+  color: #3f87a6;
+  font-size: 16px;
 }
