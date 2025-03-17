@@ -6,9 +6,8 @@ import "./Doctor.css";
 import logo from './../../assets/logo.png';
 import DoctorDashboard from "./DoctorDashboard";
 import ConsultationRequests from "./ConsultationRequests";
-import ConsultationResponses from "./ConsultationResponses";
 import GrowthData from "./GrowthData";
-import Alert from "./Alert"; // Import the Alert component
+import RatingFeedback from "./RatingFeedback"; // Import RatingFeedback
 import { AuthContext } from "../../Component/LoginPage/AuthContext";
 // import Advice from "./Advice";
 // import MemberFeedback from "./MemberFeedback";
@@ -17,9 +16,7 @@ const DoctorPage = () => {
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [expandedSections, setExpandedSections] = useState({
     consultation: false,
-    consultationResponses: false,
     growth: false,
-    alert: false, // Add state for Alert
   });
 
   const navigate = useNavigate();
@@ -43,16 +40,10 @@ const DoctorPage = () => {
         return <DoctorDashboard />;
       case "consultation":
         return <ConsultationRequests />;
-      case "consultationResponses":
-        return <ConsultationResponses />;
       case "growth":
         return <GrowthData />;
-      case "alert":
-        return <Alert />; // Render Alert component
-      case "advice":
-        return <Advice />;
       case "feedback":
-        return <MemberFeedback />;
+        return <RatingFeedback />; // Use RatingFeedback instead of MemberFeedback
       default:
         return <DoctorDashboard />;
     }
@@ -91,24 +82,6 @@ const DoctorPage = () => {
               )}
             </li>
             <li>
-              <button onClick={() => toggleSection("consultationResponses")}>
-                Consultation Responses
-                <FontAwesomeIcon
-                  icon={expandedSections["consultationResponses"] ? faChevronUp : faChevronDown}
-                  className="chevron-icon"
-                />
-              </button>
-              {expandedSections["consultationResponses"] && (
-                <ul className="submenu">
-                  <li>
-                    <button onClick={() => setSelectedSection("consultationResponses")}>
-                      List
-                    </button>
-                  </li>
-                </ul>
-              )}
-            </li>
-            <li>
               <button onClick={() => toggleSection("growth")}>
                 Growth Data
                 <FontAwesomeIcon
@@ -125,29 +98,6 @@ const DoctorPage = () => {
                   </li>
                 </ul>
               )}
-            </li>
-            <li>
-              <button onClick={() => toggleSection("alert")}>
-                Alert
-                <FontAwesomeIcon
-                  icon={expandedSections["alert"] ? faChevronUp : faChevronDown}
-                  className="chevron-icon"
-                />
-              </button>
-              {expandedSections["alert"] && (
-                <ul className="submenu">
-                  <li>
-                    <button onClick={() => setSelectedSection("alert")}>
-                      List
-                    </button>
-                  </li>
-                </ul>
-              )}
-            </li>
-            <li>
-              <button onClick={() => setSelectedSection("advice")}>
-                Feedback & Advice
-              </button>
             </li>
             <li>
               <button onClick={() => setSelectedSection("feedback")}>
