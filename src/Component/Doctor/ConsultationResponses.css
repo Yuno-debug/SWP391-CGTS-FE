@@ -32,3 +32,30 @@
     background-color: #f1f1f1;
   }
   
+ 
+.consultation-response-container h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.consultation-response-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.consultation-response-table th,
+.consultation-response-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.consultation-response-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.consultation-response-table tr:hover {
+  background-color: #f1f1f1;
+}

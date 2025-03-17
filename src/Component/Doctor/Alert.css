@@ -1,0 +1,29 @@
+.alert-container {
+    padding: 20px;
+  }
+  
+  .alert-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .alert-table th,
+  .alert-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .alert-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .alert-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .alert-table tr:hover {
+    background-color: #f1f1f1;
+  }
