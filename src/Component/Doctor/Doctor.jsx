@@ -6,8 +6,9 @@ import "./Doctor.css";
 import logo from './../../assets/logo.png';
 import DoctorDashboard from "./DoctorDashboard";
 import ConsultationRequests from "./ConsultationRequests";
-import ConsultationResponses from "./ConsultationResponses"; // Import the new component
+import ConsultationResponses from "./ConsultationResponses";
 import GrowthData from "./GrowthData";
+import Alert from "./Alert"; // Import the Alert component
 import { AuthContext } from "../../Component/LoginPage/AuthContext";
 // import Advice from "./Advice";
 // import MemberFeedback from "./MemberFeedback";
@@ -16,8 +17,9 @@ const DoctorPage = () => {
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [expandedSections, setExpandedSections] = useState({
     consultation: false,
-    consultationResponses: false, // Add state for Consultation Responses
+    consultationResponses: false,
     growth: false,
+    alert: false, // Add state for Alert
   });
 
   const navigate = useNavigate();
@@ -45,6 +47,8 @@ const DoctorPage = () => {
         return <ConsultationResponses />;
       case "growth":
         return <GrowthData />;
+      case "alert":
+        return <Alert />; // Render Alert component
       case "advice":
         return <Advice />;
       case "feedback":
@@ -117,6 +121,24 @@ const DoctorPage = () => {
                   <li>
                     <button onClick={() => setSelectedSection("growth")}>
                       Data
+                    </button>
+                  </li>
+                </ul>
+              )}
+            </li>
+            <li>
+              <button onClick={() => toggleSection("alert")}>
+                Alert
+                <FontAwesomeIcon
+                  icon={expandedSections["alert"] ? faChevronUp : faChevronDown}
+                  className="chevron-icon"
+                />
+              </button>
+              {expandedSections["alert"] && (
+                <ul className="submenu">
+                  <li>
+                    <button onClick={() => setSelectedSection("alert")}>
+                      List
                     </button>
                   </li>
                 </ul>

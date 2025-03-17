@@ -4,13 +4,9 @@ import './ConsultationRequests.css';
 
 const ConsultationRequests = () => {
   const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchRequests = async () => {
-      setLoading(true);
-      setError(null);
       try {
         const response = await axios.get('http://localhost:5200/api/ConsultationRequest/get-all', {
           headers: {
@@ -24,21 +20,14 @@ const ConsultationRequests = () => {
           setRequests(response.data.data.$values);
         } else {
           console.error("Unexpected response format:", response.data);
-          setError("Failed to load requests due to unexpected data format.");
         }
       } catch (error) {
         console.error('Error fetching consultation requests:', error);
-        setError("Failed to load requests. Please try again later.");
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchRequests();
   }, []);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
 
   return (
     <div className="consultation-requests-container">
@@ -54,13 +43,13 @@ const ConsultationRequests = () => {
           </tr>
         </thead>
         <tbody>
-          {requests.map((request, index) => (
-            <tr key={request.requestId || index}>
-              <td>{request.requestId || 'N/A'}</td>
-              <td>{request.childId || 'N/A'}</td>
-              <td>{request.description || 'N/A'}</td>
-              <td>{request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'N/A'}</td>
-              <td>{request.status || 'N/A'}</td>
+          {requests.map(request => (
+            <tr key={request.id}>
+              <td>{request.requestId}</td>
+              <td>{request.childId}</td>
+              <td>{request.description}</td>
+              <td>{new Date(request.requestDate).toLocaleDateString()}</td>
+              <td>{request.status}</td>
             </tr>
           ))}
         </tbody>

@@ -1,33 +1,33 @@
-.consultation-response-container {
+.consultation-requests-container {
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.consultation-response-container h2 {
+.consultation-requests-container h2 {
   margin-bottom: 20px;
   font-size: 24px;
   color: #333;
 }
 
-.consultation-response-table {
+.consultation-requests-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.consultation-response-table th,
-.consultation-response-table td {
+.consultation-requests-table th,
+.consultation-requests-table td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
-.consultation-response-table th {
+.consultation-requests-table th {
   background-color: #f2f2f2;
   font-weight: bold;
 }
 
-.consultation-response-table tr:hover {
+.consultation-requests-table tr:hover {
   background-color: #f1f1f1;
 }
