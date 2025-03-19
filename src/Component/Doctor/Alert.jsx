@@ -17,7 +17,7 @@ const Alert = () => {
 
       if (!token) {
         setError("No authorization token found. Please log in again.");
-        setLoading(false);
+        setLoading(false);  
         return;
       }
 

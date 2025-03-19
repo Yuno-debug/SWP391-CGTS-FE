@@ -43,7 +43,7 @@ const DoctorPage = () => {
       case "growth":
         return <GrowthData />;
       case "feedback":
-        return <RatingFeedback />; // Use RatingFeedback instead of MemberFeedback
+        return <RatingFeedback />;
       default:
         return <DoctorDashboard />;
     }

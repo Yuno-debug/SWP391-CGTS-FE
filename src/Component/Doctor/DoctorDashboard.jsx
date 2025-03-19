@@ -13,6 +13,7 @@ const DoctorDashboard = () => {
   const [totalConsultationRequests, setTotalConsultationRequests] = useState(0);
   const [totalConsultationResponses, setTotalConsultationResponses] = useState(0);
   const [totalAlerts, setTotalAlerts] = useState(0);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const getRoleName = (role) => {
@@ -143,11 +144,11 @@ const DoctorDashboard = () => {
         });
         console.log("Total Alerts Response (Stringified):", JSON.stringify(response.data, null, 2));
         if (typeof response.data === "number") {
-          setTotalAlerts(response.data); // Directly use the number if it's 1
+          setTotalAlerts(response.data);
         } else if (response.data?.count !== undefined) {
-          setTotalAlerts(response.data.count); // Handle { count: 1 }
+          setTotalAlerts(response.data.count);
         } else if (response.data?.total !== undefined) {
-          setTotalAlerts(response.data.total); // Handle { total: 1 } as a fallback
+          setTotalAlerts(response.data.total);
         } else {
           console.error("Unexpected API response format for alerts count:", JSON.stringify(response.data, null, 2));
           setTotalAlerts(0);
@@ -198,8 +199,6 @@ const DoctorDashboard = () => {
     fetchTotalAlerts();
     fetchUsers();
   }, [navigate]);
-
-  const [error, setError] = useState(null);
 
   const monthlyRevenueData = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -255,7 +254,7 @@ const DoctorDashboard = () => {
           <div className="stat-icon">🔔</div>
           <div className="stat-info">
             <h2>Total Alerts</h2>
-            <p>{totalAlerts} Alerts</p> {/* Ensure this reflects the state */}
+            <p>{totalAlerts} Alerts</p>
           </div>
         </div>
       </div>

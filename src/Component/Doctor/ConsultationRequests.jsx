@@ -9,14 +9,20 @@ const ConsultationRequests = () => {
   const [responseInputs, setResponseInputs] = useState({});
   const [alertInputs, setAlertInputs] = useState({});
   const [diagnosisInputs, setDiagnosisInputs] = useState({});
-  const [alertTypeInputs, setAlertTypeInputs] = useState({}); // New state for alert types
+  const [alertTypeInputs, setAlertTypeInputs] = useState({});
 
   // States for Consultation Responses
   const [responses, setResponses] = useState([]);
   const [doctors, setDoctors] = useState({});
+  const [editResponseId, setEditResponseId] = useState(null);
+  const [editResponseContent, setEditResponseContent] = useState('');
+  const [editResponseDiagnosis, setEditResponseDiagnosis] = useState('');
 
   // States for Alerts
   const [alerts, setAlerts] = useState([]);
+  const [editAlertId, setEditAlertId] = useState(null);
+  const [editAlertMessage, setEditAlertMessage] = useState('');
+  const [editAlertType, setEditAlertType] = useState('');
 
   // Common states
   const [loading, setLoading] = useState(true);
@@ -24,11 +30,14 @@ const ConsultationRequests = () => {
 
   // Configurable endpoints
   const ALERT_ENDPOINT = 'http://localhost:5200/api/Alert';
-  const CONSULTATION_RESPONSE_ENDPOINT = 'http://localhost:5200/api/ConsultationResponse/create';
+  const CONSULTATION_RESPONSE_CREATE_ENDPOINT = 'http://localhost:5200/api/ConsultationResponse/create';
+  const CONSULTATION_RESPONSE_UPDATE_ENDPOINT = 'http://localhost:5200/api/ConsultationResponse/update';
+  const CONSULTATION_RESPONSE_DELETE_ENDPOINT = 'http://localhost:5200/api/ConsultationResponse/delete';
+  const ALERT_UPDATE_ENDPOINT = 'http://localhost:5200/api/Alert';
+  const ALERT_DELETE_ENDPOINT = 'http://localhost:5200/api/Alert';
 
-  // Predefined alert types
+  // Predefined alert types (Removed Consultation)
   const alertTypes = [
-    { value: 'Consultation', label: 'Consultation' },
     { value: 'Emergency', label: 'Emergency' },
     { value: 'Follow-up', label: 'Follow-up' },
   ];
@@ -39,13 +48,11 @@ const ConsultationRequests = () => {
       setError(null);
 
       try {
-        // Fetch Doctors
         const doctorResponse = await axios.get('http://localhost:5200/api/UserAccount/get-all', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem("token")}`
           }
         });
-        console.log("Doctors Response:", doctorResponse.data);
         if (doctorResponse.data?.success && Array.isArray(doctorResponse.data?.data?.$values)) {
           const doctorMap = doctorResponse.data.data.$values
             .filter(user => user.role === 3)
@@ -56,13 +63,11 @@ const ConsultationRequests = () => {
           setDoctors(doctorMap);
         }
 
-        // Fetch Consultation Requests
         const requestResponse = await axios.get('http://localhost:5200/api/ConsultationRequest/get-all', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem("token")}`
           }
         });
-        console.log("Consultation Requests Response:", JSON.stringify(requestResponse.data, null, 2));
         if (requestResponse.data?.success && Array.isArray(requestResponse.data?.data?.$values)) {
           setRequests(requestResponse.data.data.$values);
           const initialInputs = requestResponse.data.data.$values.reduce((acc, request) => {
@@ -73,20 +78,18 @@ const ConsultationRequests = () => {
           setAlertInputs(initialInputs);
           setDiagnosisInputs(initialInputs);
           setAlertTypeInputs(requestResponse.data.data.$values.reduce((acc, request) => {
-            acc[request.requestId] = 'Consultation'; // Default alert type
+            acc[request.requestId] = 'Emergency'; // Default to Emergency instead of Consultation
             return acc;
-          }, {})); // Initialize alert types
+          }, {}));
         } else {
           setError("Failed to load requests due to unexpected data format.");
         }
 
-        // Fetch Consultation Responses
         const responseResponse = await axios.get('http://localhost:5200/api/ConsultationResponse/get-all', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem("token")}`
           }
         });
-        console.log("Consultation Responses Response:", responseResponse.data);
         if (responseResponse.data?.success && Array.isArray(responseResponse.data?.data?.$values)) {
           setResponses(responseResponse.data.data.$values.map(res => ({
             ...res,
@@ -96,13 +99,11 @@ const ConsultationRequests = () => {
           setError("Failed to load responses due to unexpected data format.");
         }
 
-        // Fetch Alerts
         const alertResponse = await axios.get('http://localhost:5200/api/Alert', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem("token")}`
           }
         });
-        console.log("Alert Response:", JSON.stringify(alertResponse.data, null, 2));
         if (alertResponse.data?.$values && Array.isArray(alertResponse.data.$values)) {
           setAlerts(alertResponse.data.$values);
         } else if (Array.isArray(alertResponse.data)) {
@@ -111,7 +112,6 @@ const ConsultationRequests = () => {
           setError("Failed to load alerts due to unexpected data format.");
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
         setError(`Failed to load data: ${error.response?.status ? `Error ${error.response.status}` : error.message}`);
       } finally {
         setLoading(false);
@@ -148,35 +148,24 @@ const ConsultationRequests = () => {
   const getDoctorIdFromToken = () => {
     try {
       const token = localStorage.getItem("token");
-      console.log('Raw Token:', token);
-      if (!token) {
-        console.error('No token found in localStorage');
-        return null;
-      }
+      if (!token) return null;
 
       const decodedToken = jwtDecode(token);
-      console.log('Decoded Token:', decodedToken);
-
       const doctorId = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ||
                       decodedToken['nameid'] ||
                       decodedToken['sub'] ||
                       decodedToken['DoctorId'];
 
-      if (!doctorId || isNaN(parseInt(doctorId, 10))) {
-        console.error('DoctorId not found or not a number in token claims:', doctorId);
-        return null;
-      }
-
+      if (!doctorId || isNaN(parseInt(doctorId, 10))) return null;
       return parseInt(doctorId, 10);
     } catch (error) {
-      console.error('Error decoding token:', error);
       return null;
     }
   };
 
   const handleSendAlert = async (requestId, childId) => {
     const alertMessage = alertInputs[requestId]?.trim();
-    const alertType = alertTypeInputs[requestId] || 'Consultation'; // Default to 'Consultation' if not selected
+    const alertType = alertTypeInputs[requestId] || 'Emergency'; // Default to Emergency
     if (!alertMessage) {
       alert('Please enter an alert message.');
       return;
@@ -187,7 +176,7 @@ const ConsultationRequests = () => {
         ALERT_ENDPOINT,
         {
           childId,
-          alertType, // Include the selected alert type
+          alertType,
           message: alertMessage,
           isRead: false,
         },
@@ -198,14 +187,11 @@ const ConsultationRequests = () => {
           },
         }
       );
-      console.log('Alert sent - Request:', JSON.stringify(response.config, null, 2));
-      console.log('Alert sent - Response:', JSON.stringify(response.data, null, 2));
       alert('Alert sent successfully!');
       setAlertInputs((prev) => ({
         ...prev,
         [requestId]: '',
       }));
-      // Refresh alerts
       const alertResponse = await axios.get('http://localhost:5200/api/Alert', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("token")}`
@@ -215,7 +201,6 @@ const ConsultationRequests = () => {
         setAlerts(alertResponse.data.$values);
       }
     } catch (error) {
-      console.error('Error sending alert:', error.response ? error.response.data : error.message);
       alert('Failed to send alert. Please try again.');
     }
   };
@@ -228,7 +213,7 @@ const ConsultationRequests = () => {
       return;
     }
 
-    const doctorId = getDoctorIdFromToken() || 1; // Fallback to 1
+    const doctorId = getDoctorIdFromToken() || 1;
     if (!doctorId) {
       alert('Failed to determine DoctorId. Please ensure you are logged in correctly.');
       return;
@@ -240,15 +225,13 @@ const ConsultationRequests = () => {
       const payload = {
         requestId: parseInt(requestId),
         DoctorId: doctorId,
-        Content: responseText, // Changed from responseContent to Content
+        Content: responseText,
         responseDate: new Date().toISOString(),
         status,
-        diagnosis: diagnosis || '', // Optional, defaults to empty if not provided
+        diagnosis: diagnosis || '',
       };
-      console.log('Sending Response Payload:', JSON.stringify(payload, null, 2)); // Debug payload
-
       const response = await axios.post(
-        CONSULTATION_RESPONSE_ENDPOINT,
+        CONSULTATION_RESPONSE_CREATE_ENDPOINT,
         payload,
         {
           headers: {
@@ -257,8 +240,6 @@ const ConsultationRequests = () => {
           },
         }
       );
-      console.log('Response sent - Request:', JSON.stringify(response.config.data, null, 2));
-      console.log('Response sent - Full Response:', JSON.stringify(response.data, null, 2));
       alert('Response sent successfully!');
       setResponseInputs((prev) => ({
         ...prev,
@@ -268,7 +249,6 @@ const ConsultationRequests = () => {
         ...prev,
         [requestId]: '',
       }));
-      // Refresh responses
       const responseResponse = await axios.get('http://localhost:5200/api/ConsultationResponse/get-all', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("token")}`
@@ -281,12 +261,132 @@ const ConsultationRequests = () => {
         })));
       }
     } catch (error) {
-      console.error('Error sending response:', {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
       alert(`Failed to send response. Status: ${error.response?.status || 'Unknown'}, Message: ${error.response?.data?.message || error.message}`);
+    }
+  };
+
+  const handleEditResponse = (response) => {
+    setEditResponseId(response.responseId);
+    setEditResponseContent(response.content || '');
+    setEditResponseDiagnosis(response.diagnosis || '');
+  };
+
+  const handleUpdateResponse = async (responseId) => {
+    if (!editResponseContent.trim()) {
+      alert('Response content cannot be empty.');
+      return;
+    }
+
+    try {
+      const payload = {
+        Content: editResponseContent,
+        diagnosis: editResponseDiagnosis || '',
+        status: 'Active',
+      };
+      const response = await axios.put(
+        `${CONSULTATION_RESPONSE_UPDATE_ENDPOINT}/${responseId}`,
+        payload,
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      alert('Response updated successfully!');
+      setEditResponseId(null);
+      setEditResponseContent('');
+      setEditResponseDiagnosis('');
+      const responseResponse = await axios.get('http://localhost:5200/api/ConsultationResponse/get-all', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      if (responseResponse.data?.success && Array.isArray(responseResponse.data?.data?.$values)) {
+        setResponses(responseResponse.data.data.$values.map(res => ({
+          ...res,
+          content: res.Content || res.content,
+        })));
+      }
+    } catch (error) {
+      alert('Failed to update response. Please try again.');
+    }
+  };
+
+  const handleDeleteResponse = async (responseId) => {
+    if (!window.confirm('Are you sure you want to delete this response?')) return;
+
+    try {
+      await axios.delete(`${CONSULTATION_RESPONSE_DELETE_ENDPOINT}/${responseId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      alert('Response deleted successfully!');
+      setResponses(responses.filter(res => res.responseId !== responseId));
+    } catch (error) {
+      alert('Failed to delete response. Please try again.');
+    }
+  };
+
+  const handleEditAlert = (alert) => {
+    setEditAlertId(alert.alertId);
+    setEditAlertMessage(alert.message || '');
+    setEditAlertType(alert.alertType || 'Emergency'); // Default to Emergency
+  };
+
+  const handleUpdateAlert = async (alertId) => {
+    if (!editAlertMessage.trim()) {
+      alert('Alert message cannot be empty.');
+      return;
+    }
+
+    try {
+      const payload = {
+        alertType: editAlertType,
+        message: editAlertMessage,
+        isRead: false,
+      };
+      const response = await axios.put(
+        `${ALERT_UPDATE_ENDPOINT}/${alertId}`,
+        payload,
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      alert('Alert updated successfully!');
+      setEditAlertId(null);
+      setEditAlertMessage('');
+      setEditAlertType('');
+      const alertResponse = await axios.get('http://localhost:5200/api/Alert', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      if (alertResponse.data?.$values && Array.isArray(alertResponse.data.$values)) {
+        setAlerts(alertResponse.data.$values);
+      }
+    } catch (error) {
+      alert('Failed to update alert. Please try again.');
+    }
+  };
+
+  const handleDeleteAlert = async (alertId) => {
+    if (!window.confirm('Are you sure you want to delete this alert?')) return;
+
+    try {
+      await axios.delete(`${ALERT_DELETE_ENDPOINT}/${alertId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      alert('Alert deleted successfully!');
+      setAlerts(alerts.filter(alert => alert.alertId !== alertId));
+    } catch (error) {
+      alert('Failed to delete alert. Please try again.');
     }
   };
 
@@ -317,27 +417,33 @@ const ConsultationRequests = () => {
                 <td>{request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'N/A'}</td>
                 <td>
                   <div className="action-container">
-                    <select
-                      value={alertTypeInputs[request.requestId] || 'Consultation'}
-                      onChange={(e) => handleInputChange(request.requestId, e.target.value, 'alertType')}
-                      style={{ marginRight: '10px', padding: '5px', width: '150px' }}
-                    >
-                      {alertTypes.map((type) => (
-                        <option key={type.value} value={type.value}>
-                          {type.label}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="alert-type-wrapper">
+                      <label htmlFor={`alert-type-${request.requestId}`} className="alert-type-label">
+                        Alert Type:
+                      </label>
+                      <select
+                        id={`alert-type-${request.requestId}`}
+                        value={alertTypeInputs[request.requestId] || 'Emergency'}
+                        onChange={(e) => handleInputChange(request.requestId, e.target.value, 'alertType')}
+                        className="alert-type-select"
+                      >
+                        {alertTypes.map((type) => (
+                          <option key={type.value} value={type.value}>
+                            {type.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <input
                       type="text"
                       value={alertInputs[request.requestId] || ''}
                       onChange={(e) => handleInputChange(request.requestId, e.target.value, 'alert')}
                       placeholder="Enter alert message..."
-                      style={{ marginRight: '10px', padding: '5px' }}
+                      className="action-input"
                     />
                     <button
                       onClick={() => handleSendAlert(request.requestId, request.childId)}
-                      style={{ marginRight: '10px' }}
+                      className="action-button"
                     >
                       Send Alert
                     </button>
@@ -346,16 +452,16 @@ const ConsultationRequests = () => {
                       value={responseInputs[request.requestId] || ''}
                       onChange={(e) => handleInputChange(request.requestId, e.target.value, 'response')}
                       placeholder="Enter response..."
-                      style={{ marginRight: '10px', padding: '5px' }}
+                      className="action-input"
                     />
                     <input
                       type="text"
                       value={diagnosisInputs[request.requestId] || ''}
                       onChange={(e) => handleInputChange(request.requestId, e.target.value, 'diagnosis')}
                       placeholder="Enter diagnosis..."
-                      style={{ marginRight: '10px', padding: '5px' }}
+                      className="action-input"
                     />
-                    <button onClick={() => handleSendResponse(request.requestId)}>
+                    <button onClick={() => handleSendResponse(request.requestId)} className="action-button">
                       Send Response
                     </button>
                   </div>
@@ -381,6 +487,7 @@ const ConsultationRequests = () => {
             <th>Response Content</th>
             <th>Status</th>
             <th>Diagnosis</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -390,14 +497,50 @@ const ConsultationRequests = () => {
                 <td>{response.responseId || 'N/A'}</td>
                 <td>{response.requestId || 'N/A'}</td>
                 <td>{doctors[response.doctorId] || response.doctorId || 'N/A'}</td>
-                <td>{response.content || 'N/A'}</td>
+                <td>
+                  {editResponseId === response.responseId ? (
+                    <input
+                      type="text"
+                      value={editResponseContent}
+                      onChange={(e) => setEditResponseContent(e.target.value)}
+                      className="action-input"
+                    />
+                  ) : (
+                    response.content || 'N/A'
+                  )}
+                </td>
                 <td>{response.status || 'N/A'}</td>
-                <td>{response.diagnosis || 'N/A'}</td>
+                <td>
+                  {editResponseId === response.responseId ? (
+                    <input
+                      type="text"
+                      value={editResponseDiagnosis}
+                      onChange={(e) => setEditResponseDiagnosis(e.target.value)}
+                      className="action-input"
+                    />
+                  ) : (
+                    response.diagnosis || 'N/A'
+                  )}
+                </td>
+                <td>
+                  {editResponseId === response.responseId ? (
+                    <button onClick={() => handleUpdateResponse(response.responseId)} className="action-button">
+                      Save
+                    </button>
+                  ) : (
+                    <button onClick={() => handleEditResponse(response)} className="action-button">
+                      Edit
+                    </button>
+                  )}
+                  <button onClick={() => handleDeleteResponse(response.responseId)} className="action-button delete">
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6" style={{ textAlign: 'center' }}>No responses available.</td>
+              <td colSpan="7" style={{ textAlign: 'center' }}>No responses available.</td>
             </tr>
           )}
         </tbody>
@@ -413,6 +556,7 @@ const ConsultationRequests = () => {
             <th>Message</th>
             <th>Is Read</th>
             <th>Alert Date</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -420,15 +564,56 @@ const ConsultationRequests = () => {
             alerts.map((alert, index) => (
               <tr key={alert.alertId || index}>
                 <td>{alert.childId || 'N/A'}</td>
-                <td>{alert.alertType || 'N/A'}</td>
-                <td>{alert.message || 'N/A'}</td>
+                <td>
+                  {editAlertId === alert.alertId ? (
+                    <select
+                      value={editAlertType}
+                      onChange={(e) => setEditAlertType(e.target.value)}
+                      className="alert-type-select"
+                    >
+                      {alertTypes.map((type) => (
+                        <option key={type.value} value={type.value}>
+                          {type.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    alert.alertType || 'N/A'
+                  )}
+                </td>
+                <td>
+                  {editAlertId === alert.alertId ? (
+                    <input
+                      type="text"
+                      value={editAlertMessage}
+                      onChange={(e) => setEditAlertMessage(e.target.value)}
+                      className="action-input"
+                    />
+                  ) : (
+                    alert.message || 'N/A'
+                  )}
+                </td>
                 <td>{alert.isRead ? 'Yes' : 'No'}</td>
                 <td>{alert.alertDate ? new Date(alert.alertDate).toLocaleDateString() : 'N/A'}</td>
+                <td>
+                  {editAlertId === alert.alertId ? (
+                    <button onClick={() => handleUpdateAlert(alert.alertId)} className="action-button">
+                      Save
+                    </button>
+                  ) : (
+                    <button onClick={() => handleEditAlert(alert)} className="action-button">
+                      Edit
+                    </button>
+                  )}
+                  <button onClick={() => handleDeleteAlert(alert.alertId)} className="action-button delete">
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center' }}>No alerts available.</td>
+              <td colSpan="6" style={{ textAlign: 'center' }}>No alerts available.</td>
             </tr>
           )}
         </tbody>
