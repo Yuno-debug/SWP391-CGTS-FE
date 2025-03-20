@@ -3,7 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import PaymentModal from "../PaymentPage/PaymentModal";
 import "./MembershipPage.css";
-import MainLayout4Mem from "./MainLayout4Mem";
+import Navbar from "../../HomePage/NavBar/NavBar";
+import Footer from "../../HomePage/Footer/Footer";
+import { useNavigate } from "react-router-dom";
+
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5200";
 
@@ -33,11 +36,12 @@ const getUniqueGradient = (usedColors) => {
   return newColor;
 };
 
-const MembershipPage = () => {
+const MembershipPage = ({isLoggedIn}) => {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${API_URL}/api/MembershipPackage`)
@@ -63,7 +67,8 @@ const MembershipPage = () => {
   };
 
   return (
-    <MainLayout4Mem hideBody={true}>
+    <>
+    <Navbar isLoggedIn={isLoggedIn}/>
       <div className="membership-page">
         <div className="membership-container">
           <div className="membership-content">
@@ -104,7 +109,8 @@ const MembershipPage = () => {
           />
         )}
       </div>
-    </MainLayout4Mem>
+      <Footer/>
+      </>
   );
 };
 

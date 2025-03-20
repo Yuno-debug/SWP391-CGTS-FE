@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./BlogDetail.css";
+import Navbar from "../../HomePage/NavBar/NavBar";
+import Footer from "../../HomePage/Footer/Footer";
 
-function BlogDetail() {
+function BlogDetail({isLoggedIn}) {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
 
@@ -25,6 +27,8 @@ function BlogDetail() {
   if (!blog) return <h2 className="loading-message">Loading...</h2>;
 
   return (
+    <>
+    <Navbar isLoggedIn={isLoggedIn}/>
     <div className="blog-detail">
       <h1 className="blog-title">{blog.title}</h1>
       <p className="blog-category"><strong>Category:</strong> {blog.category}</p>
@@ -33,6 +37,8 @@ function BlogDetail() {
       {/* Render nội dung bài viết với HTML */}
       <div className="blog-content" dangerouslySetInnerHTML={{ __html: blog.content }} />
     </div>
+    <Footer/>
+    </>
   );
 }
 

@@ -1,66 +1,78 @@
-/* Vùng nội dung chính của bài viết */
+/* ====== BỐ CỤC TỔNG THỂ ====== */
+.blog-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 50px 20px;
+    background-color: #f9f9f9;
+}
+
+/* Nội dung chính */
 .blog-content {
     max-width: 800px;
-    /* Giới hạn chiều rộng để dễ đọc trên màn hình lớn */
-    margin: 20px auto;
-    /* Căn giữa và tạo khoảng cách phía trên/dưới */
-    padding: 20px;
-    /* Khoảng trống bên trong */
+    flex: 3;
+    padding: 30px;
     background-color: #ffffff;
-    /* Nền trắng */
     border-radius: 8px;
-    /* Bo góc nhẹ */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* Hiệu ứng đổ bóng */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     font-family: "Arial", sans-serif;
-    font-size: 17px;
-    /* Tăng nhẹ kích thước chữ */
+    font-size: 18px;
     line-height: 1.8;
-    /* Giãn dòng cho dễ đọc */
-    color: #333;
+    color: #222;
 }
 
-/* Cách dòng giữa các đoạn văn */
+/* Tiêu đề */
+.blog-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 20px;
+}
+
+/* Danh mục */
+.blog-category {
+    font-size: 16px;
+    color: #666;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+/* Ảnh */
+.blog-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+/* ====== ĐỊNH DẠNG VĂN BẢN ====== */
 .blog-content p {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
+    font-size: 16px;
 }
 
-/* Định dạng tiêu đề con (h2, h3) */
+/* Tiêu đề phụ */
 .blog-content h2,
 .blog-content h3 {
-    color: #222;
-    margin-top: 24px;
-    /* Khoảng cách trước tiêu đề */
-    margin-bottom: 12px;
-    /* Khoảng cách sau tiêu đề */
+    color: #111;
+    margin-top: 28px;
+    margin-bottom: 14px;
     font-weight: bold;
 }
 
-/* Tùy chọn: Thêm phong cách cho h4, h5, h6 nếu muốn */
-.blog-content h4,
-.blog-content h5,
-.blog-content h6 {
-    color: #444;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-/* Định dạng danh sách */
+/* Danh sách */
 .blog-content ul,
 .blog-content ol {
     padding-left: 40px;
-    /* Thụt lề cho danh sách */
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
 
 .blog-content li {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     line-height: 1.6;
-    /* Tăng khoảng cách giữa các item */
 }
 
-/* Định dạng chữ in đậm, nghiêng */
+/* In đậm, nghiêng */
 .blog-content strong {
     color: #000;
     font-weight: bold;
@@ -68,14 +80,15 @@
 
 .blog-content em {
     font-style: italic;
-    color: #555;
+    color: #666;
 }
 
-/* Link trong nội dung */
+/* Link */
 .blog-content a {
     color: #007bff;
     text-decoration: none;
-    transition: color 0.2s ease;
+    font-weight: bold;
+    transition: color 0.2s ease-in-out;
 }
 
 .blog-content a:hover {
@@ -83,13 +96,64 @@
     color: #0056b3;
 }
 
-/* Blockquote (nếu có) */
+/* Blockquote */
 .blog-content blockquote {
-    border-left: 4px solid #ccc;
+    border-left: 4px solid #007bff;
     margin: 20px 0;
-    padding-left: 16px;
-    color: #666;
+    padding-left: 18px;
+    color: #444;
     font-style: italic;
-    background-color: #f9f9f9;
-    border-radius: 4px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+}
+
+/* ====== SIDEBAR ====== */
+.blog-sidebar {
+    flex: 1;
+    max-width: 300px;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiêu đề sidebar */
+.sidebar-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 15px;
+}
+
+/* Danh sách bài viết liên quan */
+.sidebar-links {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-links li {
+    margin-bottom: 14px;
+}
+
+.sidebar-links a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.sidebar-links a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 1024px) {
+    .blog-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .blog-sidebar {
+        max-width: 100%;
+    }
 }

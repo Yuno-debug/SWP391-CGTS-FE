@@ -5,8 +5,10 @@ import BlogGrid from "./BlogGrid";
 import BlogDetail from "./BlogDetail";
 import Navbar from "../../HomePage/NavBar/NavBar";
 import Footer from "../../HomePage/Footer/Footer";
+import "./BlogPage.css";
 
-function BlogPage() {
+
+function BlogPage({isLoggedIn}) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +30,7 @@ function BlogPage() {
 
   return (
     <>
-    <Navbar isLoggedIn={true}/>
+    <Navbar isLoggedIn={isLoggedIn}/>
     <Routes>
       <Route path="/" element={<BlogGrid posts={posts} />} />
       <Route path="/blog/:id" element={<BlogDetail posts={posts} />} />

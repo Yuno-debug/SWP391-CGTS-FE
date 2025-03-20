@@ -1,0 +1,64 @@
+/* Định dạng chung */
+.blog-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Tiêu đề */
+  .blog-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* Category */
+  .blog-category {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #777;
+    font-style: italic;
+    margin-bottom: 15px;
+  }
+  
+  /* Ảnh đại diện bài viết */
+  .blog-thumbnail {
+    display: block;
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  
+  /* Khung nội dung bài viết */
+  .blog-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Tiêu đề phần nội dung */
+  .blog-content h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Nội dung văn bản */
+  .blog-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #444;
+  }
+  
+  /* Phần Footer */
+  .blog-footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.9rem;
+    color: #777;
+  }
+  

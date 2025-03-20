@@ -3,8 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import InputField from './InputField';
 import axios from 'axios';
 import './Signup.css';
+import Navbar from '../HomePage/NavBar/NavBar';
 
-const Signup = () => {
+const Signup = ({isLoggedIn}) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,6 +58,8 @@ const Signup = () => {
   };
 
   return (
+    <>
+    <Navbar isLoggedIn={isLoggedIn} />
     <div className="signup-container">
       <h2 className="form-title">Sign Up</h2>
       {error && <p className="error-message">{error}</p>}
@@ -75,6 +78,7 @@ const Signup = () => {
         Already have an account? <Link to="/login" className="login-link">Log in</Link>
       </p>
     </div>
+    </>
   );
 };
 

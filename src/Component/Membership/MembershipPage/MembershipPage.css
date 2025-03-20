@@ -43,7 +43,7 @@ body, html {
   border-radius: 15px;
   padding: 3rem;
   width: 100%;
-  max-width: 900px;
+  max-width: 100%;
   box-shadow: 0 10px 40px rgba(63, 51, 238, 0.2);
   text-align: center;
   display: flex;
@@ -82,7 +82,7 @@ body, html {
   flex-wrap: wrap; /* Đảm bảo không bị lệch khi màn hình lớn */
   gap: 2rem;
   width: 100%;
-  max-width: 800px;
+  max-width: 100%;
   margin: auto; /* Căn giữa */
 }
 

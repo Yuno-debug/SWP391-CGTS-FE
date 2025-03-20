@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import logo2 from "../../../assets/logo.png";
 import { AuthContext } from "../../LoginPage/AuthContext";
@@ -8,6 +8,7 @@ const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const { isLoggedIn, userName, avatar, handleLogout } = useContext(AuthContext);
+  const navigate = useNavigate(); // Hook điều hướng
 
   // Đóng dropdown khi click ngoài
   const handleClickOutside = useCallback((event) => {
@@ -20,6 +21,12 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [handleClickOutside]);
+
+  // Xử lý logout an toàn
+  const handleLogoutClick = () => {
+    handleLogout(); // Gọi hàm logout từ context
+    navigate("/login", { replace: true }); 
+  };
 
   return (
     <div className="nav">
@@ -43,12 +50,12 @@ const Navbar = () => {
             <div className="user-infor" onClick={() => setShowDropdown(!showDropdown)}>
               <img src={avatar || "/defaultAvatar.jpg"} alt="User Avatar" className="navbar-avatar" />
               <span className="user-name">{userName || "Guest"}</span>
-              <span className="dropdown-arrow">{showDropdown ? '▲' : '▼'}</span> 
+              <span className="dropdown-arrow">{showDropdown ? '▲' : '▼'}</span>
             </div>
             {showDropdown && (
               <div className="dropdown-menu">
                 <Link to="/profile">Profile</Link>
-                <Link to="/" onClick={handleLogout}>Logout</Link>
+                <button onClick={handleLogoutClick} className="logout-btn">Logout</button>
               </div>
             )}
           </li>
