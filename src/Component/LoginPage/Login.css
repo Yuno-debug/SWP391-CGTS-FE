@@ -1,12 +1,12 @@
-/* Importing Google Fonts - Montserrat */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-x: hidden;
 }
 
 body {
@@ -16,6 +16,7 @@ body {
     min-height: 100vh;
     background: url('/path/to/your/background-image.jpg') no-repeat center center fixed;
     background-size: cover;
+    font-family: 'Montserrat', sans-serif;
 }
 
 #root {
@@ -26,12 +27,17 @@ body {
 }
 
 .login-container {
-    margin: 5rem auto 0; /* Add top margin to create spacing from the Navbar */
+    margin: 5rem auto 0;
     max-width: 410px;
     padding: 2rem 1.5rem;
     border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.9) url('/path/to/your/form-background-image.jpg') no-repeat center center;
+    background-size: cover;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Center all content horizontally */
 }
 
 .login-container .form-title {
@@ -45,6 +51,9 @@ body {
 .login-container .social-login {
     display: flex;
     gap: 1.31rem;
+    width: 100%;
+    justify-content: center;
+    /* Center the social buttons */
 }
 
 .social-login .social-button {
@@ -77,6 +86,7 @@ body {
     margin: 1.5rem 0;
     text-align: center;
     background: #fff;
+    width: 100%;
 }
 
 .login-container .separator span {
@@ -99,10 +109,20 @@ body {
     background: #bfb3f2;
 }
 
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* Ensure the form takes full width */
+    gap: 0.5rem;
+    /* Consistent spacing between form elements */
+}
+
 .login-form .input-wrapper {
     position: relative;
     width: 100%;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    /* Reduced margin for tighter alignment */
 }
 
 .login-form .input-field {
@@ -113,6 +133,7 @@ body {
     font-size: 1.06rem;
     outline: none;
     transition: 0.2s ease;
+    box-sizing: border-box;
 }
 
 .login-form .input-field:focus {
@@ -143,6 +164,7 @@ body {
     display: block;
     width: fit-content;
     margin-top: -0.44rem;
+    font-size: 0.9rem;
 }
 
 .login-form .login-button {
@@ -154,7 +176,8 @@ body {
     font-size: 1.125rem;
     font-weight: 500;
     cursor: pointer;
-    margin-top: 2.19rem;
+    margin-top: 1rem;
+    /* Reduced margin for tighter alignment */
     border-radius: 0.31rem;
     background: #3c1ad4;
     transition: 0.3s ease;
@@ -162,6 +185,11 @@ body {
 
 .login-form .login-button:hover {
     background: #281388;
+}
+
+.login-form .login-button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
 }
 
 .login-container .signup-prompt {
@@ -180,17 +208,12 @@ body {
 .login-container a:hover {
     text-decoration: underline;
 }
-.signup-link {
+
+.login-container .error-message {
+    color: red;
     text-align: center;
-    margin-top: 10px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
 }
 
-.signup-link a {
-    color: #3c1ad4;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.signup-link a:hover {
-    text-decoration: underline;
-}
+/* Remove the redundant .signup-link styles since .signup-prompt already handles this */

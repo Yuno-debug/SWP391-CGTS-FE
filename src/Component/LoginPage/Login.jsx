@@ -19,65 +19,61 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
-  setLoading(true);
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-  if (!formData.username.trim() || !formData.password.trim()) {
-    setError("Username and password are required.");
-    setLoading(false);
-    return;
-  }
-
-  try {
-    const response = await axios.post(
-      `${API_URL}/api/UserAccount/login`,
-      { userName: formData.username.trim(), password: formData.password.trim() },
-      { headers: { "Content-Type": "application/json" }, withCredentials: true }
-    );
-
-    console.log("✅ Login successful:", response.data);
-
-    // Kiểm tra xem API trả về thành công và có dữ liệu user không
-    if (!response.data.success || !response.data.user) {
-      throw new Error("Invalid response format or no user data received.");
+    if (!formData.username.trim() || !formData.password.trim()) {
+      setError("Username and password are required.");
+      setLoading(false);
+      return;
     }
 
-    const user = response.data.user;
-    const token = response.data.token;
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/UserAccount/login`,
+        { userName: formData.username.trim(), password: formData.password.trim() },
+        { headers: { "Content-Type": "application/json" }, withCredentials: true }
+      );
 
-    // Lưu vào localStorage
-    localStorage.setItem("userId", user?.userId ?? "");
-    localStorage.setItem("username", user?.username ?? "");
-    localStorage.setItem("role", user?.role ?? ""); // Lưu role dạng số
-    localStorage.setItem("token", token ?? "");
+      console.log("✅ Login successful:", response.data);
 
-    // Cập nhật context
-    setIsLoggedIn(true);
-    setUserName(user?.username || "");
-    setUserId(user?.userId || "");
+      if (!response.data.success || !response.data.user) {
+        throw new Error("Invalid response format or no user data received.");
+      }
 
-    // Điều hướng dựa trên role
-    switch (user?.role) {
-      case 1:
-        navigate("/admin");
-        break;
-      case 3:
-        navigate("/doctor");
-        break;
-      case 2:
-        navigate("/mempage");
-        break;
-      default:
-        navigate("/");
+      const user = response.data.user;
+      const token = response.data.token;
+
+      localStorage.setItem("userId", user?.userId ?? "");
+      localStorage.setItem("username", user?.username ?? "");
+      localStorage.setItem("role", user?.role ?? "");
+      localStorage.setItem("token", token ?? "");
+
+      setIsLoggedIn(true);
+      setUserName(user?.username || "");
+      setUserId(user?.userId || "");
+
+      switch (user?.role) {
+        case 1:
+          navigate("/admin");
+          break;
+        case 3:
+          navigate("/doctor");
+          break;
+        case 2:
+          navigate("/mempage");
+          break;
+        default:
+          navigate("/");
+      }
+    } catch (err) {
+      console.error("❌ Login Error:", err.response?.data?.message || err.message);
+      setError(err.response?.data?.message || "Invalid username or password.");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("❌ Login Error:", err.response?.data?.message || err.message);
-    setError(err.response?.data?.message || "Invalid username or password.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="login-container">
@@ -88,8 +84,6 @@ const Login = () => {
         <InputField type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} />
         <button type="submit" className="login-button" disabled={loading}>{loading ? "Logging in..." : "Log In"}</button>
       </form>
-
-      {/* Thêm link để chuyển đến trang Sign Up */}
       <p className="signup-link">
         Don't have an account? <Link to="/signup">Sign up here</Link>
       </p>

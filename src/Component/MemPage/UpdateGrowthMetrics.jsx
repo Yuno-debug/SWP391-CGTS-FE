@@ -165,7 +165,7 @@ const UpdateGrowthMetrics = () => {
 
     // Chuyển về chuỗi ISO
     const formattedMonth = Number(growthData.month);
-    
+
     const requestData = {
       ...growthData,
       month: formattedMonth, // Dùng tháng mới nhưng giữ nguyên ngày & năm

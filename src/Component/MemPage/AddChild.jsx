@@ -108,6 +108,7 @@ const AddChild = () => {
         </form>
 
         <h2>Child Information</h2>
+        <div class="child-table-container">
         <table className="child-table">
           <thead>
             <tr>
@@ -115,11 +116,11 @@ const AddChild = () => {
               <th>Name</th>
               <th>Age</th>
               <th>Gender</th>
-              <th>Birth Weight (kg)</th>
-              <th>Birth Height (cm)</th>
+              <th>Weight (kg)</th>
+              <th>Height (cm)</th>
               <th>Blood Type</th>
               <th>Allergies</th>
-              <th>Relationship</th>
+              <th>Relation</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -136,7 +137,7 @@ const AddChild = () => {
           />
         </td>
         <td>{child.name}</td>
-        <td>{new Date(child.dateOfBirth).toLocaleDateString()}</td>
+        <td>{new Date(child.dateOfBirth).toLocaleDateString('en-GB')}</td>
         <td>{child.gender}</td>
         <td>{child.birthWeight}</td>
         <td>{child.birthHeight}</td>
@@ -157,6 +158,7 @@ const AddChild = () => {
   )}
 </tbody>
         </table>
+        </div>
       </div>
     </Layout4MemP>
   );

@@ -85,19 +85,19 @@ const Profile = (isLoggedIn) => {
             <h2 className="username">{userData.username}</h2>
           </div>
           <button className="edit-profile" onClick={handleEditProfileClick}>
-            ✎ Chỉnh sửa hồ sơ
+            ✎ Edit Profile
           </button>
         </div>
 
         <div className="profile-content">
           <div className="profile-section">
-            <h2>Thông tin cá nhân</h2>
-            <p><strong>Tên:</strong> {userData.username}</p>
+            <h2>Profile</h2>
+            <p><strong>Name:</strong> {userData.username}</p>
             <p><strong>Email:</strong> {userData.email}</p>
-            <p><strong>Số điện thoại:</strong> {userData.phoneNumber || "Không có"}</p>
-            <p><strong>Địa điểm:</strong> {userData.address || "Không xác định"}</p>
-            <p><strong>Ngày đăng ký:</strong> {new Date(userData.registrationDate).toLocaleDateString()}</p>
-            <p><strong>Lần đăng nhập cuối:</strong> {new Date(userData.lastLogin).toLocaleString()}</p>
+            <p><strong>Phone Number:</strong> {userData.phoneNumber || "Không có"}</p>
+            <p><strong>Address:</strong> {userData.address || "Không xác định"}</p>
+            <p><strong>Register Date:</strong> {new Date(userData.registrationDate).toLocaleDateString()}</p>
+            <p><strong>Last Login:</strong> {new Date(userData.lastLogin).toLocaleString()}</p>
           </div>
         </div>
 

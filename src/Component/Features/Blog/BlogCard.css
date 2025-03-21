@@ -20,12 +20,18 @@
     height: 220px;
     /* Chiều cao ảnh hợp lý */
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    border-radius: 10px;
+    /* Bo góc ảnh */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Bóng đổ cho ảnh */
 }
 
 .blog-card:hover img {
     transform: scale(1.04);
     /* Phóng ảnh nhẹ khi hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    /* Bóng đổ mạnh hơn khi hover */
 }
 
 .blog-card-content {

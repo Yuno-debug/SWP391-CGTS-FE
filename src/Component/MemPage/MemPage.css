@@ -1,14 +1,31 @@
-/* Container Styling */
+/* Thêm hình nền cho container chính */
 .bmi-tool-container {
   padding: 20px;
-  background: #f9f9f9;
+  background: url('https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+  background-size: cover;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+}
+/* Lớp phủ để làm mờ nền và tăng độ đọc */
+.bmi-tool-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  /* Lớp phủ trắng mờ */
+  z-index: 1;
 }
 
+/* Đảm bảo nội dung nằm trên lớp phủ */
 .bmi-content-wrapper {
+  position: relative;
+  z-index: 2;
   width: 100%;
   max-width: 1200px;
   margin: auto;
@@ -18,10 +35,14 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: row;
-  /* Change to row for horizontal alignment */
   gap: 20px;
   flex-wrap: wrap;
-  /* Allow wrapping for responsive design */
+}
+/* Thêm biểu tượng trước tiêu đề */
+.bmi-section h2::before {
+  content: '📊';
+  /* Biểu tượng biểu đồ hoặc bất kỳ icon nào phù hợp */
+  margin-right: 8px;
 }
 
 /* BMI Section Styling */
@@ -50,32 +71,27 @@
   color: #555;
 }
 
-/* Button Styling */
+/* Cải thiện nút */
 .use-tool-button {
   display: inline-block;
   padding: 16px 32px;
-  /* Nút lớn hơn */
   font-size: 20px;
-  /* Chữ to hơn */
   font-weight: bold;
   color: white;
-  background: linear-gradient(45deg, #cb01fd, #2500f8);  /* Hiệu ứng màu gradient */
+  background: linear-gradient(45deg, #00c4cc, #ff6f61);
+  /* Gradient mới tươi sáng hơn */
   border: none;
   border-radius: 8px;
-  /* Bo góc mềm mại hơn */
   cursor: pointer;
   text-align: center;
   transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 10px rgba(255, 102, 102, 0.4);
-  /* Đổ bóng tạo chiều sâu */
+  box-shadow: 0 4px 10px rgba(0, 196, 204, 0.4);
 }
 
-/* Hover Effect */
+/* Hover effect */
 .use-tool-button:hover {
-  transform: scale(1.1);
-  /* Phóng to nhẹ khi hover */
-  background: linear-gradient(45deg, #cb01fd, #2500f8);
-  box-shadow: 0 6px 14px rgba(255, 102, 102, 0.6);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 196, 204, 0.6);
 }
 
 /* Growth Record Styling */
@@ -183,6 +199,22 @@
   width: 400px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+/* Nút đóng modal */
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+/* Thêm hình ảnh minh họa trong modal */
+.modal-content img {
+  width: 60px;
+  margin-bottom: 15px;
 }
 
 .modal-content h2 {
@@ -237,25 +269,29 @@
   background-color: #c82333;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .bmi-content-wrapper {
     flex-direction: column;
-    /* Change to column for smaller screens */
-    padding: 15px;
+    padding: 10px;
   }
 
   .bmi-section {
-    padding: 15px;
+    padding: 10px;
     flex: 1 1 100%;
-    /* Full width for smaller screens */
+  }
+
+  .bmi-section img {
+    max-height: 150px;
+    object-fit: cover;
   }
 
   .use-tool-button {
-    font-size: 14px;
+    font-size: 16px;
+    padding: 12px 24px;
   }
 
   .modal-content {
     width: 90%;
+    padding: 15px;
   }
 }

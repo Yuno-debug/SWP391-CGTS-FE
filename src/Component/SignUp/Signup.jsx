@@ -40,7 +40,7 @@ const Signup = () => {
         { username, email, password, confirmPassword, phoneNumber, address }, 
         { headers: { "Content-Type": "application/json" } });
 
-      console.log("API Response:", response); // Debugging  
+      console.log("API Response:", response);
 
       if (response.status === 200) {
         alert('Sign up successful!');
@@ -61,12 +61,14 @@ const Signup = () => {
       <h2 className="form-title">Sign Up</h2>
       {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit} className="signup-form">
-        <InputField type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-        <InputField type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <InputField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <InputField type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-        <InputField type="text" placeholder="Phone Number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-        <InputField type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
+        <div className="form-grid">
+          <InputField type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <InputField type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <InputField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <InputField type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+          <InputField type="text" placeholder="Phone Number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+          <InputField type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
+        </div>
         <button type="submit" className="signup-button" disabled={loading}>
           {loading ? 'Signing up...' : 'Sign Up'}
         </button>

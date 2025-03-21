@@ -1,95 +1,90 @@
-/* Vùng nội dung chính của bài viết */
+/* Tổng thể nội dung blog */
 .blog-content {
     max-width: 800px;
-    /* Giới hạn chiều rộng để dễ đọc trên màn hình lớn */
-    margin: 20px auto;
-    /* Căn giữa và tạo khoảng cách phía trên/dưới */
-    padding: 20px;
-    /* Khoảng trống bên trong */
-    background-color: #ffffff;
-    /* Nền trắng */
-    border-radius: 8px;
-    /* Bo góc nhẹ */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* Hiệu ứng đổ bóng */
-    font-family: "Arial", sans-serif;
-    font-size: 17px;
-    /* Tăng nhẹ kích thước chữ */
-    line-height: 1.8;
-    /* Giãn dòng cho dễ đọc */
-    color: #333;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    line-height: 1.85;
+    color: #2c3e50;
+    transition: all 0.3s ease-in-out;
 }
 
-/* Cách dòng giữa các đoạn văn */
-.blog-content p {
-    margin-bottom: 16px;
-}
-
-/* Định dạng tiêu đề con (h2, h3) */
+/* Tiêu đề chính */
 .blog-content h2,
 .blog-content h3 {
     color: #222;
-    margin-top: 24px;
-    /* Khoảng cách trước tiêu đề */
-    margin-bottom: 12px;
-    /* Khoảng cách sau tiêu đề */
-    font-weight: bold;
-}
-
-/* Tùy chọn: Thêm phong cách cho h4, h5, h6 nếu muốn */
-.blog-content h4,
-.blog-content h5,
-.blog-content h6 {
-    color: #444;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-/* Định dạng danh sách */
-.blog-content ul,
-.blog-content ol {
-    padding-left: 40px;
-    /* Thụt lề cho danh sách */
+    font-weight: 700;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 6px;
+    margin-top: 30px;
     margin-bottom: 16px;
 }
 
-.blog-content li {
-    margin-bottom: 8px;
-    line-height: 1.6;
-    /* Tăng khoảng cách giữa các item */
+/* Phần danh sách */
+.blog-content ul {
+    list-style: none;
+    padding-left: 0;
 }
 
-/* Định dạng chữ in đậm, nghiêng */
-.blog-content strong {
-    color: #000;
-    font-weight: bold;
+.blog-content ul li {
+    margin-bottom: 12px;
+    padding-left: 28px;
+    position: relative;
+    line-height: 1.7;
 }
 
-.blog-content em {
-    font-style: italic;
-    color: #555;
-}
-
-/* Link trong nội dung */
-.blog-content a {
+/* Thay thế dấu bullet bằng icon */
+.blog-content ul li::before {
+    content: '✔';
     color: #007bff;
-    text-decoration: none;
-    transition: color 0.2s ease;
+    font-size: 18px;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: 2px;
 }
 
-.blog-content a:hover {
-    text-decoration: underline;
-    color: #0056b3;
-}
-
-/* Blockquote (nếu có) */
-.blog-content blockquote {
-    border-left: 4px solid #ccc;
-    margin: 20px 0;
-    padding-left: 16px;
-    color: #666;
+/* Cải thiện phần "Category" */
+.blog-category {
+    text-align: center;
     font-style: italic;
-    background-color: #f9f9f9;
-    border-radius: 4px;
+    color: #777;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+/* Hình ảnh trong Category */
+.blog-category img {
+    width: 100px;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+/* Blockquote */
+.blog-content blockquote {
+    border-left: 5px solid #007bff;
+    padding: 15px 20px;
+    margin: 24px 0;
+    font-style: italic;
+    background: #f7faff;
+    color: #444;
+    border-radius: 6px;
+}
+
+.blog-content blockquote:hover {
+    background: #e9f2ff;
+}
+
+/* Kết luận - Đậm hơn */
+.blog-content .conclusion {
+    font-weight: bold;
+    font-size: 20px;
+    color: #222;
+    text-align: center;
 }

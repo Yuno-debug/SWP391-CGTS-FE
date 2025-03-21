@@ -1,34 +1,33 @@
-.growth-data-container {
+.consultation-response-container {
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.growth-data-container h2 {
+.consultation-response-container h2 {
   margin-bottom: 20px;
   font-size: 24px;
   color: #333;
 }
 
-.growth-data-table {
+.consultation-response-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.growth-data-table th,
-.growth-data-table td {
+.consultation-response-table th,
+.consultation-response-table td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
-  color: black;
 }
 
-.growth-data-table th {
+.consultation-response-table th {
   background-color: #f2f2f2;
   font-weight: bold;
 }
 
-.growth-data-table tr:hover {
+.consultation-response-table tr:hover {
   background-color: #f1f1f1;
 }

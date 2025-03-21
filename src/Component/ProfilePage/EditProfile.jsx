@@ -93,7 +93,7 @@ const EditProfile = ({ username, onClose, refetchUserData }) => {
   return (
     <div className="edit-profile-overlay">
       <div className="edit-profile-content">
-        <h2>Chỉnh sửa hồ sơ</h2>
+        <h2>Edit Profile</h2>
 
         <label>
           Username:
@@ -157,8 +157,8 @@ const EditProfile = ({ username, onClose, refetchUserData }) => {
         {errorMessage && <p className="error-message">{errorMessage}</p>}
 
         <div className="edit-profile-buttons">
-          <button onClick={handleSave} className="save-btn">Lưu</button>
-          <button onClick={onClose} className="cancel-btn">Hủy</button>
+          <button onClick={handleSave} className="save-btn">Save</button>
+          <button onClick={onClose} className="cancel-btn">Cancel</button>
         </div>
       </div>
     </div>

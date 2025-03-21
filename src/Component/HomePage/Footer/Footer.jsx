@@ -28,9 +28,9 @@ export default function Footer() {
         <div className="footer-section quick-links">
           <h4>Quick Links</h4>
           <ul>
-            <li>About us</li>
-            <li>Our Products</li>
-            <li>Contact</li>
+            <li className="AboutUs-btn"><a href="/about">About us</a></li>
+            <li className="UrProduct-btn"><a href="/membership">Our product</a></li>
+            <li className="Contact-btn"><a href="/about">Contact</a></li>
           </ul>
         </div>
 

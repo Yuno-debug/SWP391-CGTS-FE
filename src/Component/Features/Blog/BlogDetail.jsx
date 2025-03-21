@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./BlogDetail.css";
+import NavBar from "../../HomePage/NavBar/NavBar"; // Adjust the import path as needed
+import Footer from "../../HomePage/Footer/Footer"; // Adjust the import path as needed
 
 function BlogDetail() {
   const { id } = useParams();
@@ -25,14 +27,18 @@ function BlogDetail() {
   if (!blog) return <h2 className="loading-message">Loading...</h2>;
 
   return (
-    <div className="blog-detail">
-      <h1 className="blog-title">{blog.title}</h1>
-      <p className="blog-category"><strong>Category:</strong> {blog.category}</p>
-      <img className="blog-image" src={blog.image} alt={blog.title} />
+    <>
+      <NavBar />
+      <div className="blog-detail">
+        <h1 className="blog-title">{blog.title}</h1>
+        <p className="blog-category"><strong>Category:</strong> {blog.category}</p>
+        <img className="blog-image" src={blog.image} alt={blog.title} />
 
-      {/* Render nội dung bài viết với HTML */}
-      <div className="blog-content" dangerouslySetInnerHTML={{ __html: blog.content }} />
-    </div>
+        {/* Render nội dung bài viết với HTML */}
+        <div className="blog-content" dangerouslySetInnerHTML={{ __html: blog.content }} />
+      </div>
+      <Footer />
+    </>
   );
 }
 

@@ -225,105 +225,140 @@ tr:hover {
     background-color: #c82333;
 }
 
-/* Modal Styling */
+/* ===== Modal (Popup) Overlay ===== */
 .ReactModal__Overlay {
     background-color: rgba(0, 0, 0, 0.5) !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1000;
 }
 
 .ReactModal__Content {
+    position: relative !important;
     background: white;
     padding: 20px;
     border-radius: 8px;
-    width: 100%;
+    width: 90%;
     max-width: 500px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    overflow-y: auto;
     max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    z-index: 1001;
 }
 
+
+/* ===== Modal Title ===== */
 .modal-title {
     font-size: 24px;
-    margin-bottom: 20px;
+    font-weight: 700;
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
 }
 
+/* ===== Form Group Styling ===== */
 .form-group {
-    margin-bottom: 15px;
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    width: 100%;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+    font-weight: 600;
+    color: #555;
+    font-size: 15px;
 }
 
 .form-group input {
-    width: 100%;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
+.form-group input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* ===== Button Group inside Modal ===== */
 .edit-button-group {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+    width: 100%;
 }
 
+/* ===== General Button Styles ===== */
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+
+/* ===== Specific Button Colors ===== */
 .btn-create {
     background-color: #28a745;
     color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
 }
 
 .btn-create:hover {
     background-color: #218838;
 }
 
+.btn-update {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-update:hover {
+    background-color: #0056b3;
+}
+
 .btn-cancel {
     background-color: #dc3545;
     color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
 }
 
 .btn-cancel:hover {
     background-color: #c82333;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .membership-management {
-        padding: 15px;
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 600px) {
+    .ReactModal__Content {
+        padding: 20px;
+        width: 90%;
     }
 
-    input,
-    button,
-    label,
-    h2,
-    h3 {
-        font-size: 14px;
+    .modal-title {
+        font-size: 20px;
     }
 
-    table {
+    button {
+        padding: 10px 15px;
         font-size: 14px;
     }
-}
-.membership-btn .membership-btn-inactive {
-    background-color: #dc3545;
 }

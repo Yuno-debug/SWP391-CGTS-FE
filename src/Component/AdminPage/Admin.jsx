@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faChevronDown, 
+  faChevronUp,
+  faTachometerAlt,
+  faUsers,
+  faUserMd,
+  faDollarSign,
+  faBlog,
+  faSignOutAlt
+} from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
 import logo from './../../assets/logo.png';
 import Dashboard from './Dashboard';
@@ -21,13 +30,14 @@ const Admin = () => {
     'child-profile': false,
     'doctor-management': false,
   });
-  const navigate = useNavigate(); // Khởi tạo điều hướng
+  const navigate = useNavigate();
   const { handleLogout } = useContext(AuthContext);
 
   const handleLogoutAndRedirect = () => {
-    handleLogout();  // Gọi hàm logout
-    navigate("/");   // Điều hướng về trang chủ
+    handleLogout();
+    navigate("/");
   };
+  
   const [data, setData] = useState({
     totalRevenue: 0,
     totalChildren: 0,
@@ -42,40 +52,39 @@ const Admin = () => {
   const [maintenanceMode, setMaintenanceMode] = useState(false);
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      // Gọi API lấy số lượng Child
-      const childrenResponse = await axios.get('http://localhost:5200/api/Child/count')
-        .then(res => res.data)
-        .catch(err => {
-          console.error("Error fetching child count:", err.response?.data || err.message);
-          return { count: 0 };
-        });
+    const fetchData = async () => {
+      try {
+        const childrenResponse = await axios.get('http://localhost:5200/api/Child/count')
+          .then(res => res.data)
+          .catch(err => {
+            console.error("Error fetching child count:", err.response?.data || err.message);
+            return { count: 0 };
+          });
 
-      // Gọi API lấy số lượng Doctor
-      const doctorsResponse = await axios.get('http://localhost:5200/api/Doctor/count')
-        .then(res => res.data)
-        .catch(err => {
-          console.error("Error fetching doctor count:", err.response?.data || err.message);
-          return 0; // Nếu API trả về số thay vì object, trả về 0 nếu lỗi
-        });
+        const doctorsResponse = await axios.get('http://localhost:5200/api/Doctor/count')
+          .then(res => res.data)
+          .catch(err => {
+            console.error("Error fetching doctor count:", err.response?.data || err.message);
+            return 0;
+          });
 
-      console.log("Children Response:", childrenResponse);
-      console.log("Doctors Response:", doctorsResponse);
+        console.log("Children Response:", childrenResponse);
+        console.log("Doctors Response:", doctorsResponse);
 
-      setData(prevData => ({
-        ...prevData,
-        totalChildren: childrenResponse.count || 0,
-        totalDoctors: typeof doctorsResponse === 'number' ? doctorsResponse : (doctorsResponse.count || 0), // Kiểm tra nếu là số nguyên
-      }));
+        setData(prevData => ({
+          ...prevData,
+          totalChildren: childrenResponse.count || 0,
+          totalDoctors: typeof doctorsResponse === 'number' ? doctorsResponse : (doctorsResponse.count || 0),
+        }));
 
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
+
   const toggleSection = (section) => {
     setExpandedSections(prevState => ({
       ...prevState,
@@ -125,37 +134,88 @@ const Admin = () => {
     <div className="admin-container">
       <aside className="sidebar">
         <div className="sidebar-header">
-            <img src={logo} alt="Logo" className="logo" />
-          <div className="logoTitle"> Admin CGTS</div>
+          <img src={logo} alt="Logo" className="logo" />
+          <div className="logoTitle">Admin CGTS</div>
         </div>
         <nav>
           <ul>
-            <li><button onClick={() => setSelectedSection('dashboard')}>Dashboard</button></li>
             <li>
-              <button onClick={() => toggleSection('user-management')}>
-                User Management
-                <FontAwesomeIcon icon={expandedSections['user-management'] ? faChevronUp : faChevronDown} className="chevron-icon" />
+              <button 
+                onClick={() => setSelectedSection('dashboard')}
+                className={selectedSection === 'dashboard' ? 'active' : ''}
+              >
+                <FontAwesomeIcon icon={faTachometerAlt} className="menu-icon" />
+                <span>Dashboard</span>
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => toggleSection('user-management')}
+                className={selectedSection === 'user-management' ? 'active' : ''}
+              >
+                <FontAwesomeIcon icon={faUsers} className="menu-icon" />
+                <span>User Management</span>
+                <FontAwesomeIcon 
+                  icon={expandedSections['user-management'] ? faChevronUp : faChevronDown} 
+                  className="chevron-icon" 
+                />
               </button>
               {expandedSections['user-management'] && (
                 <ul className="submenu">
-                  <li><button onClick={() => setSelectedSection('user-management')}>Manage Users</button></li>
+                  <li>
+                    <button onClick={() => setSelectedSection('user-management')}>
+                      Manage Users
+                    </button>
+                  </li>
                 </ul>
               )}
             </li>
             <li>
-              <button onClick={() => toggleSection('doctor-management')}>
-                Doctor Manage
-                <FontAwesomeIcon icon={expandedSections['doctor-management'] ? faChevronUp : faChevronDown} className="chevron-icon" />
+              <button 
+                onClick={() => toggleSection('doctor-management')}
+                className={selectedSection === 'doctor-management' ? 'active' : ''}
+              >
+                <FontAwesomeIcon icon={faUserMd} className="menu-icon" />
+                <span>Doctor Manage</span>
+                <FontAwesomeIcon 
+                  icon={expandedSections['doctor-management'] ? faChevronUp : faChevronDown} 
+                  className="chevron-icon" 
+                />
               </button>
               {expandedSections['doctor-management'] && (
                 <ul className="submenu">
-                  <li><button onClick={() => setSelectedSection('doctor-management')}>Manage Doctors</button></li>
+                  <li>
+                    <button onClick={() => setSelectedSection('doctor-management')}>
+                      Manage Doctors
+                    </button>
+                  </li>
                 </ul>
               )}
             </li>
-            <li><button onClick={() => setSelectedSection('membership-management')}>Manage Membership</button></li>
-            <li><button onClick={() => setSelectedSection('blog-management')}>Blog Manage</button></li>
-            <li><button onClick={handleLogoutAndRedirect}>Logout</button></li>
+            <li>
+              <button 
+                onClick={() => setSelectedSection('membership-management')}
+                className={selectedSection === 'membership-management' ? 'active' : ''}
+              >
+                <FontAwesomeIcon icon={faDollarSign} className="menu-icon" />
+                <span>Manage Membership</span>
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => setSelectedSection('blog-management')}
+                className={selectedSection === 'blog-management' ? 'active' : ''}
+              >
+                <FontAwesomeIcon icon={faBlog} className="menu-icon" />
+                <span>Blog Manage</span>
+              </button>
+            </li>
+            <li>
+              <button onClick={handleLogoutAndRedirect}>
+                <FontAwesomeIcon icon={faSignOutAlt} className="menu-icon" />
+                <span>Logout</span>
+              </button>
+            </li>
           </ul>
         </nav>
       </aside>

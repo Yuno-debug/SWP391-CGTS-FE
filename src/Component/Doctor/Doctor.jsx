@@ -1,33 +1,32 @@
-import React, { useState, useContext  } from "react";
-import { Link,useNavigate  } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import "./Doctor.css";
 import logo from './../../assets/logo.png';
-import DoctorDashboard from "./DoctorDashboard";           
-import ConsultationRequests from "./ConsultationRequests"; 
-import GrowthData from "./GrowthData";   
-import { AuthContext } from "../../Component/LoginPage/AuthContext"; // Import AuthContext
-// import Advice from "./Advice";                             
-// import MemberFeedback from "./MemberFeedback";             
+import DoctorDashboard from "./DoctorDashboard";
+import ConsultationRequests from "./ConsultationRequests";
+import GrowthData from "./GrowthData";
+import RatingFeedback from "./RatingFeedback"; // Import RatingFeedback
+import { AuthContext } from "../../Component/LoginPage/AuthContext";
+// import Advice from "./Advice";
+// import MemberFeedback from "./MemberFeedback";
 
 const DoctorPage = () => {
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [expandedSections, setExpandedSections] = useState({
-    consultation: false, 
+    consultation: false,
     growth: false,
   });
 
-  const navigate = useNavigate(); // Hook để điều hướng
-  const { handleLogout } = useContext(AuthContext); // Lấy hàm handleLogout từ context
+  const navigate = useNavigate();
+  const { handleLogout } = useContext(AuthContext);
 
-  // Xử lý logout và điều hướng về trang chủ
   const handleLogoutAndRedirect = () => {
-    handleLogout(); // Gọi hàm logout
-    navigate("/"); // Điều hướng về trang chủ
+    handleLogout();
+    navigate("/");
   };
 
-  // Toggle submenu
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -35,7 +34,6 @@ const DoctorPage = () => {
     }));
   };
 
-  // Render nội dung theo phần đã chọn
   const renderSection = () => {
     switch (selectedSection) {
       case "dashboard":
@@ -44,10 +42,8 @@ const DoctorPage = () => {
         return <ConsultationRequests />;
       case "growth":
         return <GrowthData />;
-      case "advice":
-        return <Advice />;
       case "feedback":
-        return <MemberFeedback />;
+        return <RatingFeedback />;
       default:
         return <DoctorDashboard />;
     }
@@ -58,7 +54,7 @@ const DoctorPage = () => {
       <aside className="doctor-sidebar">
         <div className="sidebar-header">
           <img src={logo} alt="Logo" className="logo" />
-          <div className="logoDoctor"> Doctor Manage</div>
+          <div className="logoDoctor">Doctor Manage</div>
         </div>
         <nav>
           <ul>
@@ -70,29 +66,38 @@ const DoctorPage = () => {
             <li>
               <button onClick={() => toggleSection("consultation")}>
                 Consultation Requests
-                <FontAwesomeIcon icon={expandedSections["consultation"] ? faChevronUp : faChevronDown} className="chevron-icon" />
+                <FontAwesomeIcon
+                  icon={expandedSections["consultation"] ? faChevronUp : faChevronDown}
+                  className="chevron-icon"
+                />
               </button>
               {expandedSections["consultation"] && (
                 <ul className="submenu">
-                  <li><button onClick={() => setSelectedSection("consultation")}>List</button></li>
+                  <li>
+                    <button onClick={() => setSelectedSection("consultation")}>
+                      List
+                    </button>
+                  </li>
                 </ul>
               )}
             </li>
             <li>
               <button onClick={() => toggleSection("growth")}>
                 Growth Data
-                <FontAwesomeIcon icon={expandedSections["growth"] ? faChevronUp : faChevronDown} className="chevron-icon" />
+                <FontAwesomeIcon
+                  icon={expandedSections["growth"] ? faChevronUp : faChevronDown}
+                  className="chevron-icon"
+                />
               </button>
               {expandedSections["growth"] && (
                 <ul className="submenu">
-                  <li><button onClick={() => setSelectedSection("growth")}>Data</button></li>
+                  <li>
+                    <button onClick={() => setSelectedSection("growth")}>
+                      Data
+                    </button>
+                  </li>
                 </ul>
               )}
-            </li>
-            <li>
-              <button onClick={() => setSelectedSection("advice")}>
-                Feedback &amp; Advice
-              </button>
             </li>
             <li>
               <button onClick={() => setSelectedSection("feedback")}>

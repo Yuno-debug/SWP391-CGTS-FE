@@ -1,3 +1,6 @@
+/* Importing Google Fonts - Montserrat */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 /* Container Styling */
 .doctor-table-container {
     margin-top: 20px;
@@ -6,6 +9,10 @@
     align-items: flex-start;
     width: 100%;
     margin-left: 30px;
+    font-family: 'Montserrat', sans-serif;
+    padding-right: 30px;
+    /* Add padding to prevent content from touching the edge */
+    box-sizing: border-box;
 }
 
 /* Move Add button to the right */
@@ -16,16 +23,26 @@
     padding: 8px 12px;
     cursor: pointer;
     border-radius: 5px;
-    margin-left: 900px;
+    margin-left: auto;
+    margin-bottom: 10px;
 }
 
 .doctor-table-container .Add-btn:hover {
     background-color: #003f7f;
 }
 
+/* Table Wrapper to Enable Horizontal Scrolling */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+}
+
 /* Table Styling */
 .doctor-table {
     width: 100%;
+    min-width: 1000px;
+    /* Ensure the table has a minimum width to prevent squishing */
     border-collapse: collapse;
     margin-top: 20px;
 }
@@ -36,10 +53,21 @@
     padding: 8px;
     text-align: left;
     color: black;
+    white-space: normal;
+    /* Allow text to wrap */
+    word-wrap: break-word;
+    /* Break long words */
+    max-width: 150px;
+    /* Set a max-width for columns to prevent overflow */
+    overflow: hidden;
+    /* Hide overflow */
+    text-overflow: ellipsis;
+    /* Add ellipsis for overflow text */
 }
 
 .doctor-table th {
     background-color: #f2f2f2;
+    font-weight: 600;
 }
 
 .doctor-table tr:nth-child(even) {
@@ -58,6 +86,7 @@
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 3px;
+    margin-right: 5px;
 }
 
 .doctor-table .edit-btn:hover {
@@ -89,19 +118,40 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px; /* Add padding to ensure content is not too close to the edges */
+    padding: 20px;
 }
 
 .modal-content {
-    background: white;
+    background: rgba(255, 255, 255, 0.9) url('/path/to/your/form-background-image.jpg') no-repeat center center;
+    background-size: cover;
     padding: 20px;
     border-radius: 8px;
     width: 100%;
-    max-width: 500px; /* Set a max-width to prevent overflow */
+    max-width: 600px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
-    overflow-y: auto; /* Add vertical scroll if content overflows */
-    max-height: 90vh; /* Ensure modal does not exceed viewport height */
+    overflow-y: auto;
+    max-height: 90vh;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Form Grid for Two-Column Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Full-width for specific fields (e.g., Biography) */
+.form-grid .full-width {
+    grid-column: 1 / -1;
+}
+
+/* Input Wrapper */
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
 }
 
 /* Form Inputs */
@@ -109,9 +159,16 @@
 .modal-content textarea {
     width: 100%;
     padding: 8px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
+    margin-top: 5px;
+    border: 1px solid #3c1ad4;
     border-radius: 4px;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.modal-content textarea {
+    resize: vertical;
+    min-height: 80px;
 }
 
 /* Modal Buttons */
@@ -122,17 +179,31 @@
     cursor: pointer;
     border-radius: 4px;
     color: white;
+    font-family: 'Montserrat', sans-serif;
 }
 
-/* Update Button */
+/* Update/Add Button */
 .modal-content .Update-modal {
-    background-color: green;
+    background-color: #3c1ad4;
 }
 
-.modal-content button:first-child {
-    background-color: green;
+.modal-content .Update-modal:hover {
+    background-color: #281388;
 }
 
+/* Cancel Button */
 .modal-content button:last-child {
     background-color: red;
+}
+
+.modal-content button:last-child:hover {
+    background-color: darkred;
+}
+
+/* Error Message */
+.error-message {
+    color: red;
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 1rem;
 }

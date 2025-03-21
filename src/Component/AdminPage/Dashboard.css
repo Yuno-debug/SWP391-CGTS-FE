@@ -103,3 +103,9 @@
 .user-table tr:hover {
   background-color: #ddd;
 }
+.create {
+  background-color : blue;
+}
+.cancel {
+  background-color: red;
+}

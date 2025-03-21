@@ -139,3 +139,34 @@
     text-align: center;
     font-size: 12px;
 }
+.quick-links ul {
+    list-style: none;
+    /* Loại bỏ dấu chấm của danh sách */
+    padding: 0;
+    margin: 0;
+}
+
+.quick-links ul li {
+    margin-bottom: 8px;
+    /* Khoảng cách giữa các mục */
+}
+
+.quick-links ul li a {
+    text-decoration: none;
+    /* Loại bỏ gạch chân */
+    color: white;
+    /* Màu chữ trắng */
+    font-size: 20px;
+    transition: color 0.3s ease-in-out;
+    /* Hiệu ứng mượt mà khi đổi màu */
+}
+
+.quick-links ul li a:visited {
+    color: white;
+    /* Giữ màu trắng ngay cả khi đã ghé qua */
+}
+
+.quick-links ul li a:hover {
+    color: #f0f0f0;
+    /* Màu sáng hơn khi di chuột vào */
+}

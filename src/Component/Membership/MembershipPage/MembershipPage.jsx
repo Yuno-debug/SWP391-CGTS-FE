@@ -18,18 +18,15 @@ const getUniqueGradient = (usedColors) => {
     "linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)", // Hồng đậm - Đỏ cam
   ];
 
-  // Lọc ra các màu chưa được sử dụng
   const availableColors = colors.filter((color) => !usedColors.includes(color));
 
-  // Nếu tất cả màu đã được sử dụng, reset danh sách
   if (availableColors.length === 0) {
-    usedColors.length = 0; // Xóa danh sách màu đã dùng
-    return colors[Math.floor(Math.random() * colors.length)]; // Chọn ngẫu nhiên
+    usedColors.length = 0;
+    return colors[Math.floor(Math.random() * colors.length)];
   }
 
-  // Chọn màu ngẫu nhiên từ danh sách còn lại
   const newColor = availableColors[Math.floor(Math.random() * availableColors.length)];
-  usedColors.push(newColor); // Thêm vào danh sách đã dùng
+  usedColors.push(newColor);
   return newColor;
 };
 
@@ -44,7 +41,7 @@ const MembershipPage = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.$values) {
-          const usedColors = []; // Danh sách các màu đã dùng
+          const usedColors = [];
           setPackages(data.$values.map((pkg) => ({ ...pkg, bgColor: getUniqueGradient(usedColors) })));
         } else {
           setPackages([]);
@@ -69,7 +66,7 @@ const MembershipPage = () => {
           <div className="membership-content">
             <h1 className="membership-title">Membership Plans</h1>
             {loading ? (
-              <p>⏳ Đang tải gói membership...</p>
+              <p className="loading-text">⏳ Loading membership packages...</p>
             ) : (
               <div className="membership-plans">
                 {packages.length > 0 ? (
@@ -82,14 +79,18 @@ const MembershipPage = () => {
                       role="button"
                       tabIndex={0}
                     >
-                      <FontAwesomeIcon icon={faCrown} size="3x" className="plan-icon" />
-                      <h2 className="plan-title">{pkg.packageName.toUpperCase()}</h2>
-                      <p className="plan-price">{pkg.price.toLocaleString("en-US")} VND</p>
-                      <p className="plan-description">{pkg.description}</p>
+                      <div className="plan-card-header">
+                        <FontAwesomeIcon icon={faCrown} className="plan-icon" />
+                        <h2 className="plan-title">{pkg.packageName.toUpperCase()}</h2>
+                      </div>
+                      <div className="plan-card-body">
+                        <p className="plan-price">{pkg.price.toLocaleString("en-US")} VND</p>
+                        <p className="plan-description">{pkg.description}</p>
+                      </div>
                     </div>
                   ))
                 ) : (
-                  <p>🚫 Không có gói membership khả dụng.</p>
+                  <p className="no-packages-text">🚫 No membership packages available.</p>
                 )}
               </div>
             )}
