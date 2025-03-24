@@ -11,6 +11,19 @@ const RatingFeedback = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  
+  const user = {
+    username: "Dr. John Doe",
+  };
+
+  const handleLogout = () => {
+    
+    localStorage.removeItem("token");
+    setToken(null);
+
+    window.location.href = "/login";
+  };
+
   useEffect(() => {
     const fetchFeedbacks = async () => {
       if (!token) {
@@ -77,41 +90,76 @@ const RatingFeedback = () => {
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="rating-feedback-container">
-      <h2>Rating Feedback</h2>
-      <table className="feedback-table">
-        <thead>
-          <tr>
-            <th>Feedback Date</th>
-            <th>Doctor Name</th> {/* Changed from Doctor ID to Doctor Name */}
-            <th>Rating</th>
-            <th>Comment</th>
-            <th>Type</th>
-            <th>ID</th>
-          </tr>
-        </thead>
-        <tbody>
-          {feedbacks.length > 0 ? (
-            feedbacks.map((feedback) => (
-              <tr key={feedback.feedbackId}>
-                <td>{new Date(feedback.feedbackDate).toLocaleString()}</td>
-                <td>{feedback.doctorId ? doctors[feedback.doctorId] || "Loading..." : "N/A"}</td> {/* Display doctor name */}
-                <td>{feedback.rating}</td>
-                <td>{feedback.comment || "N/A"}</td>
-                <td>{feedback.feedbackType || "N/A"}</td>
-                <td>{feedback.feedbackId}</td>
-              </tr>
-            ))
-          ) : (
+    <>
+      {/* Navbar Section */}
+      <nav className="navbar">
+        <div className="navbar-left">
+          <button className="menu-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <div className="navbar-brand">
+            <h1>Child Growth Tracking System</h1>
+          </div>
+        </div>
+        <div className="navbar-right">
+          <div className="user-info">
+            <span className="user-name">{user.username}</span>
+            <button className="logout-button" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+          <button className="nav-icon-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+          </button>
+          <button className="nav-icon-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 2a10 10 0 0 0-10 10c0 2.5 1 4.8 2.6 6.6L2 22l3.4-2.6A9.9 9.9 0 0 0 12 22a10 10 0 0 0 0-20z" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      <div className="rating-feedback-container">
+        <h2>Rating Feedback</h2>
+        <table className="feedback-table">
+          <thead>
             <tr>
-              <td colSpan="6" className="no-data">
-                No feedback available.
-              </td>
+              <th>Feedback Date</th>
+              <th>Doctor Name</th>
+              <th>Rating</th>
+              <th>Comment</th>
+              <th>Type</th>
+              <th>ID</th>
             </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {feedbacks.length > 0 ? (
+              feedbacks.map((feedback) => (
+                <tr key={feedback.feedbackId}>
+                  <td>{new Date(feedback.feedbackDate).toLocaleString()}</td>
+                  <td>{feedback.doctorId ? doctors[feedback.doctorId] || "Loading..." : "N/A"}</td>
+                  <td>{feedback.rating}</td>
+                  <td>{feedback.comment || "N/A"}</td>
+                  <td>{feedback.feedbackType || "N/A"}</td>
+                  <td>{feedback.feedbackId}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="no-data">
+                  No feedback available.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 
