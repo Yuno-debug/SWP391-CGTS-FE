@@ -7,6 +7,7 @@ const RatingFeedback = () => {
   const { token: contextToken } = useContext(AuthContext);
   const [token, setToken] = useState(contextToken || localStorage.getItem("token"));
   const [feedbacks, setFeedbacks] = useState([]);
+  const [doctors, setDoctors] = useState({}); // Store doctor names by doctorId
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -40,6 +41,27 @@ const RatingFeedback = () => {
 
         feedbackData.sort((a, b) => new Date(b.feedbackDate) - new Date(a.feedbackDate));
         setFeedbacks(feedbackData);
+
+        // Fetch doctor names for each feedback
+        const doctorIds = [...new Set(feedbackData.map(f => f.doctorId).filter(id => id))]; // Get unique doctor IDs
+        const doctorPromises = doctorIds.map(async (doctorId) => {
+          try {
+            const doctorResponse = await axios.get(`http://localhost:5200/api/Doctor/${doctorId}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            return { doctorId, name: doctorResponse.data.name || "Unknown Doctor" };
+          } catch (err) {
+            console.error(`Failed to fetch doctor ${doctorId}:`, err.message);
+            return { doctorId, name: "Unknown Doctor" };
+          }
+        });
+
+        const doctorResults = await Promise.all(doctorPromises);
+        const doctorMap = doctorResults.reduce((acc, { doctorId, name }) => {
+          acc[doctorId] = name;
+          return acc;
+        }, {});
+        setDoctors(doctorMap);
       } catch (err) {
         console.error("Failed to fetch feedbacks:", err.response?.data?.message || err.message);
         setError(`Failed to fetch feedbacks: ${err.response?.data?.message || err.message}`);
@@ -61,7 +83,7 @@ const RatingFeedback = () => {
         <thead>
           <tr>
             <th>Feedback Date</th>
-            <th>Doctor ID</th>
+            <th>Doctor Name</th> {/* Changed from Doctor ID to Doctor Name */}
             <th>Rating</th>
             <th>Comment</th>
             <th>Type</th>
@@ -73,7 +95,7 @@ const RatingFeedback = () => {
             feedbacks.map((feedback) => (
               <tr key={feedback.feedbackId}>
                 <td>{new Date(feedback.feedbackDate).toLocaleString()}</td>
-                <td>{feedback.doctorId || "N/A"}</td>
+                <td>{feedback.doctorId ? doctors[feedback.doctorId] || "Loading..." : "N/A"}</td> {/* Display doctor name */}
                 <td>{feedback.rating}</td>
                 <td>{feedback.comment || "N/A"}</td>
                 <td>{feedback.feedbackType || "N/A"}</td>
