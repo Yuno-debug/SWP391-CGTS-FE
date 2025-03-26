@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Pagination from "../Pagination"; // Import Pagination
+import Pagination from "../Pagination";
 import "./BlogGrid.css";
 
 function BlogGrid({ posts = [], activePage = 1 }) {
@@ -10,22 +10,17 @@ function BlogGrid({ posts = [], activePage = 1 }) {
   const postsPerPage = 6;
   const startIndex = (currentPage - 1) * postsPerPage;
 
-  // Đảm bảo posts là mảng hợp lệ
   const validPosts = Array.isArray(posts) ? posts : [];
 
-  // Lọc bài viết theo danh mục
   const filteredPosts =
     selectedCategory === "All"
       ? validPosts
       : validPosts.filter((post) => post.category === selectedCategory);
 
-  // Tính tổng số trang
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
-  // Lấy danh mục từ bài viết
   const categories = ["All", ...new Set(validPosts.map((post) => post.category))];
 
-  // Hàm loại bỏ thẻ HTML
   function stripHTML(htmlString) {
     return htmlString.replace(/<[^>]+>/g, "");
   }
@@ -51,7 +46,7 @@ function BlogGrid({ posts = [], activePage = 1 }) {
           filteredPosts
             .slice(startIndex, startIndex + postsPerPage)
             .map((post) => (
-              <div key={post.id} className="blog-card">
+              <Link key={post.id} to={`/blog/${post.blogId}`} className="blog-card">
                 <img src={post.image} alt={post.title} />
                 <h3>{post.title}</h3>
                 <p>{post.category}</p>
@@ -67,30 +62,23 @@ function BlogGrid({ posts = [], activePage = 1 }) {
                   </p>
                 )}
 
-                {/* Hiển thị excerpt: cắt 100 ký tự sau khi xóa thẻ HTML */}
                 <p>
                   {post.content
                     ? stripHTML(post.content).slice(0, 100)
                     : "No content available"}
                   ...
                 </p>
-
-                {/* Điều hướng đến trang chi tiết */}
-                <Link to={`/blog/${post.blogId}`} className="read-more">
-                  Read More
-                </Link>
-              </div>
+              </Link>
             ))
         ) : (
           <p>No posts found in this category.</p>
         )}
       </div>
 
-      {/* Pagination Component */}
       {totalPages > 1 && (
         <Pagination
           activePage={currentPage}
-          setActivePage={setCurrentPage} // Đổi thành setCurrentPage
+          setActivePage={setCurrentPage}
           totalPages={totalPages}
         />
       )}

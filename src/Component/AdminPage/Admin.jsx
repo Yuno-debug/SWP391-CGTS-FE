@@ -130,40 +130,54 @@ const Admin = () => {
     }
   };
 
+  // Table of Contents for navigation
+  const tocItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: faTachometerAlt },
+    { id: 'user-management', label: 'User Management', icon: faUsers },
+    { id: 'doctor-management', label: 'Doctor Management', icon: faUserMd },
+    { id: 'membership-management', label: 'Membership Management', icon: faDollarSign },
+    { id: 'blog-management', label: 'Blog Management', icon: faBlog },
+  ];
+
   return (
     <div className="admin-container">
-      <aside className="sidebar">
-        <div className="sidebar-header">
-          <img src={logo} alt="Logo" className="logo" />
-          <div className="logoTitle">Admin CGTS</div>
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar-header">
+          <img src={logo} alt="Logo" className="admin-logo" />
+          <div className="admin-logo-title">
+            <Link to="/">Admin CGTS</Link>
+          </div>
         </div>
         <nav>
           <ul>
             <li>
               <button 
                 onClick={() => setSelectedSection('dashboard')}
-                className={selectedSection === 'dashboard' ? 'active' : ''}
+                className={selectedSection === 'dashboard' ? 'admin-menu-item-active' : 'admin-menu-item'}
               >
-                <FontAwesomeIcon icon={faTachometerAlt} className="menu-icon" />
+                <FontAwesomeIcon icon={faTachometerAlt} className="admin-menu-icon" />
                 <span>Dashboard</span>
               </button>
             </li>
             <li>
               <button 
                 onClick={() => toggleSection('user-management')}
-                className={selectedSection === 'user-management' ? 'active' : ''}
+                className={selectedSection === 'user-management' ? 'admin-menu-item-active' : 'admin-menu-item'}
               >
-                <FontAwesomeIcon icon={faUsers} className="menu-icon" />
+                <FontAwesomeIcon icon={faUsers} className="admin-menu-icon" />
                 <span>User Management</span>
                 <FontAwesomeIcon 
                   icon={expandedSections['user-management'] ? faChevronUp : faChevronDown} 
-                  className="chevron-icon" 
+                  className="admin-chevron-icon" 
                 />
               </button>
               {expandedSections['user-management'] && (
-                <ul className="submenu">
+                <ul className="admin-submenu">
                   <li>
-                    <button onClick={() => setSelectedSection('user-management')}>
+                    <button 
+                      onClick={() => setSelectedSection('user-management')}
+                      className="admin-submenu-item"
+                    >
                       Manage Users
                     </button>
                   </li>
@@ -173,19 +187,22 @@ const Admin = () => {
             <li>
               <button 
                 onClick={() => toggleSection('doctor-management')}
-                className={selectedSection === 'doctor-management' ? 'active' : ''}
+                className={selectedSection === 'doctor-management' ? 'admin-menu-item-active' : 'admin-menu-item'}
               >
-                <FontAwesomeIcon icon={faUserMd} className="menu-icon" />
-                <span>Doctor Manage</span>
+                <FontAwesomeIcon icon={faUserMd} className="admin-menu-icon" />
+                <span>Doctor Management</span>
                 <FontAwesomeIcon 
                   icon={expandedSections['doctor-management'] ? faChevronUp : faChevronDown} 
-                  className="chevron-icon" 
+                  className="admin-chevron-icon" 
                 />
               </button>
               {expandedSections['doctor-management'] && (
-                <ul className="submenu">
+                <ul className="admin-submenu">
                   <li>
-                    <button onClick={() => setSelectedSection('doctor-management')}>
+                    <button 
+                      onClick={() => setSelectedSection('doctor-management')}
+                      className="admin-submenu-item"
+                    >
                       Manage Doctors
                     </button>
                   </li>
@@ -195,31 +212,51 @@ const Admin = () => {
             <li>
               <button 
                 onClick={() => setSelectedSection('membership-management')}
-                className={selectedSection === 'membership-management' ? 'active' : ''}
+                className={selectedSection === 'membership-management' ? 'admin-menu-item-active' : 'admin-menu-item'}
               >
-                <FontAwesomeIcon icon={faDollarSign} className="menu-icon" />
-                <span>Manage Membership</span>
+                <FontAwesomeIcon icon={faDollarSign} className="admin-menu-icon" />
+                <span>Membership Management</span>
               </button>
             </li>
             <li>
               <button 
                 onClick={() => setSelectedSection('blog-management')}
-                className={selectedSection === 'blog-management' ? 'active' : ''}
+                className={selectedSection === 'blog-management' ? 'admin-menu-item-active' : 'admin-menu-item'}
               >
-                <FontAwesomeIcon icon={faBlog} className="menu-icon" />
-                <span>Blog Manage</span>
+                <FontAwesomeIcon icon={faBlog} className="admin-menu-icon" />
+                <span>Blog Management</span>
               </button>
             </li>
             <li>
-              <button onClick={handleLogoutAndRedirect}>
-                <FontAwesomeIcon icon={faSignOutAlt} className="menu-icon" />
+              <button 
+                onClick={handleLogoutAndRedirect}
+                className="admin-menu-item"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="admin-menu-icon" />
                 <span>Logout</span>
               </button>
             </li>
           </ul>
         </nav>
       </aside>
-      <main className="content">
+      <main className="admin-content">
+        {/* Table of Contents */}
+        <div className="admin-toc">
+          <h3 className="admin-toc-title">Navigation</h3>
+          <ul className="admin-toc-list">
+            {tocItems.map(item => (
+              <li key={item.id} className="admin-toc-item">
+                <button
+                  onClick={() => setSelectedSection(item.id)}
+                  className={selectedSection === item.id ? 'admin-toc-button-active' : 'admin-toc-button'}
+                >
+                  <FontAwesomeIcon icon={item.icon} className="admin-toc-icon" />
+                  {item.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
         {renderSection()}
       </main>
     </div>

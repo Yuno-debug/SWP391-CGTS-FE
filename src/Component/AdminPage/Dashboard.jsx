@@ -4,45 +4,169 @@ import axios from 'axios';
 import Chart from 'chart.js/auto';
 import './Dashboard.css';
 
+import {
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 const Dashboard = ({ totalChildren, totalDoctors }) => {
   const chartRef = useRef(null);
   const [users, setUsers] = useState([]);
-  const [totalRevenue, setTotalRevenue] = useState(0); // State for total revenue
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [monthlyRevenueData, setMonthlyRevenueData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: 'Daily Revenue',
+        data: [],
+        fill: true,
+        backgroundColor: 'rgba(75,192,192,0.2)',
+        borderColor: 'rgba(75,192,192,1)',
+        tension: 0.4,
+        pointBackgroundColor: 'rgba(75,192,192,1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(75,192,192,1)',
+      },
+    ],
+  });
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
   const getRoleName = (role) => {
-  switch (role) {
-    case 1: return "Admin";
-    case 2: return "Customer";
-    case 3: return "Doctor";
-    default: return "Unknown";
-  }
-};
-
+    switch (role) {
+      case 1: return "Admin";
+      case 2: return "Customer";
+      case 3: return "Doctor";
+      default: return "Unknown";
+    }
+  };
 
   useEffect(() => {
     const fetchTotalRevenue = async () => {
       try {
-        const response = await axios.get('http://localhost:5200/api/Payment/total-revenue'); // Replace with your actual API endpoint
-        console.log("Total Revenue Response:", response.data);
-        setTotalRevenue(response.data.totalRevenue); // Adjust based on actual API response format
+        const response = await axios.get('http://localhost:5200/api/Payment/total-revenue');
+        setTotalRevenue(response.data.totalRevenue);
       } catch (error) {
         console.error("Error fetching total revenue:", error);
       }
     };
 
+    const fetchMonthlyRevenue = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5200/api/Payment/payments-for-month?month=${selectedMonth}`);
+        console.log("Monthly Revenue Response:", response.data);
+
+        const monthlyData = response.data.$values || [];
+
+        // Calculate days in the selected month for 2025
+        const daysInMonth = new Date(2025, selectedMonth, 0).getDate();
+        const labels = Array.from({ length: daysInMonth }, (_, i) => `Day ${i + 1}`);
+
+        // Initialize data array with zeros
+        const data = Array(daysInMonth).fill(0);
+
+        // Aggregate payments by day
+        if (Array.isArray(monthlyData)) {
+          monthlyData.forEach(payment => {
+            const paymentDate = new Date(payment.paymentDate);
+            const day = paymentDate.getDate(); // Get day of the month (1-31)
+            if (day >= 1 && day <= daysInMonth) {
+              data[day - 1] += payment.paymentAmount || 0; // Add payment amount to the correct day
+            }
+          });
+        } else {
+          console.warn("Unexpected monthly data format:", monthlyData);
+        }
+
+        setMonthlyRevenueData({
+          labels: labels,
+          datasets: [
+            {
+              ...monthlyRevenueData.datasets[0],
+              data: data,
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("Error fetching monthly revenue:", error);
+        // Fallback to empty chart
+        const daysInMonth = new Date(2025, selectedMonth, 0).getDate();
+        const labels = Array.from({ length: daysInMonth }, (_, i) => `Day ${i + 1}`);
+        setMonthlyRevenueData({
+          labels: labels,
+          datasets: [
+            {
+              ...monthlyRevenueData.datasets[0],
+              data: Array(daysInMonth).fill(0),
+            },
+          ],
+        });
+      }
+    };
+
     fetchTotalRevenue();
-  }, []);
+    fetchMonthlyRevenue();
+  }, [selectedMonth]);
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: { font: { size: 14 } }
+      },
+      title: {
+        display: true,
+        text: `Revenue for ${new Date(2025, selectedMonth - 1).toLocaleString('default', { month: 'long' })} 2025`,
+        font: { size: 18 }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        titleFont: { size: 14 },
+        bodyFont: { size: 12 },
+        callbacks: {
+          label: (context) => `${context.parsed.y.toLocaleString()} VND`
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(0,0,0,0.1)' },
+        ticks: {
+          callback: (value) => `${value.toLocaleString()} VND`
+        }
+      },
+      x: {
+        grid: { display: false }
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get('/api/UserAccount/get-all', {
           headers: {
-            'Authorization': 'Bearer YOUR_ACCESS_TOKEN' // Replace with actual token
+            'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
           }
         });
-
-        console.log("API Response:", response.data);
 
         if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
           setUsers(response.data.data.$values);
@@ -57,18 +181,37 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
     fetchUsers();
   }, []);
 
-  const monthlyRevenueData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    datasets: [
-      {
-        label: 'Monthly Revenue',
-        data: [12000, 15000, 10000, 20000, 25000, 22000, 30000, 28000, 32000, 35000, 37000, 40000],
-        fill: false,
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(75,192,192,1)',
-      },
-    ],
+  const sortData = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+
+    const sortedUsers = [...users].sort((a, b) => {
+      if (key === 'role') {
+        const roleA = getRoleName(a[key]);
+        const roleB = getRoleName(b[key]);
+        return direction === 'asc' ? roleA.localeCompare(roleB) : roleB.localeCompare(roleA);
+      }
+      const valueA = a[key] || '';
+      const valueB = b[key] || '';
+      return direction === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+    });
+    setUsers(sortedUsers);
   };
+
+  const getSortIndicator = (key) => {
+    if (sortConfig.key === key) {
+      return sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
+    }
+    return '';
+  };
+
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
   return (
     <div className="dashboard-container">
@@ -97,24 +240,38 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
         </div>
       </div>
       <div className="chart-container">
-        <div className="chart">
-          <h3>Monthly Revenue</h3>
-          <Line ref={chartRef} data={monthlyRevenueData} />
+        <div className="chart-controls">
+          <label>Select Month: </label>
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+          >
+            {months.map((month, index) => (
+              <option key={index + 1} value={index + 1}>{month}</option>
+            ))}
+          </select>
         </div>
         <div className="chart">
-          <h3>Children Growth Rate</h3>
-          {/* Add your chart component here */}
+          <Line ref={chartRef} data={monthlyRevenueData} options={chartOptions} />
         </div>
       </div>
       <div className="user-table-container">
-        <h3>Recent Users</h3>
+        <h3>Recent Request</h3>
         <table className="user-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
+              <th onClick={() => sortData('username')}>
+                Name{getSortIndicator('username')}
+              </th>
+              <th onClick={() => sortData('email')}>
+                Email{getSortIndicator('email')}
+              </th>
+              <th onClick={() => sortData('role')}>
+                Role{getSortIndicator('role')}
+              </th>
+              <th onClick={() => sortData('status')}>
+                Status{getSortIndicator('status')}
+              </th>
             </tr>
           </thead>
           <tbody>

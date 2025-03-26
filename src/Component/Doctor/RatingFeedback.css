@@ -1,85 +1,284 @@
-/* Reset default styles */
-* {
+/* RatingFeedback.css */
+
+/* Navbar Section */
+.rating-feedback-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 15px 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.navbar-left-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar-brand-section h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e40af;
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
 
-.rating-feedback-container {
+.navbar-menu-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.navbar-menu-button:hover {
+  background: #f1f5f9;
+  transform: scale(1.05);
+}
+
+.navbar-menu-button svg {
+  width: 24px;
+  height: 24px;
+  stroke: #3b82f6;
+}
+
+.navbar-right-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-user-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.navbar-logout-button {
+  padding: 8px 16px;
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navbar-logout-button:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.navbar-icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.navbar-icon-button:hover {
+  background: #f1f5f9;
+  transform: scale(1.05);
+}
+
+.navbar-icon-button svg {
+  width: 24px;
+  height: 24px;
+  stroke: #3b82f6;
+}
+
+/* Content Container */
+.rating-feedback-content {
+  padding: 30px;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #f8fafc 0%, #e5e7eb 100%);
+  min-height: 100vh;
   max-width: 1200px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
 }
 
-.rating-feedback-container h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-  font-family: 'Arial', sans-serif;
+/* Heading */
+.rating-feedback-content h2 {
   font-size: 28px;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 25px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
 }
 
-.feedback-table {
+.rating-feedback-content h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.rating-feedback-content h2:hover {
+  color: #2563eb;
+}
+
+.rating-feedback-content h2:hover::after {
+  width: 100%;
+}
+
+/* Table */
+.rating-feedback-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #fff;
-  border-radius: 8px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
-.feedback-table th,
-.feedback-table td {
-  padding: 12px 15px;
+.rating-feedback-table th,
+.rating-feedback-table td {
+  padding: 16px 20px;
   text-align: left;
-  font-family: 'Arial', sans-serif;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.feedback-table th {
-  background-color: #4a90e2;
-  color: white;
-  font-weight: 600;
+.rating-feedback-table th {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e40af;
   text-transform: uppercase;
-  font-size: 14px;
+  background: #f9fafb;
+  letter-spacing: 0.5px;
 }
 
-.feedback-table td {
-  border-bottom: 1px solid #eee;
-  color: #555;
-  font-size: 14px;
+.rating-feedback-table td {
+  font-size: 15px;
+  font-weight: 400;
+  color: #1f2937;
 }
 
-.feedback-table tr:nth-child(even) {
-  background-color: #f8f8f8;
+.rating-feedback-table tr {
+  transition: all 0.3s ease;
 }
 
-.feedback-table tr:hover {
-  background-color: #f1f1f1;
-  transition: background-color 0.3s ease;
+.rating-feedback-table tr:hover {
+  background: #f1f5f9;
+  transform: scale(1.01);
 }
 
-.no-data {
+.rating-feedback-table tr:active {
+  transform: scale(0.98);
+  background: #e2e8f0;
+}
+
+/* No Data */
+.rating-feedback-no-data {
   text-align: center;
-  color: #888;
-  font-style: italic;
-}
-
-.loading {
-  text-align: center;
-  font-size: 18px;
-  color: #666;
-  padding: 20px;
-}
-
-.error {
-  text-align: center;
+  padding: 25px;
+  color: #6b7280;
   font-size: 16px;
-  color: #d9534f;
-  padding: 20px;
-  background-color: #f8d7da;
-  border-radius: 5px;
-  margin: 20px auto;
-  max-width: 600px;
+  font-weight: 500;
+}
+
+/* Loading and Error States */
+.rating-feedback-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  font-weight: 500;
+  color: #1e40af;
+  background: #f8fafc;
+}
+
+.rating-feedback-error {
+  text-align: center;
+  padding: 25px;
+  background: #fee2e2;
+  color: #dc2626;
+  border-radius: 12px;
+  margin: 30px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .rating-feedback-navbar {
+    padding: 10px 20px;
+  }
+
+  .navbar-brand-section h1 {
+    font-size: 18px;
+  }
+
+  .navbar-user-name {
+    font-size: 14px;
+  }
+
+  .navbar-logout-button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .rating-feedback-content {
+    padding: 20px;
+  }
+
+  .rating-feedback-table th,
+  .rating-feedback-table td {
+    padding: 12px 15px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-left-section {
+    gap: 10px;
+  }
+
+  .navbar-brand-section h1 {
+    font-size: 16px;
+  }
+
+  .navbar-user-name {
+    display: none;
+  }
+
+  .navbar-logout-button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .rating-feedback-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .rating-feedback-table th,
+  .rating-feedback-table td {
+    font-size: 12px;
+    padding: 10px;
+  }
 }

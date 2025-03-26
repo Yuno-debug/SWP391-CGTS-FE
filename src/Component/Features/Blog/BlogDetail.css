@@ -1,90 +1,153 @@
-/* Tổng thể nội dung blog */
-.blog-content {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 30px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    line-height: 1.85;
-    color: #2c3e50;
-    transition: all 0.3s ease-in-out;
+/* Blog Detail Container */
+.blog-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-/* Tiêu đề chính */
-.blog-content h2,
-.blog-content h3 {
-    color: #222;
-    font-weight: 700;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 6px;
-    margin-top: 30px;
-    margin-bottom: 16px;
-}
-
-/* Phần danh sách */
-.blog-content ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.blog-content ul li {
-    margin-bottom: 12px;
-    padding-left: 28px;
-    position: relative;
-    line-height: 1.7;
-}
-
-/* Thay thế dấu bullet bằng icon */
-.blog-content ul li::before {
-    content: '✔';
-    color: #007bff;
-    font-size: 18px;
-    font-weight: bold;
-    position: absolute;
-    left: 0;
-    top: 2px;
-}
-
-/* Cải thiện phần "Category" */
-.blog-category {
+/* Blog Header */
+.blog-header {
     text-align: center;
-    font-style: italic;
-    color: #777;
-    margin-top: -10px;
+    margin-bottom: 30px;
+}
+
+.blog-title {
+    font-size: 2.5rem;
+    color: #333;
+}
+
+.blog-meta {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    color: #666;
+}
+
+/* Back Link */
+.blog-back-link {
     margin-bottom: 20px;
 }
 
-/* Hình ảnh trong Category */
-.blog-category img {
-    width: 100px;
-    height: auto;
+.nav-link.back {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+}
+
+.nav-link.back:hover {
+    text-decoration: underline;
+}
+
+/* Blog Layout */
+.blog-layout {
+    display: flex;
+    gap: 30px;
+}
+
+.blog-main {
+    flex: 1;
+}
+
+.blog-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
     border-radius: 8px;
-    display: block;
-    margin: 0 auto 10px;
+    margin-bottom: 20px;
 }
 
-/* Blockquote */
-.blog-content blockquote {
-    border-left: 5px solid #007bff;
-    padding: 15px 20px;
-    margin: 24px 0;
+.blog-content {
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Related Posts Sidebar */
+.related-posts-sidebar {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-left: 20px;
+    width: 300px;
+}
+
+.related-posts h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+.related-posts-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.related-post-item {
+    margin-bottom: 15px;
+    transition: transform 0.2s ease;
+}
+
+.related-post-item:hover {
+    transform: translateX(5px);
+}
+
+.related-post-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+}
+
+.related-post-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.related-post-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: black;
+    line-height: 1.4;
+}
+
+.related-post-title:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.related-posts p {
+    color: #666;
     font-style: italic;
-    background: #f7faff;
-    color: #444;
-    border-radius: 6px;
 }
 
-.blog-content blockquote:hover {
-    background: #e9f2ff;
+/* Navigation */
+.blog-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
 }
 
-/* Kết luận - Đậm hơn */
-.blog-content .conclusion {
-    font-weight: bold;
-    font-size: 20px;
-    color: #222;
+.nav-link.prev,
+.nav-link.next {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+}
+
+.nav-link.prev:hover,
+.nav-link.next:hover {
+    text-decoration: underline;
+}
+
+/* Loading Message */
+.loading-message {
     text-align: center;
+    margin-top: 50px;
+    color: #666;
 }

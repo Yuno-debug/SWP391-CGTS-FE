@@ -6,10 +6,10 @@ import Background from '../MemPage/Background4Mem';
 
 const LayoutForAb = ({ children }) => {
   return (
-    <div className="layout-for-ab">
+    <div className="layout-mempage-wrapper">
       <NavBar isLoggedIn={true} />
-      <Background/>
-      <main className="main-content">
+      <Background />
+      <main className="layout-mempage-content">
         {children}
       </main>
       <Footer />

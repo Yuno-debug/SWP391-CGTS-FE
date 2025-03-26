@@ -13,8 +13,10 @@ function BlogPage() {
   useEffect(() => {
   axios.get("http://localhost:5200/api/Blog/get-all")
     .then((response) => {
-      console.log("Fetched Blog Data:", response.data); // Kiểm tra log
-      setPosts(response.data.data?.$values || []); // Lấy danh sách bài viết từ $values
+      console.log("Fetched Blog Data:", response.data);
+      // Safely access data and $values
+      const fetchedPosts = response.data?.data?.$values || response.data?.data || [];
+      setPosts(fetchedPosts);
       setLoading(false);
     })
     .catch((error) => {
@@ -30,8 +32,8 @@ function BlogPage() {
     <>
     <Navbar isLoggedIn={true}/>
     <Routes>
-      <Route path="/" element={<BlogGrid posts={posts} />} />
-      <Route path="/blog/:id" element={<BlogDetail posts={posts} />} />
+      <Route path="" element={<BlogGrid posts={posts} />} />
+  <Route path="blog/:id" element={<BlogDetail posts={posts} />} />
     </Routes>
     <Footer/>
     </>

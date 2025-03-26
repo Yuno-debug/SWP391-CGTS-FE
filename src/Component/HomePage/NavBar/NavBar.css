@@ -40,6 +40,10 @@
     padding: 0;
 }
 
+.nav-menu li {
+    position: relative;
+}
+
 .nav-menu li a {
     color: white;
     text-decoration: none;
@@ -51,6 +55,97 @@
 
 .nav-menu li a:hover {
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ======= Add Child Dropdown ======= */
+.nav-menu__item {
+    position: relative;
+}
+
+.nav-menu__item-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: white;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-menu__item-label:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-menu__dropdown-arrow {
+    font-size: 12px;
+    margin-left: 2px;
+    transition: transform 0.3s ease;
+}
+
+.nav-menu__item-label:hover .nav-menu__dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.nav-menu__dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    background: linear-gradient(135deg, #1e90ff 0%, #007bff 100%);
+    /* Changed to a blue gradient */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    min-width: 180px;
+    z-index: 1000;
+    padding: 8px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.nav-menu__item:hover .nav-menu__dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Small triangle above the dropdown */
+.nav-menu__dropdown::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 20px;
+    width: 12px;
+    height: 12px;
+    background: #007bff;
+    /* Match the dropdown background */
+    transform: rotate(45deg);
+    border-top: 1px solid #0056b3;
+    /* Slightly darker border for contrast */
+    border-left: 1px solid #0056b3;
+    z-index: -1;
+}
+
+.nav-menu__dropdown a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: white;
+    /* Changed to white for contrast */
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease, padding-left 0.3s ease;
+}
+
+.nav-menu__dropdown a:hover {
+    background-color: #0056b3;
+    /* Darker blue on hover */
+    color: white;
+    padding-left: 25px;
 }
 
 /* ======= Right Section (Login / User Info) ======= */
@@ -70,12 +165,13 @@
     padding: 8px 16px;
     border: 1px solid white;
     border-radius: 20px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
 .nav-contact a:hover {
     background-color: white;
     color: #007bff;
+    transform: scale(1.05);
 }
 
 /* ======= User Info Dropdown ======= */
@@ -90,10 +186,12 @@
     cursor: pointer;
     padding: 6px 12px;
     border-radius: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.user-info:hover {
+.user-infor:hover {
     background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
 }
 
 .navbar-avatar {
@@ -102,6 +200,11 @@
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid white;
+    transition: border-color 0.3s ease;
+}
+
+.user-infor:hover .navbar-avatar {
+    border-color: #93C5FD;
 }
 
 .user-name {
@@ -115,33 +218,70 @@
 .dropdown-arrow {
     font-size: 12px;
     margin-left: 2px;
+    transition: transform 0.3s ease;
+}
+
+.user-infor:hover .dropdown-arrow {
+    transform: rotate(180deg);
 }
 
 /* ======= Dropdown Menu ======= */
 .dropdown-menu {
     position: absolute;
-    top: calc(100% + 8px);
+    top: calc(100% + 10px);
     right: 0;
-    background-color: white;
+    background: linear-gradient(135deg, #1e90ff 0%, #007bff 100%);
+    /* Changed to a blue gradient */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
-    min-width: 150px;
+    min-width: 180px;
     z-index: 1000;
-    padding: 5px 0;
+    padding: 8px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.nav-user:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Small triangle above the user dropdown */
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 12px;
+    height: 12px;
+    background: #007bff;
+    /* Match the dropdown background */
+    transform: rotate(45deg);
+    border-top: 1px solid #0056b3;
+    border-left: 1px solid #0056b3;
+    z-index: -1;
 }
 
 .dropdown-menu a {
-    display: block;
-    padding: 10px 15px;
-    color: #333;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: white;
+    /* Changed to white for contrast */
     text-decoration: none;
     font-size: 14px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease, padding-left 0.3s ease;
 }
 
 .dropdown-menu a:hover {
-    background-color: #f1f1f1;
-    color: #007bff;
+    background-color: #0056b3;
+    /* Darker blue on hover */
+    color: white;
+    padding-left: 25px;
 }
 
 /* ======= Responsive Design ======= */
@@ -167,7 +307,7 @@
         height: 30px;
     }
 
-    .user-info {
+    .user-infor {
         padding: 4px 8px;
     }
 
@@ -175,7 +315,97 @@
         max-width: 80px;
     }
 
-    .dropdown-menu {
-        min-width: 120px;
+    .dropdown-menu,
+    .nav-menu__dropdown {
+        min-width: 150px;
+        left: 50%;
+        transform: translateX(-50%) translateY(0);
     }
+
+    .dropdown-menu::before,
+    .nav-menu__dropdown::before {
+        left: 50%;
+        transform: translateX(-50%) rotate(45deg);
+    }
+}
+.nav-alerts {
+    position: relative;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.alerts-icon {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.alerts-badge {
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+}
+
+.alerts-dropdown {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    width: 250px;
+    background: #0056b3;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.alert-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.alert-item:last-child {
+    border-bottom: none;
+}
+
+.alert-item:hover {
+    background: #0056b3;
+}
+/* Thêm vào cuối file Navbar.css */
+
+/* Kiểu cho các liên kết đang active */
+.active-link {
+    background-color: rgba(255, 255, 255, 0.3);
+    /* Màu nền nổi bật */
+    color: #fff;
+    /* Màu chữ trắng */
+    font-weight: bold;
+    /* Chữ in đậm */
+    border-bottom: 2px solid #fff;
+    /* Đường viền dưới để nhấn mạnh */
+}
+
+/* Đảm bảo các liên kết trong dropdown cũng có hiệu ứng active */
+.nav-menu__dropdown .active-link,
+.dropdown-menu .active-link {
+    background-color: #0056b3;
+    /* Màu xanh đậm hơn khi active trong dropdown */
+    color: white;
+    padding-left: 25px;
+    /* Dịch sang trái khi hover hoặc active */
+}
+
+/* Điều chỉnh cho logo chính */
+.nav-logo .active-link {
+    border-bottom: none;
+    /* Loại bỏ đường viền dưới cho logo */
 }

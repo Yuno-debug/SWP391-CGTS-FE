@@ -7,75 +7,92 @@ const Alert = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchAlerts = async () => {
+    setLoading(true);
+    setError(null);
+
+    const token = localStorage.getItem("token");
+    console.log("Token:", token);
+
+    if (!token) {
+      setError("No authorization token found. Please log in again.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get('http://localhost:5200/api/Alert', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log("Alert Response (Stringified):", JSON.stringify(response.data, null, 2));
+
+      // Handle the response format { "$id": "1", "$values": [...] }
+      if (response.data?.$values && Array.isArray(response.data.$values)) {
+        setAlerts(response.data.$values);
+      } else if (Array.isArray(response.data)) {
+        setAlerts(response.data);
+      } else if (response.data?.data && Array.isArray(response.data.data)) {
+        setAlerts(response.data.data);
+      } else if (response.data?.results && Array.isArray(response.data.results)) {
+        setAlerts(response.data.results);
+      } else if (response.data?.items && Array.isArray(response.data.items)) {
+        setAlerts(response.data.items);
+      } else if (response.data?.alerts && Array.isArray(response.data.alerts)) {
+        setAlerts(response.data.alerts);
+      } else if (response.data?.success === false) {
+        setError(`API Error: ${response.data.message || "No alerts available"}`);
+      } else if (response.data === null || Object.keys(response.data).length === 0) {
+        setError("No alerts data received. The response is empty.");
+      } else {
+        console.error("Unexpected response format:", JSON.stringify(response.data, null, 2));
+        setError("Invalid response format. Expected an array or object with an array property.");
+      }
+    } catch (error) {
+      console.error('Error fetching alerts:', error);
+      let errorMessage = "Failed to load alerts.";
+      if (error.response) {
+        errorMessage += ` Server responded with: ${error.response.status} - ${error.response.data?.message || "Bad Request"}`;
+      } else if (error.request) {
+        errorMessage += " No response received from the server.";
+      } else {
+        errorMessage += ` Error: ${error.message}`;
+      }
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAlerts = async () => {
-      setLoading(true);
-      setError(null);
-
-      const token = localStorage.getItem("token");
-      console.log("Token:", token);
-
-      if (!token) {
-        setError("No authorization token found. Please log in again.");
-        setLoading(false);  
-        return;
-      }
-
-      try {
-        const response = await axios.get('http://localhost:5200/api/Alert', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        console.log("Alert Response (Stringified):", JSON.stringify(response.data, null, 2));
-
-        // Handle the response format { "$id": "1", "$values": [...] }
-        if (response.data?.$values && Array.isArray(response.data.$values)) {
-          setAlerts(response.data.$values);
-        } else if (Array.isArray(response.data)) {
-          setAlerts(response.data);
-        } else if (response.data?.data && Array.isArray(response.data.data)) {
-          setAlerts(response.data.data);
-        } else if (response.data?.results && Array.isArray(response.data.results)) {
-          setAlerts(response.data.results);
-        } else if (response.data?.items && Array.isArray(response.data.items)) {
-          setAlerts(response.data.items);
-        } else if (response.data?.alerts && Array.isArray(response.data.alerts)) {
-          setAlerts(response.data.alerts);
-        } else if (response.data?.success === false) {
-          setError(`API Error: ${response.data.message || "No alerts available"}`);
-        } else if (response.data === null || Object.keys(response.data).length === 0) {
-          setError("No alerts data received. The response is empty.");
-        } else {
-          console.error("Unexpected response format:", JSON.stringify(response.data, null, 2));
-          setError("Invalid response format. Expected an array or object with an array property.");
-        }
-      } catch (error) {
-        console.error('Error fetching alerts:', error);
-        let errorMessage = "Failed to load alerts.";
-        if (error.response) {
-          errorMessage += ` Server responded with: ${error.response.status} - ${error.response.data?.message || "Bad Request"}`;
-        } else if (error.request) {
-          errorMessage += " No response received from the server.";
-        } else {
-          errorMessage += ` Error: ${error.message}`;
-        }
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchAlerts();
   }, []);
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (error) return (
+    <div>
+      <p>{error}</p>
+      <button onClick={fetchAlerts} style={{ marginTop: '10px' }}>
+        Retry
+      </button>
+    </div>
+  );
 
   return (
     <div className="alert-container">
-      <h2>Alerts</h2>
+      <div className="page-header">
+        <div className="header-left">
+          <h2>Alerts</h2>
+          <p>View and manage all alerts here.</p>
+        </div>
+        <div className="header-right">
+          <button className="refresh-button" onClick={fetchAlerts}>
+            Refresh
+          </button>
+        </div>
+      </div>
       <table className="alert-table">
         <thead>
           <tr>
@@ -89,7 +106,7 @@ const Alert = () => {
         <tbody>
           {alerts.length > 0 ? (
             alerts.map((alert, index) => (
-              <tr key={alert.alertId || index}> {/* Use alertId as a unique key */}
+              <tr key={alert.alertId || index}>
                 <td>{alert.childId || 'N/A'}</td>
                 <td>{alert.alertType || 'N/A'}</td>
                 <td>{alert.message || 'N/A'}</td>
@@ -99,7 +116,9 @@ const Alert = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center' }}>No alerts available.</td>
+              <td colSpan="5" style={{ textAlign: 'center' }}>
+                No alerts available.
+              </td>
             </tr>
           )}
         </tbody>

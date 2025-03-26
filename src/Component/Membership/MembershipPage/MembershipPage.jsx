@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCrown } from "@fortawesome/free-solid-svg-icons";
-import PaymentModal from "../PaymentPage/PaymentModal";
 import "./MembershipPage.css";
-import MainLayout4Mem from "./MainLayout4Mem";
+import Navbar from "../../HomePage/NavBar/NavBar";
+import Footer from "../../HomePage/Footer/Footer";
+import PaymentModal from "../PaymentPage/PaymentModal";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5200";
 
 // Hàm để lấy màu không trùng lặp
 const getUniqueGradient = (usedColors) => {
   const colors = [
-    "linear-gradient(135deg, #ff4e50 0%, #f9d423 100%)", // Đỏ - Vàng
-    "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", // Cam - Hồng đậm
-    "linear-gradient(135deg, #fc466b 0%, #3f5efb 100%)", // Hồng - Xanh dương
-    "linear-gradient(135deg, #24c6dc 0%, #514a9d 100%)", // Xanh biển - Tím
-    "linear-gradient(135deg, #ff0084 0%, #33001b 100%)", // Hồng neon - Đỏ đậm
-    "linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)", // Hồng đậm - Đỏ cam
+    "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", // Xanh đậm (Basic)
+    "linear-gradient(135deg, #4b134f 0%, #8a2be2 100%)", // Tím đậm (Standard)
+    "linear-gradient(135deg, #c33764 0%, #1d2671 100%)", // Hồng đậm - Xanh (Premium)
   ];
 
   const availableColors = colors.filter((color) => !usedColors.includes(color));
@@ -30,11 +27,12 @@ const getUniqueGradient = (usedColors) => {
   return newColor;
 };
 
-const MembershipPage = () => {
+const MembershipPage = ({ isLoggedIn }) => {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${API_URL}/api/MembershipPackage`)
@@ -60,38 +58,52 @@ const MembershipPage = () => {
   };
 
   return (
-    <MainLayout4Mem hideBody={true}>
-      <div className="membership-page">
-        <div className="membership-container">
-          <div className="membership-content">
-            <h1 className="membership-title">Membership Plans</h1>
+    <>
+      <Navbar isLoggedIn={isLoggedIn} />
+      <div className="membership-page-wrapper">
+        <div className="membership-page-container">
+          <div className="membership-page-content">
+            <h1 className="membership-page-title">Membership Plans</h1>
             {loading ? (
-              <p className="loading-text">⏳ Loading membership packages...</p>
+              <p>⏳ Đang tải gói membership...</p>
             ) : (
-              <div className="membership-plans">
+              <div className="membership-page-plans">
                 {packages.length > 0 ? (
-                  packages.filter((pkg) => pkg.status === "Active").map((pkg) => (
-                    <div
-                      key={pkg.packageId}
-                      className="plan-card"
-                      style={{ background: pkg.bgColor }}
-                      onClick={() => handlePackageClick(pkg)}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      <div className="plan-card-header">
-                        <FontAwesomeIcon icon={faCrown} className="plan-icon" />
-                        <h2 className="plan-title">{pkg.packageName.toUpperCase()}</h2>
-                      </div>
-                      <div className="plan-card-body">
-                        <p className="plan-price">{pkg.price.toLocaleString("en-US")} VND</p>
-                        <p className="plan-description">{pkg.description}</p>
-                      </div>
-                    </div>
-                  ))
+                  packages
+                    .filter((pkg) => pkg.status === "Active")
+                    .map((pkg, index) => {
+                      const duration = pkg.durationMonths || 1;
+                      const durationText = `${duration} month${duration > 1 ? "s" : ""}`;
+                      return (
+                        <div
+                          key={pkg.packageId}
+                          className={`membership-plan-card ${
+                            pkg.packageName.toLowerCase() === "premium" ? "membership-premium-card" : ""
+                          }`}
+                          style={{ background: pkg.bgColor }}
+                          onClick={() => handlePackageClick(pkg)}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          {pkg.packageName.toLowerCase() === "vvip" && (
+                            <span className="membership-most-popular-badge">Most Popular</span>
+                          )}
+                          <h2 className="membership-plan-title">{pkg.packageName}</h2>
+                          <ul className="membership-plan-features">
+                            {pkg.description.split(";").map((feature, idx) => (
+                              <li key={idx}>✔ {feature.trim()}</li>
+                            ))}
+                          </ul>
+                          <p className="membership-plan-price">
+                            {pkg.price.toLocaleString("en-US")} đ / {durationText}
+                          </p>
+                        </div>
+                      );
+                    })
                 ) : (
-                  <p className="no-packages-text">🚫 No membership packages available.</p>
+                  <p>🚫 Không có gói membership khả dụng.</p>
                 )}
+                {/* Add a Child Card */}
               </div>
             )}
           </div>
@@ -105,7 +117,8 @@ const MembershipPage = () => {
           />
         )}
       </div>
-    </MainLayout4Mem>
+      <Footer />
+    </>
   );
 };
 

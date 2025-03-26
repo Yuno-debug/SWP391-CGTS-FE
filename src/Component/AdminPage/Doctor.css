@@ -65,6 +65,22 @@
     /* Add ellipsis for overflow text */
 }
 
+/* Truncate long text with ellipsis for specific columns */
+.doctor-table td.truncate {
+    max-width: 150px;
+    /* Consistent with the general max-width */
+    white-space: nowrap;
+    /* Prevent wrapping for truncated cells */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Tooltip styling (using the title attribute) */
+.doctor-table td.truncate:hover {
+    cursor: pointer;
+    /* Indicate that there's more content on hover */
+}
+
 .doctor-table th {
     background-color: #f2f2f2;
     font-weight: 600;
@@ -206,4 +222,35 @@
     text-align: center;
     font-size: 1rem;
     margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments for Truncation */
+@media (max-width: 768px) {
+
+    .doctor-table th,
+    .doctor-table td,
+    .doctor-table td.truncate {
+        max-width: 100px;
+        /* Reduce width on smaller screens */
+    }
+
+    .doctor-table {
+        min-width: 800px;
+        /* Adjust min-width for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+
+    .doctor-table th,
+    .doctor-table td,
+    .doctor-table td.truncate {
+        max-width: 80px;
+        /* Further reduce width on very small screens */
+    }
+
+    .doctor-table {
+        min-width: 600px;
+        /* Further adjust min-width for very small screens */
+    }
 }

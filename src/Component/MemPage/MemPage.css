@@ -1,297 +1,465 @@
-/* Thêm hình nền cho container chính */
-.bmi-tool-container {
-  padding: 20px;
-  background: url('https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
-  background-size: cover;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+/* MemPage.css */
+.mempage-wrapper {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 15px;
 }
-/* Lớp phủ để làm mờ nền và tăng độ đọc */
-.bmi-tool-container::before {
+
+/* Main content area */
+.mempage-content {
+  padding: 40px 0;
+  background-color: #f8fafc;
+}
+
+/* Content container */
+.mempage-content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Section title */
+.mempage-section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.mempage-section-title::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.85);
-  /* Lớp phủ trắng mờ */
-  z-index: 1;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border-radius: 2px;
 }
 
-/* Đảm bảo nội dung nằm trên lớp phủ */
-.bmi-content-wrapper {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 1200px;
-  margin: auto;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-/* Thêm biểu tượng trước tiêu đề */
-.bmi-section h2::before {
-  content: '📊';
-  /* Biểu tượng biểu đồ hoặc bất kỳ icon nào phù hợp */
-  margin-right: 8px;
+/* BMI container */
+.mempage-bmi-container {
+  flex: 1;
+  min-width: 0;
 }
 
-/* BMI Section Styling */
-.bmi-section {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: left;
-  /* Align text to the left */
-  flex: 1 1 calc(50% - 20px);
-  /* Adjust flex properties for horizontal alignment */
-  min-width: 300px;
-  /* Ensure minimum width for sections */
-}
-
-.bmi-section h2 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.bmi-section p {
-  font-size: 16px;
-  line-height: 1.5;
-  color: #555;
-}
-
-/* Cải thiện nút */
-.use-tool-button {
-  display: inline-block;
-  padding: 16px 32px;
-  font-size: 20px;
-  font-weight: bold;
-  color: white;
-  background: linear-gradient(45deg, #00c4cc, #ff6f61);
-  /* Gradient mới tươi sáng hơn */
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+/* Page title */
+.mempage-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 30px;
   text-align: center;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 10px rgba(0, 196, 204, 0.4);
 }
 
-/* Hover effect */
-.use-tool-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 14px rgba(0, 196, 204, 0.6);
+/* BMI grid layout */
+.mempage-bmi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
 }
 
-/* Growth Record Styling */
-.growth-record {
-  margin-top: 40px;
-}
-
-.growth-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  flex: 1 1 calc(33% - 10px);
+/* BMI card */
+.mempage-bmi-card {
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 350px;
   display: flex;
   flex-direction: column;
 }
 
-.form-group label {
-  font-weight: bold;
-  margin-bottom: 5px;
+.mempage-bmi-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
-.form-group input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.add-growth-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 15px;
-}
-
-.add-growth-button:hover {
-  background-color: #0056b3;
-}
-
-.growth-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.growth-table th,
-.growth-table td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-
-.growth-table th {
-  background-color: #007bff;
-  color: white;
-}
-
-.growth-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.growth-table tr:hover {
-  background-color: #ddd;
-}
-
-/* Growth Chart Styling */
-.growth-chart-container {
-  margin-top: 20px;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Modal Overlay (Pop-up) */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
+/* BMI image wrapper */
+.mempage-bmi-image-wrapper {
+  overflow: hidden;
   border-radius: 10px;
-  width: 400px;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  position: relative;
-}
-/* Nút đóng modal */
-.close-modal {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-/* Thêm hình ảnh minh họa trong modal */
-.modal-content img {
-  width: 60px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.modal-content h2 {
-  margin-bottom: 15px;
-}
-
-.modal-content label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-.modal-content input,
-.modal-content select,
-.modal-content textarea {
+/* BMI image */
+.mempage-bmi-image {
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  height: 180px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
-.modal-buttons {
-  margin-top: 20px;
+.mempage-bmi-card:hover .mempage-bmi-image {
+  transform: scale(1.05);
+}
+
+/* Card heading */
+.mempage-bmi-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 15px;
+}
+
+/* Card paragraph */
+.mempage-bmi-card p {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+/* Membership Benefits Section */
+.mempage-benefits-container {
+  flex: 1;
+}
+
+.mempage-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.mempage-benefit-card {
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mempage-benefit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.mempage-benefit-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.mempage-benefit-card h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 10px;
+}
+
+.mempage-benefit-card p {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+/* Health Tips Section */
+.mempage-health-tips-container {
+  flex: 1;
+}
+
+.mempage-health-tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.mempage-health-tip-card {
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 350px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
-.submit-button,
-.cancel-button {
-  padding: 10px 20px;
+.mempage-health-tip-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.mempage-health-tip-image-wrapper {
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.mempage-health-tip-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.mempage-health-tip-card:hover .mempage-health-tip-image {
+  transform: scale(1.05);
+}
+
+.mempage-health-tip-card h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 10px;
+}
+
+.mempage-health-tip-card p {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+/* Growth Milestones Section */
+.mempage-milestones-container {
+  flex: 1;
+}
+
+.mempage-milestones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.mempage-milestone-card {
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mempage-milestone-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.mempage-milestone-card h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 10px;
+}
+
+.mempage-milestone-card p {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+/* Community Support Section */
+.mempage-community-container {
+  flex: 1;
+}
+
+.mempage-community-content {
+  display: flex;
+  gap: 30px;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mempage-community-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.mempage-community-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mempage-community-text p {
+  font-size: 1.1rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.mempage-community-button {
+  padding: 12px 24px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  color: #ffffff;
   border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  border-radius: 5px;
+  transition: background 0.3s ease, transform 0.3s ease;
+  align-self: flex-start;
 }
 
-.submit-button {
-  background-color: #28a745;
-  color: white;
+.mempage-community-button:hover {
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  transform: translateY(-3px);
 }
 
-.cancel-button {
-  background-color: #dc3545;
-  color: white;
+.mempage-community-image-wrapper {
+  flex: 1;
+  overflow: hidden;
+  border-radius: 10px;
 }
 
-.submit-button:hover {
-  background-color: #218838;
+.mempage-community-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
-.cancel-button:hover {
-  background-color: #c82333;
+.mempage-community-content:hover .mempage-community-image {
+  transform: scale(1.05);
+}
+
+/* Upcoming Events Section */
+.mempage-events-container {
+  flex: 1;
+}
+
+.mempage-events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.mempage-event-card {
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mempage-event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.mempage-event-card h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 10px;
+}
+
+.mempage-event-card p {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.mempage-event-button {
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.mempage-event-button:hover {
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  transform: translateY(-3px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+
+  .mempage-bmi-grid,
+  .mempage-benefits-grid,
+  .mempage-health-tips-grid,
+  .mempage-milestones-grid,
+  .mempage-events-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .mempage-community-content {
+    flex-direction: column;
+  }
+
+  .mempage-community-image-wrapper {
+    height: 200px;
+  }
+
+  .mempage-community-button {
+    align-self: center;
+  }
 }
 
 @media (max-width: 768px) {
-  .bmi-content-wrapper {
-    flex-direction: column;
-    padding: 10px;
+  .mempage-content {
+    padding: 30px 0;
   }
 
-  .bmi-section {
-    padding: 10px;
-    flex: 1 1 100%;
+  .mempage-title,
+  .mempage-section-title {
+    font-size: 1.8rem;
   }
 
-  .bmi-section img {
-    max-height: 150px;
-    object-fit: cover;
+  .mempage-bmi-card,
+  .mempage-health-tip-card {
+    padding: 20px;
+    min-height: 300px;
   }
 
-  .use-tool-button {
-    font-size: 16px;
-    padding: 12px 24px;
+  .mempage-bmi-image,
+  .mempage-health-tip-image {
+    height: 150px;
   }
 
-  .modal-content {
-    width: 90%;
-    padding: 15px;
+  .mempage-community-image {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .mempage-title,
+  .mempage-section-title {
+    font-size: 1.6rem;
+  }
+
+  .mempage-bmi-card h2,
+  .mempage-benefit-card h3,
+  .mempage-health-tip-card h3,
+  .mempage-milestone-card h3,
+  .mempage-event-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .mempage-bmi-card p,
+  .mempage-benefit-card p,
+  .mempage-health-tip-card p,
+  .mempage-milestone-card p,
+  .mempage-event-card p,
+  .mempage-community-text p {
+    font-size: 0.9rem;
+  }
+
+  .mempage-bmi-image,
+  .mempage-health-tip-image {
+    height: 120px;
+  }
+
+  .mempage-community-image {
+    height: 150px;
   }
 }

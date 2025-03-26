@@ -4,7 +4,7 @@ import "./BlogCard.css";
 
 function BlogCard({ post }) {
   return (
-    <div className="blog-card">
+    <Link to={`/blog/${post.blogId}`} className="blog-card">
       <img 
         src={post.image || "/default-thumbnail.jpg"} 
         alt={post.title} 
@@ -24,12 +24,8 @@ function BlogCard({ post }) {
             ))}
           </div>
         )}
-        {/* Dùng Link để điều hướng đến chi tiết bài viết */}
-        <Link to={`/blog/${post.blogId}`} className="blog-card-link">
-          Read More
-        </Link>
       </div>
-    </div>
+    </Link>
   );
 }
 

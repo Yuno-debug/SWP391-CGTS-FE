@@ -1,0 +1,194 @@
+/* Container chính */
+.consultation-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.consultation-container:hover {
+    transform: translateY(-5px);
+}
+
+/* Tiêu đề */
+.consultation-title {
+    text-align: center;
+    color: #1e3a8a;
+    /* Màu xanh đậm */
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+/* Phụ đề */
+.consultation-subtitle {
+    text-align: center;
+    color: #6b7280;
+    /* Màu xám nhẹ */
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* Bảng phản hồi */
+.response-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    font-size: 14px;
+}
+
+.response-table th,
+.response-table td {
+    border: 1px solid #e5e7eb;
+    /* Viền xám nhạt */
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.response-table th {
+    background: #eff6ff;
+    /* Màu nền xanh nhạt */
+    color: #1e3a8a;
+    /* Màu chữ xanh đậm */
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.response-table td {
+    color: #374151;
+    /* Màu chữ xám đậm */
+}
+
+.response-table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.response-table tbody tr:hover {
+    background: #f1f5f9;
+    /* Màu nền khi hover */
+}
+
+/* Thông báo không có dữ liệu */
+.no-responses {
+    text-align: center;
+    padding: 25px;
+    color: #9ca3af;
+    /* Màu xám nhạt */
+    font-size: 16px;
+    font-style: italic;
+}
+
+/* Trạng thái loading */
+.loading {
+    text-align: center;
+    font-size: 18px;
+    color: #4b5563;
+    /* Màu xám */
+    padding: 20px;
+}
+
+/* Thông báo lỗi */
+.error-message {
+    text-align: center;
+    font-size: 16px;
+    color: #dc2626;
+    /* Màu đỏ */
+    padding: 20px;
+    background: #fef2f2;
+    /* Nền đỏ nhạt */
+    border-radius: 8px;
+}
+
+/* Nút mở modal */
+.open-modal-btn {
+    display: block;
+    margin: 0 auto 20px;
+    padding: 10px 20px;
+    background: #2563eb;
+    /* Màu xanh dương */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.open-modal-btn:hover {
+    background: #1e40af;
+    /* Màu xanh đậm hơn khi hover */
+    transform: translateY(-2px);
+}
+
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    /* Nền mờ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Nội dung modal */
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Tiêu đề modal */
+.modal-title {
+    text-align: center;
+    color: #1e3a8a;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Nút đóng modal */
+.close-modal-btn {
+    display: block;
+    margin: 20px auto 0;
+    padding: 8px 16px;
+    background: #dc2626;
+    /* Màu đỏ */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.close-modal-btn:hover {
+    background: #b91c1c;
+    /* Màu đỏ đậm hơn khi hover */
+    transform: translateY(-2px);
+}
+
+/* Hiệu ứng slide-in cho modal */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -3,17 +3,17 @@ import './Profile.css';
 import EditProfile from './EditProfile';
 import { AuthContext } from '../LoginPage/AuthContext';
 import axios from 'axios';
-import Header from '../../Component/HomePage/NavBar/NavBar'; // ✅ Import Header
-import Footer from '../../Component/HomePage/Footer/Footer'; // ✅ Import Footer
+import Header from '../../Component/HomePage/NavBar/NavBar';
+import Footer from '../../Component/HomePage/Footer/Footer';
+import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCalendarAlt, FaClock } from 'react-icons/fa';
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5200";
 
-const Profile = (isLoggedIn) => {
+const Profile = ({ isLoggedIn }) => {
   const { userId } = useContext(AuthContext);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [userData, setUserData] = useState(null);
 
-  // Hàm fetch dữ liệu user
   const fetchUserData = async () => {
     if (!userId) {
       console.error("User ID is missing from AuthContext");
@@ -21,8 +21,6 @@ const Profile = (isLoggedIn) => {
     }
     try {
       const token = localStorage.getItem("token");
-      console.log("Fetching user data for ID:", userId);
-
       const response = await axios.get(`${API_URL}/api/UserAccount/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -41,63 +39,76 @@ const Profile = (isLoggedIn) => {
     }
   };
 
-  // Fetch khi load component
   useEffect(() => {
     fetchUserData();
   }, [userId]);
 
-  // Mở form EditProfile
   const handleEditProfileClick = () => {
     setIsEditProfileOpen(true);
   };
 
-  // Đóng form EditProfile
   const handleCloseEditProfile = () => {
     setIsEditProfileOpen(false);
   };
 
-  // ✅ Cập nhật lại dữ liệu khi chỉnh sửa xong
   const handleProfileUpdate = (updatedData) => {
-    setUserData(updatedData); // Cập nhật dữ liệu mới vào state
+    setUserData(updatedData);
   };
 
   if (!userData) {
-    return <div className="loading">Không tìm thấy dữ liệu người dùng!</div>;
+    return <div className="profile-loading-message">Không tìm thấy dữ liệu người dùng!</div>;
   }
 
   return (
     <>
-      {/* ✅ Thêm Header */}
       <Header isLoggedIn={isLoggedIn} />
-
-      <div className="profile-container">
-        <div className="profile-cover">
-          <div className="cover-gradient"></div>
+      <div className="profile-page-wrapper">
+        <div className="profile-cover-section">
+          <div className="profile-cover-gradient"></div>
         </div>
-        <div className="profile-header">
-        <img
-  src={userData.profilePicture || "https://via.placeholder.com/150"}
-  alt="Profile"
-  className="profile-avatar" // ✅ Đã đổi class mới
-/>
-
-          <div className="user-info">
-            <h2 className="username">{userData.username}</h2>
+        <div className="profile-header-section">
+          <img
+            src={userData.profilePicture || "https://via.placeholder.com/150"}
+            alt="Profile"
+            className="profile-user-avatar"
+          />
+          <div className="profile-user-details">
+            <h2 className="profile-user-name">{userData.username}</h2>
           </div>
-          <button className="edit-profile" onClick={handleEditProfileClick}>
+          <button className="profile-btn-edit" onClick={handleEditProfileClick}>
             ✎ Edit Profile
           </button>
         </div>
 
-        <div className="profile-content">
-          <div className="profile-section">
+        <div className="profile-main-content">
+          <div className="profile-info-section">
             <h2>Profile</h2>
-            <p><strong>Name:</strong> {userData.username}</p>
-            <p><strong>Email:</strong> {userData.email}</p>
-            <p><strong>Phone Number:</strong> {userData.phoneNumber || "Không có"}</p>
-            <p><strong>Address:</strong> {userData.address || "Không xác định"}</p>
-            <p><strong>Register Date:</strong> {new Date(userData.registrationDate).toLocaleDateString()}</p>
-            <p><strong>Last Login:</strong> {new Date(userData.lastLogin).toLocaleString()}</p>
+            <div className="profile-details">
+              <p>
+                <FaUser className="profile-details-icon" />
+                <strong>Username:</strong> {userData.username}
+              </p>
+              <p>
+                <FaEnvelope className="profile-details-icon" />
+                <strong>Email:</strong> {userData.email}
+              </p>
+              <p>
+                <FaPhone className="profile-details-icon" />
+                <strong>Phone Number:</strong> {userData.phoneNumber || "Không có"}
+              </p>
+              <p>
+                <FaMapMarkerAlt className="profile-details-icon" />
+                <strong>Address:</strong> {userData.address || "Không xác định"}
+              </p>
+              <p>
+                <FaCalendarAlt className="profile-details-icon" />
+                <strong>Create:</strong> {new Date(userData.registrationDate).toLocaleDateString()}
+              </p>
+              <p>
+                <FaClock className="profile-details-icon" />
+                <strong>Last Login:</strong> {new Date(userData.lastLogin).toLocaleString()}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -108,13 +119,11 @@ const Profile = (isLoggedIn) => {
             phoneNumber={userData.phoneNumber || ""}
             profilePicture={userData.profilePicture || ""}
             onClose={handleCloseEditProfile}
-            refetchUserData={fetchUserData} // ✅ Truyền lại fetch khi cập nhật
+            refetchUserData={fetchUserData}
           />
         )}
       </div>
-
-      {/* ✅ Thêm Footer */}
-      
+      <Footer />
     </>
   );
 };

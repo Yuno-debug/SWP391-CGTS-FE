@@ -1,72 +1,153 @@
+/* Wrapper to contain both the main content and the TOC */
+.update-growth-metrics-wrapper {
+  display: flex;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
 /* Container tổng */
 .update-growth-metrics-container {
+  flex: 1;
   max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
+  padding: 30px;
   background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Header section (for Back button and title) */
+.header-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+/* Back button */
+.back-button {
+  padding: 8px 16px;
+  background-color: #6b48ff;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #5439cc;
+  transform: translateY(-2px);
+}
+
+/* Page title */
+.update-growth-metrics-container h2 {
+  font-size: 26px;
+  color: #1e3a8a;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+/* Error message */
+.error-message {
+  color: #e74c3c;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 500;
 }
 
 /* Form cập nhật */
 .update-growth-metrics-form {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 20px;
   justify-content: space-between;
-  padding: 20px;
+  padding: 25px;
   background: #f9f9f9;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  transition: transform 0.3s ease;
+}
+
+.update-growth-metrics-form:hover {
+  transform: translateY(-3px);
 }
 
 /* Ô input */
 .form-group {
-  flex: 1 1 calc(50% - 10px);
+  flex: 1 1 calc(50% - 15px);
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
 }
 
 .form-group label {
-  font-weight: bold;
-  margin-bottom: 5px;
+  font-weight: 600;
+  margin-bottom: 6px;
   color: #333;
+  font-size: 14px;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-  transition: border 0.3s;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-  border-color: #007bff;
+  border-color: #6b48ff;
+  box-shadow: 0 0 8px rgba(107, 72, 255, 0.2);
   outline: none;
+}
+
+/* Full-width field (for Notes) */
+.form-group.full-width {
+  flex: 1 1 100%;
 }
 
 /* Nút bấm */
 .update-growth-metrics-button {
-  width: 100%;
+  width: 200px;
   padding: 12px;
-  background-color: #007bff;
+  background-color: #6b48ff;
   color: white;
   font-size: 16px;
+  font-weight: 500;
   border: none;
-  border-radius: 6px;
+  border-radius: 25px;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  display: block;
+  margin: 10px auto 0;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .update-growth-metrics-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
+  background-color: #5439cc;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(84, 57, 204, 0.3);
+}
+
+/* Section titles */
+.growth-records-list h3,
+.growth-chart-container h3,
+.who-bmi-table-container h3 {
+  font-size: 22px;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
 }
 
 /* Bảng dữ liệu */
@@ -77,20 +158,23 @@
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .growth-records-table th,
 .growth-records-table td {
   padding: 14px;
-  border: 1px solid #ddd;
+  border: 1px solid #e0e0e0;
   text-align: center;
+  font-size: 14px;
 }
 
 .growth-records-table th {
-  background-color: #007bff;
+  background-color: #1e3a8a;
   color: white;
-  font-weight: bold;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .growth-records-table tr:nth-child(even) {
@@ -99,66 +183,225 @@
 
 .growth-records-table tr:hover {
   background-color: #f1f1f1;
+  transition: background-color 0.3s ease;
 }
 
 /* Nút Xóa */
 .delete-button {
-  background-color: #dc3545;
+  background-color: #e74c3c;
   color: white;
   padding: 8px 12px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .delete-button:hover {
-  background-color: #b02a37;
+  background-color: #c0392b;
   transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(192, 57, 43, 0.3);
+}
+
+/* Biểu đồ */
+.growth-chart-container {
+  margin: 30px 0;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Bảng WHO Classification */
 .who-bmi-table-container {
   margin-top: 30px;
-  padding: 20px;
-  background-color: #f9f9f9;
+  padding: 25px;
+  background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
 .who-bmi-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .who-bmi-table th,
 .who-bmi-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #e0e0e0;
   padding: 12px;
+  font-size: 14px;
 }
 
 .who-bmi-table th {
-  background-color: #f2f2f2;
-  color: black;
+  background-color: #1e3a8a;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .who-bmi-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: #f9f9f9;
 }
 
 .who-bmi-table tr:hover {
-  background-color: #ddd;
+  background-color: #e6e6e6;
+  transition: background-color 0.3s ease;
+}
+
+/* Table of Contents Sidebar */
+.toc-sidebar {
+  width: 250px;
+  position: sticky;
+  top: 80px;
+  align-self: flex-start;
+  background: linear-gradient(135deg, #f9f9f9 0%, #e8ecef 100%);
+  /* Gradient background */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  /* Subtle border */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.toc-sidebar:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.toc-sidebar h4 {
+  font-size: 18px;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.toc-sidebar h4::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2px;
+  background-color: #6b48ff;
+  /* Purple underline */
+}
+
+.toc-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc-sidebar li {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toc-sidebar li::before {
+  content: "•";
+  color: #6b48ff;
+  /* Purple bullet */
+  font-size: 18px;
+  line-height: 1;
+}
+
+.toc-link {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 10px;
+  width: 100%;
+  text-align: left;
+  border-radius: 5px;
+  transition: color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+}
+
+.toc-link:hover {
+  color: #6b48ff;
+  background-color: rgba(107, 72, 255, 0.1);
+  /* Light purple background on hover */
+  transform: translateX(5px);
+}
+
+.toc-link:active {
+  color: #5439cc;
+  background-color: rgba(107, 72, 255, 0.2);
+  transform: translateX(0);
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .update-growth-metrics-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .toc-sidebar {
+    position: static;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px;
+  }
+}
+
 @media (max-width: 768px) {
+  .update-growth-metrics-container {
+    margin: 20px 10px;
+    padding: 20px;
+  }
+
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .back-button {
+    margin-bottom: 10px;
+  }
+
+  .update-growth-metrics-container h2 {
+    text-align: left;
+  }
+
   .form-group {
     flex: 1 1 100%;
   }
 
-  .update-growth-metrics-container {
+  .update-growth-metrics-form {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .update-growth-metrics-button {
+    width: 100%;
+  }
+
+  .growth-records-table th,
+  .growth-records-table td,
+  .who-bmi-table th,
+  .who-bmi-table td {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .growth-chart-container,
+  .who-bmi-table-container {
     padding: 15px;
   }
 }

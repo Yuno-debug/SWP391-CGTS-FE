@@ -4,7 +4,6 @@
     gap: 20px;
     padding: 20px;
     position: relative;
-    /* Đảm bảo không bị đè lên nhau */
     z-index: 1;
 }
 
@@ -22,15 +21,12 @@
 
 .category-filter select {
     max-width: 200px;
-    /* Giới hạn chiều rộng */
     width: 100%;
-    /* Để responsive */
     padding: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* Nếu nội dung quá dài, nó sẽ hiển thị dấu "..." */
     white-space: nowrap;
 }
 
@@ -43,6 +39,10 @@
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.3s ease-in-out;
+    text-decoration: none;
+    /* Remove default underline from Link */
+    color: inherit;
+    /* Inherit text color */
 }
 
 .blog-card:hover {
@@ -53,10 +53,8 @@
 .blog-card img {
     width: 100%;
     height: 200px;
-    /* Đảm bảo ảnh không bị méo */
     object-fit: cover;
     border-radius: 8px 8px 0 0;
-    /* Bo tròn góc trên */
 }
 
 /* Căn chỉnh thẻ tag */
@@ -68,4 +66,16 @@
     border-radius: 4px;
     margin-right: 5px;
     display: inline-block;
+}
+
+/* Đảm bảo nội dung bên trong blog card được căn chỉnh tốt */
+.blog-card h3,
+.blog-card p {
+    padding: 0 16px;
+    margin: 8px 0;
+}
+
+.blog-card p.blog-tags {
+    padding: 0 16px;
+    margin: 8px 0;
 }

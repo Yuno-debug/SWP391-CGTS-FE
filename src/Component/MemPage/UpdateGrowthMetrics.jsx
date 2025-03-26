@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./UpdateGrowthMetrics.css";
 import NavBar from "../HomePage/NavBar/NavBar";
 import Footer from "../HomePage/Footer/Footer";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import GrowthChart from "../MemPage/GrowthChart";
 
 const UpdateGrowthMetrics = () => {
   const { childId } = useParams();
+  const navigate = useNavigate();
   const [growthRecords, setGrowthRecords] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [growthData, setGrowthData] = useState({
@@ -31,8 +32,7 @@ const UpdateGrowthMetrics = () => {
 
     const fetchChildInfo = async () => {
       try {
-        const userId = localStorage.getItem("userId"); // Retrieve userId
-
+        const userId = localStorage.getItem("userId");
         if (!userId) {
           console.error("❌ Error: userId is missing from localStorage");
           setErrorMessage("User ID not found. Please log in again.");
@@ -82,7 +82,8 @@ const UpdateGrowthMetrics = () => {
         );
 
         if (response.data?.$values && Array.isArray(response.data.$values)) {
-          setGrowthRecords(response.data.$values);
+          const sortedRecords = response.data.$values.sort((a, b) => a.month - b.month);
+          setGrowthRecords(sortedRecords);
         } else {
           console.error("❌ Unexpected response format:", response.data);
           setErrorMessage("Unexpected response format. Please try again later.");
@@ -153,22 +154,18 @@ const UpdateGrowthMetrics = () => {
       return;
     }
 
-    // Kiểm tra xem ngày sinh của trẻ có tồn tại không
     if (!childBirthDate) {
       setErrorMessage("Child birth date is missing. Cannot proceed.");
       return;
     }
 
-    // Lấy ngày sinh của trẻ và cập nhật chỉ tháng
     const birthDate = new Date(childBirthDate);
-    birthDate.setMonth(parseInt(growthData.month, 10) - 1); // Cập nhật tháng
-
-    // Chuyển về chuỗi ISO
+    birthDate.setMonth(parseInt(growthData.month, 10) - 1);
     const formattedMonth = Number(growthData.month);
 
     const requestData = {
       ...growthData,
-      month: formattedMonth, // Dùng tháng mới nhưng giữ nguyên ngày & năm
+      month: formattedMonth,
       childId: parseInt(childId, 10),
       old: parseInt(growthData.old, 10),
     };
@@ -201,11 +198,11 @@ const UpdateGrowthMetrics = () => {
 
       setGrowthRecords((prevRecords) => {
         if (growthData.recordId) {
-          return prevRecords.map((record) =>
+          return [...prevRecords.map((record) =>
             record.recordId === growthData.recordId ? response.data : record
-          );
+          )].sort((a, b) => a.month - b.month);
         } else {
-          return [...prevRecords, response.data];
+          return [...prevRecords, response.data].sort((a, b) => a.month - b.month);
         }
       });
 
@@ -230,154 +227,243 @@ const UpdateGrowthMetrics = () => {
     try {
       const response = await fetch(`/api/growth-records/delete/${recordId}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
 
       if (!response.ok) {
         throw new Error("Failed to delete record");
       }
 
-      // Xử lý cập nhật UI sau khi xóa thành công
       console.log(`Record ${recordId} deleted successfully!`);
       setGrowthRecords((prevRecords) => prevRecords.filter(record => record.recordId !== recordId));
     } catch (error) {
       console.error("Error deleting record:", error);
+      setErrorMessage("Failed to delete record. Please try again.");
+    }
+  };
+
+  // Prepare chart data with proper date formatting
+  const chartData = growthRecords.map(record => {
+    if (!childBirthDate) return { ...record, dateLabel: `Month ${record.month}` };
+    const date = new Date(childBirthDate.getFullYear(), record.month - 1, 1);
+    return {
+      ...record,
+      date: date.getTime(),
+      dateLabel: date.toLocaleDateString("vi-VN", { month: "short", year: "2-digit" }),
+    };
+  });
+
+  // Handle back navigation
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  // Handle smooth scrolling to section
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
   return (
     <>
       <NavBar />
-      <div className="update-growth-metrics-container">
-        <h2>Update Growth Metrics</h2>
-
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-        <form onSubmit={handleSubmit} className="update-growth-metrics-form">
-          <div className="form-group">
-            <label>Month (1-12):</label>
-            <input
-              type="number"
-              name="month"
-              value={growthData.month}
-              onChange={handleChange}
-              min="1"
-              max="12"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Age (years):</label>
-            <input type="number" name="old" value={growthData.old} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label>Weight (kg):</label>
-            <input type="number" name="weight" value={growthData.weight} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label>Height (cm):</label>
-            <input type="number" name="height" value={growthData.height} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label>Head Circumference (cm):</label>
-            <input type="number" name="headCircumference" value={growthData.headCircumference} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label>Upper Arm Circumference (cm):</label>
-            <input type="number" name="upperArmCircumference" value={growthData.upperArmCircumference} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label>Recorded By:</label>
-            <input type="text" name="recordedByUser" value={growthData.recordedByUser} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label>Notes:</label>
-            <textarea name="notes" value={growthData.notes} onChange={handleChange} rows="3" />
+      <div className="update-growth-metrics-wrapper">
+        <div className="update-growth-metrics-container">
+          <div className="header-section" id="update-form-section">
+            <button onClick={handleBack} className="back-button">
+              Back
+            </button>
+            <h2>Update Growth Metrics</h2>
           </div>
 
-          <button type="submit" className="update-growth-metrics-button">
-            {growthData.recordId ? "Update" : "Create"}
-          </button>
-        </form>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-        <div className="growth-records-list">
-          <h3>Growth Records Information</h3>
-          <table className="records-table">
-            <thead>
-              <tr>
-                <th>Age</th>
-                <th>Month</th>
-                <th>Weight</th>
-                <th>Height</th>
-                <th>BMI</th>
-                <th>WHO Classification</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {growthRecords.map((record) => {
-                const bmi = calculateBMI(record.weight, record.height);
-                return (
-                  <tr key={record.recordId}>
-                    <td>{record.old}</td>
-                    <td>
-  {new Date(childBirthDate.getFullYear(), record.month - 1, 1).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}
-</td>
-                    <td>{record.weight}</td>
-                    <td>{record.height}</td>
-                    <td>{bmi}</td>
-                    <td>{getWHOClassification(bmi, record.old)}</td>
-                    <td>
-                      <button onClick={() => handleDeleteRecord(record.recordId)} className="delete-button">
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          {/* Improved Growth Chart */}
-          <div className="growth-chart-container">
-            <h3>Growth Chart</h3>
-            <ResponsiveContainer width="100%" height={350}>
-              <LineChart data={growthRecords} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-                <XAxis
-                  dataKey="month"
-                  tickFormatter={(tick) => new Date(tick).toLocaleDateString("vi-VN", { month: "short", year: "2-digit" })}
-                  tick={{ fontSize: 14 }}
+          <form onSubmit={handleSubmit} className="update-growth-metrics-form">
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Month (1-12):</label>
+                <input
+                  type="number"
+                  name="month"
+                  value={growthData.month}
+                  onChange={handleChange}
+                  min="1"
+                  max="12"
+                  required
                 />
-                <YAxis label={{ value: 'Value', angle: -90, position: 'insideLeft', offset: -5 }} />
-                <Tooltip labelFormatter={(label) => new Date(label).toLocaleDateString("vi-VN", { month: "short", year: "numeric" })} />
-                <Legend verticalAlign="top" height={36} />
-                <Line type="monotone" dataKey="weight" stroke="#8884d8" strokeWidth={2} name="Weight (kg)" dot={{ r: 4 }} />
-                <Line type="monotone" dataKey="height" stroke="#82ca9d" strokeWidth={2} name="Height (cm)" dot={{ r: 4 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="who-bmi-table-container">
-            <h3>WHO BMI-for-Age Classification (0-19 years)</h3>
-            <table className="who-bmi-table">
+              </div>
+              <div className="form-group">
+                <label>Age (years):</label>
+                <input
+                  type="number"
+                  name="old"
+                  value={growthData.old}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Weight (kg):</label>
+                <input
+                  type="number"
+                  name="weight"
+                  value={growthData.weight}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Height (cm):</label>
+                <input
+                  type="number"
+                  name="height"
+                  value={growthData.height}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Head Circumference (cm):</label>
+                <input
+                  type="number"
+                  name="headCircumference"
+                  value={growthData.headCircumference}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Upper Arm Circumference (cm):</label>
+                <input
+                  type="number"
+                  name="upperArmCircumference"
+                  value={growthData.upperArmCircumference}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Recorded By:</label>
+                <input
+                  type="text"
+                  name="recordedByUser"
+                  value={growthData.recordedByUser}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-group full-width">
+              <label>Notes:</label>
+              <textarea
+                name="notes"
+                value={growthData.notes}
+                onChange={handleChange}
+                rows="3"
+              />
+            </div>
+            <button type="submit" className="update-growth-metrics-button">
+              {growthData.recordId ? "Update" : "Create"}
+            </button>
+          </form>
+
+          <div className="growth-records-list">
+            <h3 id="growth-records-section">Growth Records Information</h3>
+            <table className="records-table">
               <thead>
                 <tr>
-                  <th>Age (years)</th>
-                  <th>Underweight (&lt; Min BMI)</th>
-                  <th>Normal (Min - Max BMI)</th>
-                  <th>Overweight (&gt; Max BMI)</th>
+                  <th>Age</th>
+                  <th>Month</th>
+                  <th>Weight</th>
+                  <th>Height</th>
+                  <th>BMI</th>
+                  <th>WHO Classification</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {WHO_BMI_TABLE.map((entry, index) => (
-                  <tr key={index}>
-                    <td>{entry.age}</td>
-                    <td>&lt; {entry.min}</td>
-                    <td>{entry.min} - {entry.max}</td>
-                    <td>&gt; {entry.max}</td>
-                  </tr>
-                ))}
+                {growthRecords.map((record) => {
+                  const bmi = calculateBMI(record.weight, record.height);
+                  return (
+                    <tr key={record.recordId}>
+                      <td>{record.old}</td>
+                      <td>
+                        {childBirthDate
+                          ? new Date(childBirthDate.getFullYear(), record.month - 1, 1).toLocaleDateString("en-GB", { month: "long", year: "numeric" })
+                          : `Month ${record.month}`}
+                      </td>
+                      <td>{record.weight}</td>
+                      <td>{record.height}</td>
+                      <td>{bmi}</td>
+                      <td>{getWHOClassification(bmi, record.old)}</td>
+                      <td>
+                        <button onClick={() => handleDeleteRecord(record.recordId)} className="delete-button">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
+            <div id="growth-chart-section">
+              <GrowthChart chartData={chartData} />
+            </div>
+            <div className="who-bmi-table-container" id="who-bmi-section">
+              <h3>WHO BMI-for-Age Classification (0-19 years)</h3>
+              <table className="who-bmi-table">
+                <thead>
+                  <tr>
+                    <th>Age (years)</th>
+                  <th>Underweight (&lt; Min BMI)</th>
+                  <th>Normal (Min - Max BMI)</th>
+                  <th>Overweight (&gt; Max BMI)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {WHO_BMI_TABLE.map((entry, index) => (
+                    <tr key={index}>
+                      <td>{entry.age}</td>
+                      <td>&lt; {entry.min}</td>
+                      <td>{entry.min} - {entry.max}</td>
+                      <td>&gt; {entry.max}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
+        </div>
+
+        {/* Table of Contents Sidebar */}
+        <div className="toc-sidebar">
+          <h4>Table of Contents</h4>
+          <ul>
+            <li>
+              <button onClick={() => scrollToSection("update-form-section")} className="toc-link">
+                Update Form
+              </button>
+            </li>
+            <li>
+              <button onClick={() => scrollToSection("growth-records-section")} className="toc-link">
+                Growth Records
+              </button>
+            </li>
+            <li>
+              <button onClick={() => scrollToSection("growth-chart-section")} className="toc-link">
+                Growth Chart
+              </button>
+            </li>
+            <li>
+              <button onClick={() => scrollToSection("who-bmi-section")} className="toc-link">
+                WHO Classification
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
       <Footer />

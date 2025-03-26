@@ -325,11 +325,17 @@ const DoctorTable = () => {
                   <td>{doctor.name}</td>
                   <td>{doctor.email}</td>
                   <td>{doctor.phoneNumber}</td>
-                  <td>{doctor.specialization}</td>
+                  <td className="truncate" title={doctor.specialization}>
+                    {doctor.specialization}
+                  </td>
                   <td>{doctor.degree}</td>
-                  <td>{doctor.hospital}</td>
+                  <td className="truncate" title={doctor.hospital}>
+                    {doctor.hospital}
+                  </td>
                   <td>{doctor.licenseNumber}</td>
-                  <td>{doctor.biography}</td>
+                  <td className="truncate" title={doctor.biography}>
+                    {doctor.biography}
+                  </td>
                   <td>
                     <button className="edit-btn" onClick={() => handleEdit(doctor)}>Edit</button>
                     <button className="del-btn" onClick={() => handleDelete(doctor.doctorId)}>Delete</button>
