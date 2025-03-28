@@ -14,7 +14,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa); /* Đồng bộ màu với filter-section */
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
   padding: 25px;
   border-radius: 12px;
   color: #ffffff;
@@ -119,8 +119,8 @@
   gap: 20px;
   margin-bottom: 30px;
   flex-wrap: wrap;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa); /* Đồng bộ màu với page-header */
-  padding: 15px 20px; /* Thêm padding để trông giống page-header */
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  padding: 15px 20px;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
@@ -140,7 +140,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 15px;
-  background: #ffffff; /* Đảm bảo nền trắng để nổi bật trên gradient */
+  background: #ffffff;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -155,10 +155,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 15px;
-  background: #ffffff url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>') no-repeat right 12px center;
-  background-size: 20px;
-  padding-right: 40px;
-  appearance: none;
+  appearance: none; /* Loại bỏ icon mặc định */
   transition: border-color 0.3s ease;
 }
 
@@ -194,9 +191,9 @@
 }
 
 .consultation-response-table th {
-  font-size: 14px; /* Tăng kích thước font */
-  font-weight: 700; /* In đậm */
-  color: #1e40af; /* Đổi màu để nổi bật */
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e40af;
   text-transform: uppercase;
   background: #f9fafb;
   cursor: pointer;
@@ -538,8 +535,8 @@
 
 .modal h2 {
   font-size: 24px;
-  font-weight: 700; /* In đậm */
-  color: #1e40af; /* Đồng bộ màu với th */
+  font-weight: 700;
+  color: #1e40af;
   margin-bottom: 20px;
   position: relative;
   padding-left: 15px;
@@ -571,8 +568,8 @@
 
 .modal-field label {
   font-size: 15px;
-  font-weight: 700; /* In đậm */
-  color: #1e40af; /* Đồng bộ màu với th */
+  font-weight: 700;
+  color: #1e40af;
 }
 
 .modal-field input,
@@ -655,8 +652,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-spinner p {
@@ -699,6 +701,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -732,7 +735,7 @@
 
   .filter-section {
     flex-direction: column;
-    padding: 10px 15px; /* Điều chỉnh padding cho màn hình nhỏ */
+    padding: 10px 15px;
   }
 
   .recent-responses {

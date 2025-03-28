@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import axios from 'axios';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Import ReactQuill styles
-import './GrowthData.css';
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import axios from "axios";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import "./GrowthData.css";
 
 const GrowthData = () => {
   const [growthRecords, setGrowthRecords] = useState([]);
   const [children, setChildren] = useState({});
-  const [alerts, setAlerts] = useState([]); // State để lưu danh sách alert
+  const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -16,14 +16,14 @@ const GrowthData = () => {
   const recordsPerPage = 5;
 
   // Filter and search state
-  const [selectedChildId, setSelectedChildId] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedChildId, setSelectedChildId] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Modal state for creating alerts
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [alertType, setAlertType] = useState('Growth Alert');
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("Growth Alert");
   const [isRead, setIsRead] = useState(false);
 
   const modalRef = useRef(null);
@@ -37,24 +37,32 @@ const GrowthData = () => {
         return;
       }
 
-      const response = await axios.get('http://localhost:5200/api/Child/get-all', {
+      const response = await axios.get("http://localhost:5200/api/Child/get-all", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      console.log("Children API response:", response.data);
 
       if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
         const childMap = response.data.data.$values.reduce((acc, child) => {
           acc[child.childId] = child.name;
           return acc;
         }, {});
+        console.log("Child map:", childMap);
         setChildren(childMap);
       } else {
+        console.error("Invalid children response format:", response.data);
         setError("Failed to load children: Invalid response format.");
       }
     } catch (error) {
-      console.error('Error fetching children:', error);
-      setError(`Failed to fetch children: ${error.response?.status ? `Error ${error.response.status}` : error.message}`);
+      console.error("Error fetching children:", error);
+      setError(
+        `Failed to fetch children: ${
+          error.response?.status ? `Error ${error.response.status}` : error.message
+        }`
+      );
     }
   };
 
@@ -76,13 +84,17 @@ const GrowthData = () => {
       }
     } catch (error) {
       console.error("Error fetching growth records:", error);
-      setError(`Failed to load growth records: ${error.response?.status ? `Error ${error.response.status}` : error.message}`);
+      setError(
+        `Failed to load growth records: ${
+          error.response?.status ? `Error ${error.response.status}` : error.message
+        }`
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch recent alerts from API (giả định có endpoint /api/Alert/get-all)
+  // Fetch recent alerts from API
   const fetchAlerts = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -91,7 +103,7 @@ const GrowthData = () => {
         return;
       }
 
-      const response = await axios.get('http://localhost:5200/api/Alert', {
+      const response = await axios.get("http://localhost:5200/api/Alert", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -103,7 +115,7 @@ const GrowthData = () => {
         console.error("Unexpected alert response format:", response.data);
       }
     } catch (error) {
-      console.error('Error fetching alerts:', error);
+      console.error("Error fetching alerts:", error);
     }
   };
 
@@ -126,26 +138,29 @@ const GrowthData = () => {
       return {
         shouldAlert: true,
         message: `Child's BMI (${bmi}) exceeds the standard maximum (${standardBmiRange.max}) for their height (${record.height} cm).`,
-        className: 'bmi-high',
+        className: "bmi-high",
       };
     } else if (bmi < standardBmiRange.min) {
       return {
         shouldAlert: true,
         message: `Child's BMI (${bmi}) is below the standard minimum (${standardBmiRange.min}) for their height (${record.height} cm).`,
-        className: 'bmi-low',
+        className: "bmi-low",
       };
     }
-    return { shouldAlert: false, message: '', className: '' };
+    return { shouldAlert: false, message: "", className: "" };
   };
 
   // Filter and search logic
-  const filteredRecords = growthRecords.filter(record => {
-    const childName = children[record.childId]?.toLowerCase() || '';
-    const month = new Date(2024, record.month - 1, 1).toLocaleDateString("en-GB", {
-      month: "long",
-      year: "numeric",
-    }).toLowerCase();
-    const notes = record.notes?.toLowerCase() || '';
+  const filteredRecords = growthRecords.filter((record) => {
+    const childName = children[String(record.childId)]?.toLowerCase() || "";
+    console.log(`Child ID: ${record.childId}, Child Name: ${childName}`);
+    const month = new Date(2024, record.month - 1, 1)
+      .toLocaleDateString("en-GB", {
+        month: "long",
+        year: "numeric",
+      })
+      .toLowerCase();
+    const notes = record.notes?.toLowerCase() || "";
 
     return (
       (selectedChildId ? record.childId === parseInt(selectedChildId) : true) &&
@@ -179,8 +194,8 @@ const GrowthData = () => {
   const openAlertModal = (record) => {
     setSelectedRecord(record);
     const { message } = checkAlertCondition(record);
-    setAlertMessage(message || '');
-    setAlertType('Growth Alert');
+    setAlertMessage(message || "");
+    setAlertType("Growth Alert");
     setIsRead(false);
     setIsModalOpen(true);
   };
@@ -189,8 +204,8 @@ const GrowthData = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedRecord(null);
-    setAlertMessage('');
-    setAlertType('Growth Alert');
+    setAlertMessage("");
+    setAlertType("Growth Alert");
     setIsRead(false);
   };
 
@@ -204,25 +219,25 @@ const GrowthData = () => {
   // Close modal on Escape key press
   useEffect(() => {
     const handleEsc = (e) => {
-      if (e.key === 'Escape' && isModalOpen) {
+      if (e.key === "Escape" && isModalOpen) {
         closeModal();
       }
     };
 
     if (isModalOpen) {
-      document.addEventListener('mousedown', handleOutsideClick);
-      document.addEventListener('keydown', handleEsc);
+      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("keydown", handleEsc);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-      document.removeEventListener('keydown', handleEsc);
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEsc);
     };
   }, [isModalOpen, handleOutsideClick]);
 
   // Function to send the alert to the backend
   const handleSubmitAlert = async () => {
-    if (!alertMessage || alertMessage === '<p><br></p>') {
+    if (!alertMessage || alertMessage === "<p><br></p>") {
       alert("Please enter an alert message.");
       return;
     }
@@ -251,25 +266,29 @@ const GrowthData = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
 
       console.log("Alert response:", response.data);
       alert("Alert sent successfully!");
-      await fetchAlerts(); // Refresh danh sách alert
+      await fetchAlerts();
       closeModal();
     } catch (error) {
       console.error("Error sending alert:", error);
-      setError(`Failed to send alert: ${error.response?.data?.message || error.message}`);
+      setError(
+        `Failed to send alert: ${error.response?.data?.message || error.message}`
+      );
     }
   };
 
   // Calculate summary stats
   const totalRecords = growthRecords.length;
-  const totalChildren = new Set(growthRecords.map(record => record.childId)).size;
-  const abnormalRecords = growthRecords.filter(record => checkAlertCondition(record).shouldAlert).length;
+  const totalChildren = new Set(growthRecords.map((record) => record.childId)).size;
+  const abnormalRecords = growthRecords.filter((record) =>
+    checkAlertCondition(record).shouldAlert
+  ).length;
 
   // Get recent alerts (last 3)
   const recentAlerts = alerts.slice(0, 3);
@@ -277,32 +296,37 @@ const GrowthData = () => {
   // ReactQuill toolbar configuration
   const quillModules = {
     toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'align': [] }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'indent': '-1'}, { 'indent': '+1' }],
-      [{ 'color': [] }, { 'background': [] }],
-      ['link'],
-      ['clean']
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ align: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+      [{ color: [] }, { background: [] }],
+      ["link"],
+      ["clean"],
     ],
   };
 
   const quillFormats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike',
-    'align',
-    'list', 'bullet',
-    'indent',
-    'color', 'background',
-    'link',
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "align",
+    "list",
+    "bullet",
+    "indent",
+    "color",
+    "background",
+    "link",
   ];
 
   if (loading) return <div>Loading...</div>;
   if (error) return (
     <div>
       <p>{error}</p>
-      <button onClick={() => window.location.reload()} style={{ marginTop: '10px' }}>
+      <button onClick={() => window.location.reload()} style={{ marginTop: "10px" }}>
         Retry
       </button>
     </div>
@@ -384,23 +408,24 @@ const GrowthData = () => {
             {currentRecords.length > 0 ? (
               currentRecords.map((record, index) => {
                 const { shouldAlert, className } = checkAlertCondition(record);
+                const childName = children[String(record.childId)] || "Unknown Child";
                 return (
-                  <tr key={record.recordId || index} className={shouldAlert ? className : ''}>
+                  <tr key={record.recordId || index} className={shouldAlert ? className : ""}>
                     <td>{indexOfFirstRecord + index + 1}</td>
-                    <td>{children[record.childId] || record.childId || 'N/A'}</td>
+                    <td>{childName}</td>
                     <td>
                       {new Date(2024, record.month - 1, 1).toLocaleDateString("en-GB", {
                         month: "long",
                         year: "numeric",
                       })}
                     </td>
-                    <td>{record.weight || 'N/A'}</td>
-                    <td>{record.height || 'N/A'}</td>
-                    <td>{record.bmi || 'N/A'}</td>
-                    <td>{record.headCircumference || 'N/A'}</td>
-                    <td>{record.upperArmCircumference || 'N/A'}</td>
-                    <td>{record.recordedByUser || 'N/A'}</td>
-                    <td>{record.notes || 'N/A'}</td>
+                    <td>{record.weight || "N/A"}</td>
+                    <td>{record.height || "N/A"}</td>
+                    <td>{record.bmi || "N/A"}</td>
+                    <td>{record.headCircumference || "N/A"}</td>
+                    <td>{record.upperArmCircumference || "N/A"}</td>
+                    <td>{record.recordedByUser || "N/A"}</td>
+                    <td>{record.notes || "N/A"}</td>
                     <td>
                       <div className="action-buttons">
                         <button
@@ -416,7 +441,7 @@ const GrowthData = () => {
               })
             ) : (
               <tr>
-                <td colSpan="11" style={{ textAlign: 'center' }}>
+                <td colSpan="11" style={{ textAlign: "center" }}>
                   No growth records available.
                 </td>
               </tr>
@@ -425,13 +450,15 @@ const GrowthData = () => {
         </table>
         <div className="pagination">
           <span className="pagination-info">
-            Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredRecords.length)} of {filteredRecords.length} entries
+            Showing {indexOfFirstRecord + 1} to{" "}
+            {Math.min(indexOfLastRecord, filteredRecords.length)} of{" "}
+            {filteredRecords.length} entries
           </span>
           <div className="pagination-buttons">
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 1}
-              className={currentPage === 1 ? 'disabled' : ''}
+              className={currentPage === 1 ? "disabled" : ""}
             >
               Previous
             </button>
@@ -439,7 +466,7 @@ const GrowthData = () => {
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className={currentPage === totalPages ? 'disabled' : ''}
+              className={currentPage === totalPages ? "disabled" : ""}
             >
               Next
             </button>
@@ -452,18 +479,29 @@ const GrowthData = () => {
         <h3>Recent Alerts</h3>
         <div className="recent-alerts">
           {recentAlerts.length > 0 ? (
-            recentAlerts.map(alert => (
+            recentAlerts.map((alert) => (
               <div key={alert.alertId} className="recent-alert-card">
                 <div className="recent-alert-header">
                   <h4>Alert #{alert.alertId}</h4>
-                  <span className={`status-badge ${alert.isRead ? 'read' : 'unread'}`}>
-                    {alert.isRead ? 'Read' : 'Unread'}
+                  <span className={`status-badge ${alert.isRead ? "read" : "unread"}`}>
+                    {alert.isRead ? "Read" : "Unread"}
                   </span>
                 </div>
-                <p><strong>Child:</strong> {children[alert.childId] || alert.childId || 'N/A'}</p>
-                <p><strong>Type:</strong> {alert.alertType || 'N/A'}</p>
-                <p><strong>Message:</strong> <span dangerouslySetInnerHTML={{ __html: alert.message || 'N/A' }} /></p>
-                <p><strong>Date:</strong> {alert.alertDate ? new Date(alert.alertDate).toLocaleDateString() : 'N/A'}</p>
+                <p>
+                  <strong>Child:</strong>{" "}
+                  {children[String(alert.childId)] || alert.childId || "Unknown Child"}
+                </p>
+                <p>
+                  <strong>Type:</strong> {alert.alertType || "N/A"}
+                </p>
+                <p>
+                  <strong>Message:</strong>{" "}
+                  <span dangerouslySetInnerHTML={{ __html: alert.message || "N/A" }} />
+                </p>
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {alert.alertDate ? new Date(alert.alertDate).toLocaleDateString() : "N/A"}
+                </p>
               </div>
             ))
           ) : (
@@ -497,7 +535,7 @@ const GrowthData = () => {
                 <label>Child Name</label>
                 <input
                   type="text"
-                  value={children[selectedRecord?.childId] || selectedRecord?.childId || 'N/A'}
+                  value={children[String(selectedRecord?.childId)] || "Unknown Child"}
                   readOnly
                   className="modal-input"
                 />
@@ -527,7 +565,7 @@ const GrowthData = () => {
                 <label>Is Read</label>
                 <select
                   value={isRead}
-                  onChange={(e) => setIsRead(e.target.value === 'true')}
+                  onChange={(e) => setIsRead(e.target.value === "true")}
                   className="modal-select"
                 >
                   <option value={false}>No</option>

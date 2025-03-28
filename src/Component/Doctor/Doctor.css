@@ -1,5 +1,5 @@
-/* Doctor.css */
-.doctor-container {
+/* Base Styles */
+.doctor-page {
   display: flex;
   min-height: 100vh;
   font-family: 'Poppins', sans-serif;
@@ -9,7 +9,7 @@
 /* Sidebar Styles */
 .doctor-sidebar {
   width: 260px;
-  background: linear-gradient(180deg, #1E40AF 0%, #3B82F6 100%); /* Gradient xanh dương */
+  background: linear-gradient(180deg, #1E40AF 0%, #3B82F6 100%);
   color: #FFFFFF;
   position: fixed;
   top: 0;
@@ -20,47 +20,47 @@
   box-shadow: 3px 0 15px rgba(30, 64, 175, 0.2);
 }
 
-.doctor-sidebar.collapsed {
+.doctor-sidebar--collapsed {
   width: 70px;
 }
 
-.sidebar-header {
+.doctor-sidebar__header {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-bottom: 0; /* Loại bỏ padding dư */
-  margin-bottom: 0; /* Loại bỏ margin dư */
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
-.logo {
+.doctor-sidebar__logo {
   width: 42px;
   height: 42px;
   margin-right: 12px;
   transition: transform 0.3s ease;
 }
 
-.logo:hover {
+.doctor-sidebar__logo:hover {
   transform: scale(1.1) rotate(15deg);
 }
 
-.logoDoctor {
+.doctor-sidebar__title {
   font-size: 20px;
   font-weight: 600;
   color: #FFFFFF;
   letter-spacing: 0.5px;
 }
 
-.doctor-sidebar.collapsed .logoDoctor {
+.doctor-sidebar--collapsed .doctor-sidebar__title {
   display: none;
 }
 
 /* Sidebar Controls (Toggle Button) */
-.sidebar-controls {
+.doctor-sidebar__controls {
   padding: 15px 24px;
 }
 
-.sidebar-toggle-top {
+.doctor-sidebar__toggle {
   display: none;
   background: none;
   border: none;
@@ -70,35 +70,35 @@
   transition: transform 0.3s ease;
 }
 
-.sidebar-toggle-top:hover {
+.doctor-sidebar__toggle:hover {
   color: #DBEAFE;
   transform: rotate(180deg);
 }
 
 /* Profile Section */
-.profile-section {
+.doctor-sidebar__profile {
   padding: 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  background: linear-gradient(180deg, #1E40AF 0%, #3B82F6 100%) !important; /* Đồng bộ với sidebar */
+  background: linear-gradient(180deg, #1E40AF 0%, #3B82F6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin-top: -30px; /* Kéo phần profile lên gần hơn */
+  margin-top: -30px;
 }
 
-.profile-button {
+.doctor-sidebar__profile-button {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
 }
 
-.profile-button:hover {
+.doctor-sidebar__profile-button:hover {
   transform: translateX(4px);
 }
 
-.profile-picture {
+.doctor-sidebar__profile-picture {
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -107,45 +107,45 @@
   margin-bottom: 5px;
 }
 
-.profile-button:hover .profile-picture {
+.doctor-sidebar__profile-button:hover .doctor-sidebar__profile-picture {
   border-color: #93C5FD;
   box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
 }
 
-.profile-info {
+.doctor-sidebar__profile-info {
   display: flex;
   flex-direction: column;
 }
 
-.profile-name {
+.doctor-sidebar__profile-name {
   font-size: 16px;
   font-weight: bold;
   color: white;
 }
 
-.profile-role {
+.doctor-sidebar__profile-role {
   font-size: 14px;
   color: #d1d5db;
 }
 
-.doctor-sidebar.collapsed .profile-info {
+.doctor-sidebar--collapsed .doctor-sidebar__profile-info {
   display: none;
 }
 
 /* Navigation Menu */
-nav ul {
+.doctor-sidebar__nav ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-nav ul li {
+.doctor-sidebar__nav ul li {
   margin-bottom: 10px;
 }
 
-nav ul li button {
+.doctor-sidebar__nav-item {
   display: flex;
-  align-items: flex-start; /* Đổi từ center sang flex-start để căn chỉnh tốt hơn khi xuống hàng */
+  align-items: flex-start;
   width: 100%;
   padding: 16px 24px;
   background: none;
@@ -158,59 +158,59 @@ nav ul li button {
   box-sizing: border-box;
 }
 
-nav ul li button:hover {
+.doctor-sidebar__nav-item:hover {
   background-color: rgba(255, 255, 255, 0.15);
   transform: translateX(5px);
 }
 
-nav ul li button:focus {
+.doctor-sidebar__nav-item:focus {
   outline: none;
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-nav ul li button.active {
+.doctor-sidebar__nav-item--active {
   background-color: rgba(255, 255, 255, 0.2);
   box-shadow: inset 4px 0 0 #60A5FA;
 }
 
-.menu-icon {
+.doctor-sidebar__menu-icon {
   width: 22px;
   height: 22px;
   margin-right: 14px;
-  margin-top: 2px; /* Điều chỉnh để căn chỉnh với dòng đầu tiên của text */
+  margin-top: 2px;
   transition: transform 0.3s ease;
 }
 
-nav ul li button:hover .menu-icon {
+.doctor-sidebar__nav-item:hover .doctor-sidebar__menu-icon {
   transform: scale(1.15);
 }
 
-.menu-text {
+.doctor-sidebar__menu-text {
   flex-grow: 1;
-  word-wrap: break-word; /* Cho phép xuống hàng */
-  line-height: 1.4; /* Tăng khoảng cách giữa các dòng để dễ đọc */
+  word-wrap: break-word;
+  line-height: 1.4;
 }
 
-.chevron-icon {
+.doctor-sidebar__chevron-icon {
   font-size: 12px;
   color: #FFFFFF;
   transition: transform 0.3s ease;
   margin-left: auto;
   padding-left: 10px;
-  margin-top: 2px; /* Căn chỉnh với dòng đầu tiên của text */
+  margin-top: 2px;
 }
 
-nav ul li button:hover .chevron-icon {
+.doctor-sidebar__nav-item:hover .doctor-sidebar__chevron-icon {
   transform: rotate(90deg);
 }
 
-.doctor-sidebar.collapsed .menu-text,
-.doctor-sidebar.collapsed .chevron-icon {
+.doctor-sidebar--collapsed .doctor-sidebar__menu-text,
+.doctor-sidebar--collapsed .doctor-sidebar__chevron-icon {
   display: none;
 }
 
 /* Submenu */
-.submenu {
+.doctor-sidebar__submenu {
   list-style: none;
   padding-left: 40px;
   margin-top: 8px;
@@ -220,11 +220,11 @@ nav ul li button:hover .chevron-icon {
   background: rgba(0, 0, 0, 0.05);
 }
 
-.submenu li {
+.doctor-sidebar__submenu li {
   margin-bottom: 6px;
 }
 
-.submenu li button {
+.doctor-sidebar__submenu-item {
   font-size: 14px;
   padding: 12px 14px;
   color: #DBEAFE;
@@ -234,38 +234,35 @@ nav ul li button:hover .chevron-icon {
   align-items: center;
   width: 100%;
   box-sizing: border-box;
+  border: none;
+  cursor: pointer;
 }
 
-.submenu li button:hover {
+.doctor-sidebar__submenu-item:hover {
   color: #FFFFFF;
   background-color: rgba(255, 255, 255, 0.1);
   transform: translateX(3px);
 }
 
-.submenu li button .menu-text {
+.doctor-sidebar__submenu-item .doctor-sidebar__menu-text {
   padding-left: 10px;
 }
 
-.doctor-sidebar.collapsed .submenu {
+.doctor-sidebar--collapsed .doctor-sidebar__submenu {
   display: none;
 }
 
-nav ul li button[aria-expanded="true"] + .submenu {
+.doctor-sidebar__nav-item[aria-expanded="true"]+.doctor-sidebar__submenu {
   max-height: 220px;
 }
 
-/* Đảm bảo các mục có submenu không bị lệch */
-nav ul li:has(.submenu) button {
-  padding-right: 10px;
-}
-
-/* Đảm bảo các mục không có submenu cũng căn chỉnh đồng đều */
-nav ul li:not(:has(.submenu)) button {
+/* Ensure consistent padding for items with and without submenu */
+.doctor-sidebar__nav-item {
   padding-right: 24px;
 }
 
 /* Section Title */
-.section-title {
+.doctor-sidebar__section-title {
   font-size: 13px;
   color: #93C5FD;
   text-transform: uppercase;
@@ -274,15 +271,25 @@ nav ul li:not(:has(.submenu)) button {
 }
 
 /* Logout Button */
-.logout-button {
+.doctor-sidebar__logout {
   color: #F87171 !important;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding: 16px 24px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.logout-button .menu-icon {
+.doctor-sidebar__logout .doctor-sidebar__menu-icon {
   color: #F87171;
 }
 
-.logout-button:hover {
+.doctor-sidebar__logout:hover {
   background-color: rgba(248, 113, 113, 0.2) !important;
 }
 
@@ -296,25 +303,25 @@ nav ul li:not(:has(.submenu)) button {
   transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.doctor-sidebar.collapsed ~ .doctor-content {
+.doctor-sidebar--collapsed~.doctor-content {
   margin-left: 70px;
   width: calc(100% - 70px);
 }
 
 /* Content Header */
-.content-header {
+.doctor-content__header {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 24px;
 }
 
-.header-icons {
+.doctor-content__header-icons {
   display: flex;
   gap: 16px;
   position: relative;
 }
 
-.header-icon {
+.doctor-content__header-icon {
   background: none;
   border: none;
   font-size: 22px;
@@ -325,29 +332,14 @@ nav ul li:not(:has(.submenu)) button {
   transition: all 0.3s ease;
 }
 
-.header-icon:hover {
+.doctor-content__header-icon:hover {
   color: #3B82F6;
   background: rgba(59, 130, 246, 0.1);
   transform: scale(1.1);
 }
 
-.notification-icon {
-  position: relative;
-}
-
-.notification-dot {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 10px;
-  height: 10px;
-  background-color: #EF4444;
-  border-radius: 50%;
-  border: 2px solid #FFFFFF;
-}
-
 /* Settings Dropdown */
-.settings-dropdown {
+.doctor-content__settings-dropdown {
   position: absolute;
   top: 45px;
   right: 0;
@@ -365,13 +357,14 @@ nav ul li:not(:has(.submenu)) button {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.settings-dropdown button {
+.doctor-content__settings-dropdown button {
   display: flex;
   align-items: center;
   width: 100%;
@@ -385,12 +378,12 @@ nav ul li:not(:has(.submenu)) button {
   transition: all 0.3s ease;
 }
 
-.settings-dropdown button:hover {
+.doctor-content__settings-dropdown button:hover {
   background-color: #EFF6FF;
   color: #3B82F6;
 }
 
-.dropdown-icon {
+.doctor-content__dropdown-icon {
   margin-right: 12px;
   font-size: 16px;
   color: #1E40AF;
@@ -404,11 +397,11 @@ nav ul li:not(:has(.submenu)) button {
     transition: transform 0.4s ease;
   }
 
-  .doctor-sidebar.active {
+  .doctor-sidebar--active {
     transform: translateX(0);
   }
 
-  .doctor-sidebar.collapsed {
+  .doctor-sidebar--collapsed {
     width: 70px;
     transform: translateX(0);
   }
@@ -419,20 +412,20 @@ nav ul li:not(:has(.submenu)) button {
     padding: 32px;
   }
 
-  .doctor-sidebar.collapsed ~ .doctor-content {
+  .doctor-sidebar--collapsed~.doctor-content {
     margin-left: 70px;
     width: calc(100% - 70px);
   }
 
-  .sidebar-toggle-top {
+  .doctor-sidebar__toggle {
     display: block;
   }
 
-  .header-icons {
+  .doctor-content__header-icons {
     gap: 12px;
   }
 
-  .settings-dropdown {
+  .doctor-content__settings-dropdown {
     width: 190px;
   }
 }

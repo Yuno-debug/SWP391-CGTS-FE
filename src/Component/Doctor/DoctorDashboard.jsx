@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './DoctorDashboard.css';
 
-// Mock weather icon
+// Weather Icon Component
 const WeatherIcon = ({ condition }) => {
   const icons = {
     Sunny: '☀️',
@@ -12,7 +12,7 @@ const WeatherIcon = ({ condition }) => {
     Stormy: '⛈️',
   };
   return (
-    <span role="img" aria-label={condition} style={{ fontSize: '24px' }}>
+    <span role="img" aria-label={condition} className="doctor-dashboard-weather-icon">
       {icons[condition] || '☀️'}
     </span>
   );
@@ -24,6 +24,8 @@ const DoctorDashboard = () => {
   const [totalChildren, setTotalChildren] = useState(0);
   const [totalConsultationRequests, setTotalConsultationRequests] = useState(0);
   const [totalConsultationResponses, setTotalConsultationResponses] = useState(0);
+  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   // Calendar state
@@ -45,7 +47,7 @@ const DoctorDashboard = () => {
   // Clock state
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // Mock weather data
+  // Mock weather data (thay thế bằng API thực nếu có)
   const mockWeatherData = {
     'Ho Chi Minh City': { condition: 'Sunny', temperature: 24 },
     'Hanoi': { condition: 'Cloudy', temperature: 20 },
@@ -53,7 +55,7 @@ const DoctorDashboard = () => {
     'Singapore': { condition: 'Stormy', temperature: 26 },
   };
 
-  // Mock schedule data
+  // Mock schedule data (thay thế bằng API thực nếu có)
   const doctorSchedule = [
     { id: 1, time: "9:00 AM", patient: "John Smith", type: "In-Person Visit" },
     { id: 2, time: "10:30 AM", patient: "Emma Johnson", type: "Online Consultation" },
@@ -78,9 +80,12 @@ const DoctorDashboard = () => {
     const timer = setInterval(() => {
       const now = new Date();
       setCurrentTime(now);
-      if (now.getDate() !== currentDate.getDate() ||
-          now.getMonth() !== currentDate.getMonth() ||
-          now.getFullYear() !== currentDate.getFullYear()) {
+      // Chỉ cập nhật currentDate và selectedDate khi ngày thay đổi
+      if (
+        now.getDate() !== currentDate.getDate() ||
+        now.getMonth() !== currentDate.getMonth() ||
+        now.getFullYear() !== currentDate.getFullYear()
+      ) {
         setCurrentDate(new Date(now));
         setSelectedDate(new Date(now));
       }
@@ -97,127 +102,89 @@ const DoctorDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchTotalGrowthRecords = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorAndRedirect("No authorization token found. Redirecting to login...");
-        return;
-      }
-      try {
-        const response = await axios.get("http://localhost:5200/api/growth-records/count", {
+  // Gộp tất cả các API gọi vào một hàm duy nhất
+  const fetchAllData = async () => {
+    setLoading(true);
+    setError(null);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("No authorization token found. Redirecting to login...");
+      setTimeout(() => navigate("/login"), 3000); // Tăng thời gian hiển thị lỗi lên 3 giây
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Gọi tất cả API song song để tăng hiệu suất
+      const [
+        growthRecordsResponse,
+        childrenResponse,
+        consultationRequestsResponse,
+        consultationResponsesResponse,
+        usersResponse,
+      ] = await Promise.all([
+        axios.get("http://localhost:5200/api/growth-records/count", {
           headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (typeof response.data === "number") {
-          setTotalGrowthRecords(response.data);
-        } else if (typeof response.data === "object" && response.data?.totalGrowthRecords !== undefined) {
-          setTotalGrowthRecords(response.data.totalGrowthRecords);
-        } else if (typeof response.data === "object" && response.data?.$values?.[0]?.count !== undefined) {
-          setTotalGrowthRecords(response.data.$values[0].count);
-        } else {
-          setTotalGrowthRecords(0);
-        }
-      } catch (error) {
-        console.error("Error fetching total growth records:", error);
+        }),
+        axios.get('http://localhost:5200/api/Child/count', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        axios.get('http://localhost:5200/api/ConsultationRequest/get-all', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        axios.get('http://localhost:5200/api/ConsultationResponse/get-all', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        axios.get('http://localhost:5200/api/UserAccount/get-all', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+      ]);
+
+      // Xử lý totalGrowthRecords
+      if (typeof growthRecordsResponse.data === "number") {
+        setTotalGrowthRecords(growthRecordsResponse.data);
+      } else if (growthRecordsResponse.data?.totalGrowthRecords !== undefined) {
+        setTotalGrowthRecords(growthRecordsResponse.data.totalGrowthRecords);
+      } else if (growthRecordsResponse.data?.$values?.[0]?.count !== undefined) {
+        setTotalGrowthRecords(growthRecordsResponse.data.$values[0].count);
+      } else {
         setTotalGrowthRecords(0);
       }
-    };
 
-    const fetchTotalChildren = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorAndRedirect("No authorization token found. Redirecting to login...");
-        return;
-      }
-      try {
-        const response = await axios.get('http://localhost:5200/api/Child/count', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        setTotalChildren(response.data.count || 0);
-      } catch (error) {
-        console.error("Error fetching total children:", error);
-        setTotalChildren(0);
-      }
-    };
+      // Xử lý totalChildren
+      setTotalChildren(childrenResponse.data.count || 0);
 
-    const fetchTotalConsultationRequests = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorAndRedirect("No authorization token found. Redirecting to login...");
-        return;
-      }
-      try {
-        const response = await axios.get('http://localhost:5200/api/ConsultationRequest/get-all', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-          setTotalConsultationRequests(response.data.data.$values.length);
-        } else {
-          setTotalConsultationRequests(0);
-        }
-      } catch (error) {
-        console.error("Error fetching total consultation requests:", error);
+      // Xử lý totalConsultationRequests
+      if (consultationRequestsResponse.data?.success && Array.isArray(consultationRequestsResponse.data?.data?.$values)) {
+        setTotalConsultationRequests(consultationRequestsResponse.data.data.$values.length);
+      } else {
         setTotalConsultationRequests(0);
       }
-    };
 
-    const fetchTotalConsultationResponses = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorAndRedirect("No authorization token found. Redirecting to login...");
-        return;
-      }
-      try {
-        const response = await axios.get('http://localhost:5200/api/ConsultationResponse/get-all', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-          setTotalConsultationResponses(response.data.data.$values.length);
-        } else {
-          setTotalConsultationResponses(0);
-        }
-      } catch (error) {
-        console.error("Error fetching total consultation responses:", error);
+      // Xử lý totalConsultationResponses
+      if (consultationResponsesResponse.data?.success && Array.isArray(consultationResponsesResponse.data?.data?.$values)) {
+        setTotalConsultationResponses(consultationResponsesResponse.data.data.$values.length);
+      } else {
         setTotalConsultationResponses(0);
       }
-    };
 
-    const fetchUsers = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorAndRedirect("No authorization token found. Redirecting to login...");
-        return;
-      }
-      try {
-        const response = await axios.get('http://localhost:5200/api/UserAccount/get-all', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-          setUsers(response.data.data.$values);
-        } else {
-          setUsers([]);
-        }
-      } catch (error) {
-        console.error('Error fetching users data:', error);
+      // Xử lý users
+      if (usersResponse.data?.success && Array.isArray(usersResponse.data?.data?.$values)) {
+        setUsers(usersResponse.data.data.$values);
+      } else {
         setUsers([]);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Failed to load data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const setErrorAndRedirect = (message) => {
-      setError(message);
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-    };
-
-    fetchTotalGrowthRecords();
-    fetchTotalChildren();
-    fetchTotalConsultationRequests();
-    fetchTotalConsultationResponses();
-    fetchUsers();
+  useEffect(() => {
+    fetchAllData();
   }, [navigate]);
-
-  const [error, setError] = useState(null);
 
   // Calendar navigation
   const handlePrevMonth = () => {
@@ -246,7 +213,7 @@ const DoctorDashboard = () => {
     console.log(`Clicked on user: ${user.username || 'N/A'}`);
   };
 
-  // Mock calendar events
+  // Mock calendar events (thay thế bằng API thực nếu có)
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
@@ -269,7 +236,7 @@ const DoctorDashboard = () => {
 
     const days = [];
     for (let i = 0; i < firstDayOfMonth; i++) {
-      days.push(<span key={`empty-${i}`} className="calendar-day empty"></span>);
+      days.push(<span key={`empty-${i}`} className="doctor-dashboard-calendar-day doctor-dashboard-calendar-day-empty"></span>);
     }
     for (let day = 1; day <= daysInMonth; day++) {
       const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -285,11 +252,11 @@ const DoctorDashboard = () => {
       days.push(
         <span
           key={day}
-          className={`calendar-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${hasEvent ? 'has-event' : ''}`}
+          className={`doctor-dashboard-calendar-day ${isToday ? 'doctor-dashboard-calendar-day-today' : ''} ${isSelected ? 'doctor-dashboard-calendar-day-selected' : ''} ${hasEvent ? 'doctor-dashboard-calendar-day-has-event' : ''}`}
           onClick={() => handleDayClick(day)}
         >
           {day}
-          {hasEvent && <span className="event-dot"></span>}
+          {hasEvent && <span className="doctor-dashboard-event-dot"></span>}
         </span>
       );
     }
@@ -318,9 +285,9 @@ const DoctorDashboard = () => {
     }
   };
 
-  // Mock quick actions
+  // Mock quick actions (thay thế bằng hành động thực nếu cần)
   const quickActions = [
-    { label: "View Schedule", onClick: () => console.log("View Schedule clicked") },
+    { label: "View Schedule", onClick: () => navigate('/doctor/schedule') },
     { label: "Send Message", onClick: () => console.log("Send Message clicked") },
     { label: "Generate Report", onClick: () => console.log("Generate Report clicked") },
   ];
@@ -346,36 +313,45 @@ const DoctorDashboard = () => {
     return quotes[dayOfYear % quotes.length];
   };
 
-  // Mock progress data
+  // Mock progress data (thay thế bằng dữ liệu thực nếu có)
   const progressData = [
     { label: "Consultations Completed", value: 75, max: 100 },
     { label: "Reports Generated", value: 40, max: 50 },
   ];
 
+  if (loading) {
+    return (
+      <div className="doctor-dashboard-loading">
+        <div className="doctor-dashboard-spinner"></div>
+        <p>Loading dashboard data...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="dashboard-container">
+    <div className="doctor-dashboard-container">
       {/* Enhanced Header Section */}
-      <div className="dashboard-header animate-fade-in">
-        <div className="header-banner">
-          <span role="img" aria-label="doctor" className="header-icon">
+      <div className="doctor-dashboard-header doctor-dashboard-animate-fade-in">
+        <div className="doctor-dashboard-header-banner">
+          <span role="img" aria-label="doctor" className="doctor-dashboard-header-icon">
             🩺
           </span>
-          <div className="header-text">
+          <div className="doctor-dashboard-header-text">
             <h1>Welcome back, Doctor!</h1>
             <p>You have {totalConsultationRequests} new consultation requests.</p>
-            <p className="motivational-quote">"Caring for patients is the heart of medicine." – Hippocrates</p>
+            <p className="doctor-dashboard-motivational-quote">"Caring for patients is the heart of medicine." – Hippocrates</p>
           </div>
         </div>
       </div>
 
       {/* Quick Actions Section */}
-      <div className="quick-actions-section animate-fade-in" style={{ animationDelay: '0.2s' }}>
+      <div className="doctor-dashboard-quick-actions-section doctor-dashboard-animate-fade-in" style={{ animationDelay: '0.2s' }}>
         <h3>Quick Actions</h3>
-        <div className="quick-actions">
+        <div className="doctor-dashboard-quick-actions">
           {quickActions.map((action, index) => (
             <button
               key={index}
-              className="quick-action-button animate-slide-up"
+              className="doctor-dashboard-quick-action-button doctor-dashboard-animate-slide-up"
               style={{ animationDelay: `${0.4 + index * 0.1}s` }}
               onClick={action.onClick}
             >
@@ -386,19 +362,19 @@ const DoctorDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="dashboard-main animate-fade-in" style={{ animationDelay: '0.6s' }}>
+      <div className="doctor-dashboard-main doctor-dashboard-animate-fade-in" style={{ animationDelay: '0.6s' }}>
         {/* Left: Doctor's Schedule Overview */}
-        <div className="schedule-overview-section animate-slide-left" style={{ animationDelay: '0.8s' }}>
-          <div className="schedule-overview-header">
+        <div className="doctor-dashboard-schedule-overview-section doctor-dashboard-animate-slide-left" style={{ animationDelay: '0.8s' }}>
+          <div className="doctor-dashboard-schedule-overview-header">
             <h3>Today's Schedule</h3>
             <button
-              className="view-all-button"
+              className="doctor-dashboard-view-all-button"
               onClick={() => navigate('/doctor/schedule')}
             >
               View Full Schedule
             </button>
           </div>
-          <table className="schedule-table">
+          <table className="doctor-dashboard-schedule-table">
             <thead>
               <tr>
                 <th>TIME</th>
@@ -411,7 +387,7 @@ const DoctorDashboard = () => {
                 doctorSchedule.map((appointment, index) => (
                   <tr
                     key={appointment.id}
-                    className="schedule-table-row animate-slide-up"
+                    className="doctor-dashboard-schedule-table-row doctor-dashboard-animate-slide-up"
                     style={{ animationDelay: `${1.0 + index * 0.05}s` }}
                   >
                     <td>{appointment.time}</td>
@@ -431,7 +407,7 @@ const DoctorDashboard = () => {
         </div>
 
         {/* Right: Stats Grid */}
-        <div className="stats-grid">
+        <div className="doctor-dashboard-stats-grid">
           {[
             { title: "Number of examined children", value: totalGrowthRecords.toLocaleString() },
             { title: "Total Children", value: totalChildren },
@@ -440,56 +416,56 @@ const DoctorDashboard = () => {
           ].map((stat, index) => (
             <div
               key={stat.title}
-              className="stat-card animate-slide-up"
+              className="doctor-dashboard-stat-card doctor-dashboard-animate-slide-up"
               style={{ animationDelay: `${1.0 + index * 0.1}s` }}
               onClick={() => handleStatCardClick(stat.title)}
             >
               <h4>{stat.title}</h4>
-              <div className="stat-value">{stat.value}</div>
+              <div className="doctor-dashboard-stat-value">{stat.value}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Progress Tracker Section */}
-      <div className="progress-section animate-fade-in" style={{ animationDelay: '1.2s' }}>
+      <div className="doctor-dashboard-progress-section doctor-dashboard-animate-fade-in" style={{ animationDelay: '1.2s' }}>
         <h3>Daily Progress</h3>
-        <div className="progress-grid">
+        <div className="doctor-dashboard-progress-grid">
           {progressData.map((progress, index) => (
-            <div key={index} className="progress-item animate-slide-up" style={{ animationDelay: `${1.4 + index * 0.1}s` }}>
-              <div className="progress-label">{progress.label}</div>
-              <div className="progress-bar">
+            <div key={index} className="doctor-dashboard-progress-item doctor-dashboard-animate-slide-up" style={{ animationDelay: `${1.4 + index * 0.1}s` }}>
+              <div className="doctor-dashboard-progress-label">{progress.label}</div>
+              <div className="doctor-dashboard-progress-bar">
                 <div
-                  className="progress-fill"
+                  className="doctor-dashboard-progress-fill"
                   style={{ width: `${(progress.value / progress.max) * 100}%` }}
                 ></div>
               </div>
-              <div className="progress-value">{progress.value}/{progress.max}</div>
+              <div className="doctor-dashboard-progress-value">{progress.value}/{progress.max}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Bottom Section */}
-      <div className="dashboard-bottom animate-fade-in" style={{ animationDelay: '1.6s' }}>
+      <div className="doctor-dashboard-bottom doctor-dashboard-animate-fade-in" style={{ animationDelay: '1.6s' }}>
         {/* Left: Calendar */}
-        <div className="calendar-section animate-slide-left" style={{ animationDelay: '1.8s' }}>
+        <div className="doctor-dashboard-calendar-section doctor-dashboard-animate-slide-left" style={{ animationDelay: '1.8s' }}>
           <h3>Calendar</h3>
-          <div className="calendar">
-            <div className="calendar-header">
-              <button className="calendar-nav-button" onClick={handlePrevMonth}>{'<'}</button>
+          <div className="doctor-dashboard-calendar">
+            <div className="doctor-dashboard-calendar-header">
+              <button className="doctor-dashboard-calendar-nav-button" onClick={handlePrevMonth}>{'<'}</button>
               <span>{formatMonthYear()}</span>
-              <button className="calendar-nav-button" onClick={handleNextMonth}>{'>'}</button>
+              <button className="doctor-dashboard-calendar-nav-button" onClick={handleNextMonth}>{'>'}</button>
             </div>
-            <div className="calendar-days">
+            <div className="doctor-dashboard-calendar-days">
               <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
             </div>
-            <div className="calendar-grid">
+            <div className="doctor-dashboard-calendar-grid">
               {generateCalendarDays()}
             </div>
           </div>
           {calendarEvents[`${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`] && (
-            <div className="calendar-events">
+            <div className="doctor-dashboard-calendar-events">
               <h4>Events on {selectedDate.toLocaleDateString()}</h4>
               <ul>
                 {calendarEvents[`${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`].map((event, index) => (
@@ -501,9 +477,9 @@ const DoctorDashboard = () => {
         </div>
 
         {/* Middle: Recent Users Table */}
-        <div className="user-table-section animate-slide-right" style={{ animationDelay: '2.0s' }}>
+        <div className="doctor-dashboard-user-table-section doctor-dashboard-animate-slide-right" style={{ animationDelay: '2.0s' }}>
           <h3>Recent Requests</h3>
-          <table className="user-table">
+          <table className="doctor-dashboard-user-table">
             <thead>
               <tr>
                 <th>NAME</th>
@@ -517,8 +493,8 @@ const DoctorDashboard = () => {
                 const userStatus = user.status?.toLowerCase() === 'active' ? 'Active' : 'Inactive';
                 return (
                   <tr
-                    key={user.userId || index} // Sử dụng userId thay vì id
-                    className="animate-slide-up user-table-row"
+                    key={user.userId || index}
+                    className="doctor-dashboard-user-table-row doctor-dashboard-animate-slide-up"
                     style={{ animationDelay: `${2.2 + index * 0.05}s` }}
                     onClick={() => handleRowClick(user)}
                   >
@@ -526,7 +502,7 @@ const DoctorDashboard = () => {
                     <td>{user.email || 'N/A'}</td>
                     <td>{getRoleName(user.role) || 'N/A'}</td>
                     <td>
-                      <span className={`status-badge status-${userStatus.toLowerCase()}`}>
+                      <span className={`doctor-dashboard-status-badge doctor-dashboard-status-${userStatus.toLowerCase()}`}>
                         {userStatus}
                       </span>
                     </td>
@@ -535,23 +511,23 @@ const DoctorDashboard = () => {
               })}
             </tbody>
           </table>
-          <div className="pagination">
-            <span className="pagination-info">
+          <div className="doctor-dashboard-pagination">
+            <span className="doctor-dashboard-pagination-info">
               Showing {indexOfFirstUser + 1} to {Math.min(indexOfLastUser, users.length)} of {users.length} entries
             </span>
-            <div className="pagination-buttons">
+            <div className="doctor-dashboard-pagination-buttons">
               <button
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className={currentPage === 1 ? 'disabled' : ''}
+                className={currentPage === 1 ? 'doctor-dashboard-pagination-button-disabled' : ''}
               >
                 Previous
               </button>
-              <span className="current-page">{currentPage}</span>
+              <span className="doctor-dashboard-current-page">{currentPage}</span>
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className={currentPage === totalPages ? 'disabled' : ''}
+                className={currentPage === totalPages ? 'doctor-dashboard-pagination-button-disabled' : ''}
               >
                 Next
               </button>
@@ -560,36 +536,36 @@ const DoctorDashboard = () => {
         </div>
 
         {/* Right: Sidebar Section */}
-        <div className="sidebar-section animate-slide-right" style={{ animationDelay: '2.4s' }}>
+        <div className="doctor-dashboard-sidebar-section doctor-dashboard-animate-slide-right" style={{ animationDelay: '2.4s' }}>
           {/* Profile Card */}
-          <div className="profile-card">
-            <div className="profile-photo">
+          <div className="doctor-dashboard-profile-card">
+            <div className="doctor-dashboard-profile-photo">
               <span role="img" aria-label="doctor">👨‍⚕️</span>
             </div>
             <h4>Dr. John Doe</h4>
             <p>Pediatrician</p>
-            <div className="profile-stats">
-              <div className="profile-stat">
-                <span className="stat-label">Experience</span>
-                <span className="stat-value">15 Years</span>
+            <div className="doctor-dashboard-profile-stats">
+              <div className="doctor-dashboard-profile-stat">
+                <span className="doctor-dashboard-stat-label">Experience</span>
+                <span className="doctor-dashboard-stat-value">15 Years</span>
               </div>
-              <div className="profile-stat">
-                <span className="stat-label">Patients</span>
-                <span className="stat-value">1,200</span>
+              <div className="doctor-dashboard-profile-stat">
+                <span className="doctor-dashboard-stat-label">Patients</span>
+                <span className="doctor-dashboard-stat-value">1,200</span>
               </div>
             </div>
           </div>
 
           {/* Clock Widget */}
-          <div className="clock-widget">
+          <div className="doctor-dashboard-clock-widget">
             <h3>Current Time</h3>
             <p>{currentTime.toLocaleTimeString()}</p>
           </div>
 
           {/* Weather Widget */}
-          <div className="weather-widget">
+          <div className="doctor-dashboard-weather-widget">
             <h3>Weather Today</h3>
-            <div className="weather-location">
+            <div className="doctor-dashboard-weather-location">
               <select value={weatherLocation} onChange={handleWeatherLocationChange}>
                 {Object.keys(mockWeatherData).map((location) => (
                   <option key={location} value={location}>
@@ -598,9 +574,9 @@ const DoctorDashboard = () => {
                 ))}
               </select>
             </div>
-            <div className="weather-content">
+            <div className="doctor-dashboard-weather-content">
               <WeatherIcon condition={weatherData.condition} />
-              <div className="weather-details">
+              <div className="doctor-dashboard-weather-details">
                 <p>{weatherData.condition}</p>
                 <p>{weatherData.temperature}°C</p>
                 <p>{weatherData.location}</p>
@@ -609,17 +585,17 @@ const DoctorDashboard = () => {
           </div>
 
           {/* Quote of the Day */}
-          <div className="quote-section">
+          <div className="doctor-dashboard-quote-section">
             <h3>Quote of the Day</h3>
-            <p className="quote-text">{getQuoteOfTheDay()}</p>
+            <p className="doctor-dashboard-quote-text">{getQuoteOfTheDay()}</p>
           </div>
 
           {/* Tips/Reminders */}
-          <div className="tips-section">
+          <div className="doctor-dashboard-tips-section">
             <h3>Daily Tips</h3>
             <ul>
               {tips.map((tip, index) => (
-                <li key={index} className="animate-slide-up" style={{ animationDelay: `${2.6 + index * 0.1}s` }}>
+                <li key={index} className="doctor-dashboard-animate-slide-up" style={{ animationDelay: `${2.6 + index * 0.1}s` }}>
                   {tip}
                 </li>
               ))}
@@ -629,8 +605,11 @@ const DoctorDashboard = () => {
       </div>
 
       {error && (
-        <div className="error-message animate-fade-in" style={{ animationDelay: '0.5s' }}>
+        <div className="doctor-dashboard-error-message doctor-dashboard-animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <p>{error}</p>
+          <button onClick={fetchAllData} className="doctor-dashboard-retry-button">
+            Retry
+          </button>
         </div>
       )}
     </div>

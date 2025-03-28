@@ -67,59 +67,60 @@ const DoctorPage = () => {
   };
 
   return (
-    <div className="doctor-container">
-      <aside className={`doctor-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
-        <div className="sidebar-header">
-          <img src={logo} alt="Logo" className="logo" />
-          {!sidebarCollapsed && <div className="logoDoctor">Doctor Management</div>}
+    <div className="doctor-page">
+      <aside className={`doctor-sidebar ${sidebarCollapsed ? 'doctor-sidebar--collapsed' : ''}`}>
+        <div className="doctor-sidebar__header">
+          <img src={logo} alt="Logo" className="doctor-sidebar__logo" />
+          {!sidebarCollapsed && <div className="doctor-sidebar__title">Doctor Management</div>}
         </div>
-        <div className="sidebar-controls">
-          <button className="sidebar-toggle-top" onClick={toggleSidebar}>
+        <div className="doctor-sidebar__controls">
+          <button className="doctor-sidebar__toggle" onClick={toggleSidebar}>
             <FontAwesomeIcon icon={faBars} />
           </button>
         </div>
-        <div className="profile-section">
-          <div className="profile-button">
+        <div className="doctor-sidebar__profile">
+          <div className="doctor-sidebar__profile-button">
             <img
               src={profileImage}
               alt="Profile"
-              className="profile-picture"
+              className="doctor-sidebar__profile-picture"
             />
-            <div className="profile-info">
-              <div className="profile-name">John Doe</div>
-              <div className="profile-role">Doctor</div>
+            <div className="doctor-sidebar__profile-info">
+              <div className="doctor-sidebar__profile-name">John Doe</div>
+              <div className="doctor-sidebar__profile-role">Doctor</div>
             </div>
           </div>
         </div>
-        <nav>
+        <nav className="doctor-sidebar__nav">
           <ul>
-            <li className="section-title">Main</li>
+            <li className="doctor-sidebar__section-title">Main</li>
             <li>
               <button
                 onClick={() => setSelectedSection("dashboard")}
-                className={selectedSection === "dashboard" ? "active" : ""}
+                className={selectedSection === "dashboard" ? "doctor-sidebar__nav-item--active" : "doctor-sidebar__nav-item"}
               >
-                <FontAwesomeIcon icon={faHome} className="menu-icon" />
-                <span className="menu-text">Home</span>
+                <FontAwesomeIcon icon={faHome} className="doctor-sidebar__menu-icon" />
+                <span className="doctor-sidebar__menu-text">Home</span>
               </button>
             </li>
             <li>
               <button
                 onClick={() => toggleSection("consultation")}
+                className="doctor-sidebar__nav-item"
                 aria-expanded={expandedSections["consultation"]}
               >
-                <FontAwesomeIcon icon={faStethoscope} className="menu-icon" />
-                <span className="menu-text">Consultation Requests</span>
+                <FontAwesomeIcon icon={faStethoscope} className="doctor-sidebar__menu-icon" />
+                <span className="doctor-sidebar__menu-text">Consultation Requests</span>
                 <FontAwesomeIcon
                   icon={expandedSections["consultation"] ? faChevronUp : faChevronDown}
-                  className="chevron-icon"
+                  className="doctor-sidebar__chevron-icon"
                 />
               </button>
               {expandedSections["consultation"] && (
-                <ul className={`submenu ${expandedSections["consultation"] ? 'submenu-open' : ''}`}>
+                <ul className={`doctor-sidebar__submenu ${expandedSections["consultation"] ? 'doctor-sidebar__submenu--open' : ''}`}>
                   <li>
-                    <button onClick={() => setSelectedSection("consultation")}>
-                      <span className="menu-text">List</span>
+                    <button onClick={() => setSelectedSection("consultation")} className="doctor-sidebar__submenu-item">
+                      <span className="doctor-sidebar__menu-text">List</span>
                     </button>
                   </li>
                 </ul>
@@ -128,39 +129,44 @@ const DoctorPage = () => {
             <li>
               <button
                 onClick={() => toggleSection("consultationResponses")}
+                className="doctor-sidebar__nav-item"
                 aria-expanded={expandedSections["consultationResponses"]}
               >
-                <FontAwesomeIcon icon={faStethoscope} className="menu-icon" />
-                <span className="menu-text">Consultation Responses</span>
+                <FontAwesomeIcon icon={faStethoscope} className="doctor-sidebar__menu-icon" />
+                <span className="doctor-sidebar__menu-text">Consultation Responses</span>
                 <FontAwesomeIcon
                   icon={expandedSections["consultationResponses"] ? faChevronUp : faChevronDown}
-                  className="chevron-icon"
+                  className="doctor-sidebar__chevron-icon"
                 />
               </button>
               {expandedSections["consultationResponses"] && (
-                <ul className={`submenu ${expandedSections["consultationResponses"] ? 'submenu-open' : ''}`}>
+                <ul className={`doctor-sidebar__submenu ${expandedSections["consultationResponses"] ? 'doctor-sidebar__submenu--open' : ''}`}>
                   <li>
-                    <button onClick={() => setSelectedSection("consultationResponses")}>
-                      <span className="menu-text">List</span>
+                    <button onClick={() => setSelectedSection("consultationResponses")} className="doctor-sidebar__submenu-item">
+                      <span className="doctor-sidebar__menu-text">List</span>
                     </button>
                   </li>
                 </ul>
               )}
             </li>
             <li>
-              <button onClick={() => toggleSection("growth")} aria-expanded={expandedSections["growth"]}>
-                <FontAwesomeIcon icon={faChartLine} className="menu-icon" />
-                <span className="menu-text">Growth Data</span>
+              <button
+                onClick={() => toggleSection("growth")}
+                className="doctor-sidebar__nav-item"
+                aria-expanded={expandedSections["growth"]}
+              >
+                <FontAwesomeIcon icon={faChartLine} className="doctor-sidebar__menu-icon" />
+                <span className="doctor-sidebar__menu-text">Growth Data</span>
                 <FontAwesomeIcon
                   icon={expandedSections["growth"] ? faChevronUp : faChevronDown}
-                  className="chevron-icon"
+                  className="doctor-sidebar__chevron-icon"
                 />
               </button>
               {expandedSections["growth"] && (
-                <ul className={`submenu ${expandedSections["growth"] ? 'submenu-open' : ''}`}>
+                <ul className={`doctor-sidebar__submenu ${expandedSections["growth"] ? 'doctor-sidebar__submenu--open' : ''}`}>
                   <li>
-                    <button onClick={() => setSelectedSection("growth")}>
-                      <span className="menu-text">Data</span>
+                    <button onClick={() => setSelectedSection("growth")} className="doctor-sidebar__submenu-item">
+                      <span className="doctor-sidebar__menu-text">Data</span>
                     </button>
                   </li>
                 </ul>
@@ -169,59 +175,59 @@ const DoctorPage = () => {
             <li>
               <button
                 onClick={() => setSelectedSection("feedback")}
-                className={selectedSection === "feedback" ? "active" : ""}
+                className={selectedSection === "feedback" ? "doctor-sidebar__nav-item--active" : "doctor-sidebar__nav-item"}
               >
-                <FontAwesomeIcon icon={faStar} className="menu-icon" />
-                <span className="menu-text">Rating Feedback</span>
+                <FontAwesomeIcon icon={faStar} className="doctor-sidebar__menu-icon" />
+                <span className="doctor-sidebar__menu-text">Rating Feedback</span>
               </button>
             </li>
-            <li className="section-title">Pages</li>
+            <li className="doctor-sidebar__section-title">Pages</li>
             <li>
               <button
                 onClick={() => setSelectedSection("profile")}
-                className={selectedSection === "profile" ? "active" : ""}
+                className={selectedSection === "profile" ? "doctor-sidebar__nav-item--active" : "doctor-sidebar__nav-item"}
               >
-                <FontAwesomeIcon icon={faUser} className="menu-icon" />
-                <span className="menu-text">Profile</span>
+                <FontAwesomeIcon icon={faUser} className="doctor-sidebar__menu-icon" />
+                <span className="doctor-sidebar__menu-text">Profile</span>
               </button>
             </li>
             <li>
-              <button onClick={handleLogoutAndRedirect} className="logout-button">
-                <FontAwesomeIcon icon={faSignOutAlt} className="menu-icon" />
-                <span className="menu-text">Logout</span>
+              <button onClick={handleLogoutAndRedirect} className="doctor-sidebar__logout">
+                <FontAwesomeIcon icon={faSignOutAlt} className="doctor-sidebar__menu-icon" />
+                <span className="doctor-sidebar__menu-text">Logout</span>
               </button>
             </li>
           </ul>
         </nav>
       </aside>
       <main className="doctor-content">
-        <header className="content-header">
-          <div className="header-icons">
-            <button className="header-icon" onClick={toggleSidebar}>
+        <header className="doctor-content__header">
+          <div className="doctor-content__header-icons">
+            <button className="doctor-content__header-icon" onClick={toggleSidebar}>
               <FontAwesomeIcon icon={faBars} />
             </button>
-            <button className="header-icon">
+            <button className="doctor-content__header-icon">
               <FontAwesomeIcon icon={faEnvelope} />
             </button>
-            <button className="header-icon" onClick={toggleSettingsDropdown}>
+            <button className="doctor-content__header-icon" onClick={toggleSettingsDropdown}>
               <FontAwesomeIcon icon={faChartPie} />
             </button>
             {showSettingsDropdown && (
-              <div className="settings-dropdown">
+              <div className="doctor-content__settings-dropdown">
                 <button onClick={() => setSelectedSection("profile")}>
-                  <FontAwesomeIcon icon={faUser} className="dropdown-icon" />
+                  <FontAwesomeIcon icon={faUser} className="doctor-content__dropdown-icon" />
                   View Profile
                 </button>
                 <button onClick={() => navigate("/contact")}>
-                  <FontAwesomeIcon icon={faComment} className="dropdown-icon" />
+                  <FontAwesomeIcon icon={faComment} className="doctor-content__dropdown-icon" />
                   Contact
                 </button>
                 <button onClick={() => navigate("/analytics")}>
-                  <FontAwesomeIcon icon={faChartPie} className="dropdown-icon" />
+                  <FontAwesomeIcon icon={faChartPie} className="doctor-content__dropdown-icon" />
                   Analytics
                 </button>
                 <button onClick={handleLogoutAndRedirect}>
-                  <FontAwesomeIcon icon={faSignOutAlt} className="dropdown-icon" />
+                  <FontAwesomeIcon icon={faSignOutAlt} className="doctor-content__dropdown-icon" />
                   Sign out
                 </button>
               </div>

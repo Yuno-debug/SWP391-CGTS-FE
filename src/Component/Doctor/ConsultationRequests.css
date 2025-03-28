@@ -21,6 +21,12 @@
   font-weight: 600;
   color: #1e40af;
   margin: 0;
+  position: relative;
+}
+
+.header-left h2::before {
+  content: '📋'; /* Icon bảng thông báo */
+  margin-right: 8px;
 }
 
 .header-left p {
@@ -43,11 +49,17 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .refresh-button {
   background: #e5e7eb;
   color: #1f2937;
+}
+
+.refresh-button::before {
+  content: '🔄'; /* Icon làm mới */
+  margin-right: 6px;
 }
 
 .refresh-button:hover {
@@ -57,6 +69,11 @@
 .action-button {
   background: #3b82f6;
   color: #ffffff;
+}
+
+.action-button::before {
+  content: '➕'; /* Icon thêm */
+  margin-right: 6px;
 }
 
 .action-button:hover {
@@ -79,6 +96,15 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: transform 0.2s;
+  position: relative;
+}
+
+.summary-card::before {
+  content: '📊'; /* Icon biểu đồ */
+  display: block;
+  font-size: 20px;
+  color: #3b82f6;
+  margin-bottom: 8px;
 }
 
 .summary-card:hover {
@@ -109,26 +135,31 @@
 
 .search-bar {
   flex: 1;
-  min-width: 200px;
+  position: relative; /* Giữ lại để hỗ trợ icon */
 }
 
 .search-bar input {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0; /* Lấy từ RatingFeedback.css */
+  border-radius: 4px; /* Lấy từ RatingFeedback.css */
+  font-size: 16px; /* Lấy từ RatingFeedback.css */
+  transition: border-color 0.3s ease; /* Lấy từ RatingFeedback.css */
+}
+
+.search-bar input::placeholder {
+  content: '🔍'; /* Icon tìm kiếm trong placeholder - giữ lại từ ConsultationRequests.css */
+  color: #6b7280;
 }
 
 .search-bar input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6; /* Lấy từ RatingFeedback.css */
 }
 
 .status-filter {
   min-width: 150px;
+  position: relative;
 }
 
 .status-filter select {
@@ -142,6 +173,16 @@
   background-size: 18px;
   padding-right: 36px;
   transition: all 0.3s ease;
+}
+
+.status-filter::before {
+  content: '⚙️'; /* Icon bộ lọc */
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #6b7280;
 }
 
 .status-filter select:focus {
@@ -167,9 +208,9 @@
 
 .consultation-requests-table th,
 .consultation-requests-table td {
-  padding: 12px; /* Đổi từ 12px 15px thành 12px */
+  padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #ddd; /* Đổi từ #e5e7eb thành #ddd */
+  border-bottom: 1px solid #ddd;
 }
 
 .consultation-requests-table th {
@@ -177,9 +218,9 @@
   font-weight: 700;
   color: #000;
   text-transform: uppercase;
-  background-color: #f4f4f4; /* Đổi từ #f9fafb thành #f4f4f4 */
+  background-color: #f4f4f4;
   cursor: pointer;
-  transition: background-color 0.2s; /* Thêm transition */
+  transition: background-color 0.2s;
 }
 
 .consultation-requests-table th:hover {
@@ -240,33 +281,90 @@
   white-space: nowrap;
 }
 
+/** STATUS BADGE STYLES **/
+
 .status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 16px;
   font-size: 12px;
-  font-weight: 500;
-  text-transform: capitalize;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
 }
 
+.status-badge:hover {
+  transform: scale(1.03);
+}
+
+/* Status Variants */
 .status-active {
-  background: #dcfce7;
-  color: #16a34a;
+  background: #e7f3e9; /* Nền xanh nhạt để tăng độ tương phản */
+  color: #14532d; /* Màu chữ xanh đậm hơn */
+  border: 1px solid #15803d; /* Viền xanh đậm */
+  font-weight: 700; /* Tăng độ đậm của chữ */
+}
+
+.status-active::before {
+  content: '✔️'; /* Icon dấu check */
+  margin-right: 6px;
+  color: #14532d; /* Icon cùng màu chữ */
+}
+
+.status-active:hover {
+  background: #e7f3e9; /* Giữ nguyên màu nền khi hover */
+  transform: none; /* Loại bỏ hiệu ứng scale */
 }
 
 .status-inactive {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #ffffff; /* Màu trắng */
+  color: #ef4444; /* Giữ màu chữ đỏ */
+  border: 1px solid #dc2626; /* Viền đỏ */
+}
+
+.status-inactive::before {
+  content: '❌'; /* Icon dấu X */
+  margin-right: 6px;
+  color: #ef4444; /* Icon cùng màu chữ */
+}
+
+.status-inactive:hover {
+  background: #f1f5f9; /* Màu xám nhạt khi hover */
 }
 
 .status-pending {
-  background: #ffedd5;
-  color: #ea580c;
+  background: #ffffff; /* Màu trắng */
+  color: #f59e0b; /* Giữ màu chữ vàng */
+  border: 1px solid #d97706; /* Viền vàng đậm */
+}
+
+.status-pending::before {
+  content: '⏳'; /* Icon đồng hồ cát */
+  margin-right: 6px;
+  color: #f59e0b; /* Icon cùng màu chữ */
+}
+
+.status-pending:hover {
+  background: #f1f5f9; /* Màu xám nhạt khi hover */
 }
 
 .status-unknown {
-  background: #e5e7eb;
-  color: #6b7280;
+  background: #ffffff; /* Màu trắng */
+  color: #6b7280; /* Giữ màu chữ xám */
+  border: 1px solid #4b5563; /* Viền xám đậm */
+}
+
+.status-unknown::before {
+  content: '❓'; /* Icon dấu hỏi */
+  margin-right: 6px;
+  color: #6b7280; /* Icon cùng màu chữ */
+}
+
+.status-unknown:hover {
+  background: #f1f5f9; /* Màu xám nhạt khi hover */
 }
 
 .action-buttons {
@@ -285,11 +383,17 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .edit-button {
   background: #3b82f6;
   color: #ffffff;
+}
+
+.edit-button::before {
+  content: '✏️'; /* Icon bút chì */
+  margin-right: 6px;
 }
 
 .edit-button:hover {
@@ -301,6 +405,11 @@
   color: #1f2937;
 }
 
+.delete-button::before {
+  content: '🗑️'; /* Icon thùng rác */
+  margin-right: 6px;
+}
+
 .delete-button:hover {
   background: #eab308;
 }
@@ -308,6 +417,11 @@
 .details-button {
   background: #ef4444;
   color: #ffffff;
+}
+
+.details-button::before {
+  content: 'ℹ️'; /* Icon thông tin */
+  margin-right: 6px;
 }
 
 .details-button:hover {
@@ -343,6 +457,17 @@
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+.pagination-buttons button:first-child::before {
+  content: '⬅️'; /* Icon mũi tên trái */
+  margin-right: 6px;
+}
+
+.pagination-buttons button:last-child::after {
+  content: '➡️'; /* Icon mũi tên phải */
+  margin-left: 6px;
 }
 
 .pagination-buttons button:hover:not(.disabled) {
@@ -378,6 +503,12 @@
   font-weight: 600;
   color: #1e40af;
   margin-bottom: 15px;
+  position: relative;
+}
+
+.recent-requests-section h3::before {
+  content: '🕒'; /* Icon đồng hồ */
+  margin-right: 8px;
 }
 
 .recent-requests {
@@ -448,6 +579,12 @@
   color: #3b82f6;
   text-decoration: none;
   transition: color 0.3s ease;
+  position: relative;
+}
+
+.footer-right a::before {
+  content: '🔗'; /* Icon liên kết */
+  margin-right: 6px;
 }
 
 .footer-right a:hover {
@@ -499,6 +636,10 @@
   transition: all 0.3s ease;
 }
 
+.modal-close-button::before {
+  content: '✖️'; /* Icon đóng */
+}
+
 .modal-close-button:hover {
   background: #d1d5db;
   color: #dc2626;
@@ -510,6 +651,12 @@
   font-weight: 600;
   color: #1e40af;
   margin-bottom: 20px;
+  position: relative;
+}
+
+.modal h2::before {
+  content: '📝'; /* Icon ghi chú */
+  margin-right: 8px;
 }
 
 .modal-content {
@@ -581,11 +728,17 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .modal-button.submit {
   background: #3b82f6;
   color: #ffffff;
+}
+
+.modal-button.submit::before {
+  content: '✔️'; /* Icon xác nhận */
+  margin-right: 6px;
 }
 
 .modal-button.submit:hover {
@@ -595,6 +748,11 @@
 .modal-button.cancel {
   background: #e5e7eb;
   color: #1f2937;
+}
+
+.modal-button.cancel::before {
+  content: '❌'; /* Icon hủy */
+  margin-right: 6px;
 }
 
 .modal-button.cancel:hover {
@@ -639,8 +797,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /** ERROR MESSAGE **/
@@ -665,6 +827,12 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+.retry-button::before {
+  content: '🔄'; /* Icon thử lại */
+  margin-right: 6px;
 }
 
 .retry-button:hover {
@@ -680,7 +848,7 @@
 
   .page-header {
     flex-direction: column;
-    gap: 10px;
+    gap: 0px;
     text-align: center;
   }
 
@@ -729,5 +897,23 @@
   .pagination {
     flex-direction: column;
     gap: 10px;
+  }
+}
+
+/** RESPONSIVE ADJUSTMENTS FOR STATUS BADGES **/
+
+@media (max-width: 768px) {
+  .status-badge {
+    padding: 5px 10px;
+    font-size: 11px;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-badge {
+    padding: 4px 8px;
+    font-size: 10px;
+    border-radius: 12px;
   }
 }

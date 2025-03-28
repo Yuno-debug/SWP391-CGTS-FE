@@ -1,298 +1,325 @@
 /* DoctorDashboard.css */
-.dashboard-container {
-  padding: 30px; /* Tăng padding để thoáng hơn */
+.doctor-dashboard-container {
+  padding: 40px;
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #f8fafc 0%, #e5e7eb 100%); /* Gradient nhẹ nhàng */
+  background: linear-gradient(135deg, #f8fafc 0%, #e5e7eb 100%);
   min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* Header Section */
-.dashboard-header {
-  margin-bottom: 30px; /* Tăng khoảng cách */
+.doctor-dashboard-header {
+  margin-bottom: 40px;
 }
 
-.header-banner {
+.doctor-dashboard-header-banner {
   background: linear-gradient(90deg, #3b82f6, #60a5fa);
-  padding: 25px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
+  padding: 30px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
-  gap: 20px; /* Tăng khoảng cách giữa các phần tử */
+  gap: 25px;
   color: #ffffff;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
-  transition: transform 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.header-banner:hover {
-  transform: translateY(-3px); /* Hiệu ứng nâng lên khi hover */
+.doctor-dashboard-header-banner::before {
+  content: '🏥'; /* Icon bệnh viện */
+  font-size: 28px;
+  margin-right: 10px;
 }
 
-.header-icon {
-  font-size: 24px; /* Tăng kích thước icon */
+.doctor-dashboard-header-banner:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.header-text h1 {
-  font-size: 28px; /* Tăng kích thước font */
-  font-weight: 700; /* Đậm hơn */
+.doctor-dashboard-header-icon {
+  font-size: 28px;
+}
+
+.doctor-dashboard-header-text h1 {
+  font-size: 32px;
+  font-weight: 700;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm bóng chữ */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.header-text p {
-  font-size: 16px; /* Tăng kích thước font */
-  font-weight: 400; /* Nhẹ hơn để tạo tương phản */
-  margin: 8px 0 0;
+.doctor-dashboard-header-text p {
+  font-size: 18px;
+  font-weight: 400;
+  margin: 10px 0 0;
   opacity: 0.9;
 }
 
-.motivational-quote {
+.doctor-dashboard-motivational-quote {
   font-style: italic;
-  font-size: 15px;
-  margin-top: 12px;
+  font-size: 16px;
+  margin-top: 15px;
   opacity: 0.85;
   transition: opacity 0.3s ease;
 }
 
-.motivational-quote:hover {
-  opacity: 1; /* Làm nổi bật khi hover */
+.doctor-dashboard-motivational-quote:hover {
+  opacity: 1;
 }
 
 /* Quick Actions Section */
-.quick-actions-section {
-  margin-bottom: 30px;
+.doctor-dashboard-quick-actions-section {
+  margin-bottom: 40px;
 }
 
-.quick-actions-section h3 {
-  font-size: 24px; /* Tăng kích thước */
+.doctor-dashboard-quick-actions-section h3 {
+  font-size: 26px;
   font-weight: 700;
   color: #1e40af;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   position: relative;
   display: inline-block;
-  padding-bottom: 6px;
+  padding-bottom: 8px;
   transition: color 0.3s ease;
 }
 
-.quick-actions-section h3::after {
+.doctor-dashboard-quick-actions-section h3::before {
+  content: '⚡'; /* Icon tia sét biểu thị hành động nhanh */
+  margin-right: 10px;
+}
+
+.doctor-dashboard-quick-actions-section h3::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 0;
   width: 50%;
   height: 3px;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa); /* Gradient cho gạch chân */
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
   border-radius: 2px;
   transition: width 0.3s ease;
 }
 
-.quick-actions-section h3:hover {
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-quick-actions-section h3:hover {
+  color: #2563eb;
 }
 
-.quick-actions-section h3:hover::after {
-  width: 100%; /* Gạch chân mở rộng khi hover */
+.doctor-dashboard-quick-actions-section h3:hover::after {
+  width: 100%;
 }
 
-.quick-actions {
+.doctor-dashboard-quick-actions {
   display: flex;
-  gap: 15px; /* Tăng khoảng cách */
+  gap: 20px;
   flex-wrap: wrap;
 }
 
-.quick-action-button {
-  padding: 12px 24px; /* Tăng padding */
-  background: linear-gradient(90deg, #3b82f6, #60a5fa); /* Gradient cho button */
+.doctor-dashboard-quick-action-button {
+  padding: 14px 28px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
   color: #ffffff;
   border: none;
-  border-radius: 8px; /* Bo tròn hơn */
-  font-size: 15px;
+  border-radius: 10px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-.quick-action-button:hover {
-  background: linear-gradient(90deg, #2563eb, #3b82f6); /* Gradient đậm hơn khi hover */
-  transform: translateY(-2px); /* Nâng lên khi hover */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.doctor-dashboard-quick-action-button::before {
+  content: '➡️'; /* Icon mũi tên phải */
+  margin-right: 8px;
+}
+
+.doctor-dashboard-quick-action-button:hover {
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 /* Main Content */
-.dashboard-main {
+.doctor-dashboard-main {
   display: flex;
-  gap: 25px; /* Tăng khoảng cách */
-  margin-bottom: 30px;
+  gap: 30px;
+  margin-bottom: 40px;
   flex-wrap: wrap;
 }
 
 /* Doctor's Schedule Overview Section */
-.schedule-overview-section {
+.doctor-dashboard-schedule-overview-section {
   flex: 2;
   background: #ffffff;
-  padding: 25px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
 }
 
-.schedule-overview-section:hover {
-  transform: translateY(-3px); /* Hiệu ứng nâng lên khi hover */
+.doctor-dashboard-schedule-overview-section:hover {
+  transform: translateY(-5px);
 }
 
-.schedule-overview-header {
+.doctor-dashboard-schedule-overview-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
-.schedule-overview-header h3 {
-  font-size: 24px; /* Tăng kích thước */
+.doctor-dashboard-schedule-overview-header h3 {
+  font-size: 26px;
   font-weight: 700;
   color: #1e40af;
   margin: 0;
   position: relative;
-  padding: 5px 10px;
-  background: linear-gradient(90deg, #dbeafe, #eff6ff); /* Gradient nhẹ cho nền */
-  border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 6px 12px;
+  background: linear-gradient(90deg, #dbeafe, #eff6ff);
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.3s ease;
 }
 
-.schedule-overview-header h3:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-schedule-overview-header h3::before {
+  content: '📅'; /* Icon lịch */
+  margin-right: 10px;
 }
 
-.view-all-button {
-  padding: 10px 20px; /* Tăng padding */
-  background: linear-gradient(90deg, #3b82f6, #60a5fa); /* Gradient cho button */
+.doctor-dashboard-schedule-overview-header h3:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+  color: #2563eb;
+}
+
+.doctor-dashboard-view-all-button {
+  padding: 12px 24px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
   color: #ffffff;
   border: none;
-  border-radius: 8px; /* Bo tròn hơn */
-  font-size: 15px;
+  border-radius: 10px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-.view-all-button:hover {
-  background: linear-gradient(90deg, #2563eb, #3b82f6); /* Gradient đậm hơn */
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.doctor-dashboard-view-all-button::before {
+  content: '👁️'; /* Icon mắt */
+  margin-right: 8px;
 }
 
-.schedule-table {
+.doctor-dashboard-view-all-button:hover {
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.doctor-dashboard-schedule-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.schedule-table th,
-.schedule-table td {
-  padding: 14px 16px; /* Tăng padding */
+.doctor-dashboard-schedule-table th,
+.doctor-dashboard-schedule-table td {
+  padding: 16px 20px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.schedule-table th {
-  font-size: 13px;
+.doctor-dashboard-schedule-table th {
+  font-size: 14px;
   font-weight: 500;
   color: #6b7280;
   text-transform: uppercase;
   background: #f9fafb;
 }
 
-.schedule-table td {
-  font-size: 15px;
-  font-weight: 400; /* Nhẹ hơn để tạo tương phản */
+.doctor-dashboard-schedule-table td {
+  font-size: 16px;
+  font-weight: 400;
   color: #1f2937;
 }
 
-.schedule-table tbody tr {
+.doctor-dashboard-schedule-table tbody tr {
   background: #ffffff;
   transition: all 0.3s ease;
 }
 
-.schedule-table tbody tr:nth-child(even) {
+.doctor-dashboard-schedule-table tbody tr:nth-child(even) {
   background: #f9fafb;
 }
 
-.schedule-table-row {
+.doctor-dashboard-schedule-table-row {
   cursor: pointer;
 }
 
-.schedule-table-row:hover {
+.doctor-dashboard-schedule-table-row:hover {
   background: #f1f5f9;
-  transform: scale(1.01); /* Hiệu ứng phóng to nhẹ khi hover */
+  transform: scale(1.01);
 }
 
-.schedule-table-row:active {
+.doctor-dashboard-schedule-table-row:active {
   transform: scale(0.98);
   background: #e2e8f0;
 }
 
 /* Stats Grid */
-.stats-grid {
+.doctor-dashboard-stats-grid {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Tăng kích thước tối thiểu */
-  gap: 20px; /* Tăng khoảng cách */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 25px;
 }
 
-.stat-card {
+.doctor-dashboard-stat-card {
   background: #ffffff;
-  padding: 20px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   text-align: center;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
 }
 
-.stat-card:hover {
-  transform: translateY(-5px); /* Nâng cao hơn khi hover */
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+.doctor-dashboard-stat-card::before {
+  content: '📊'; /* Icon biểu đồ */
+  display: block;
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #3b82f6;
 }
 
-.stat-card h4 {
-  font-size: 16px; /* Tăng kích thước */
+.doctor-dashboard-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.doctor-dashboard-stat-card h4 {
+  font-size: 18px;
   font-weight: 500;
   color: #6b7280;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
-.stat-value {
-  font-size: 24px; /* Tăng kích thước */
+.doctor-dashboard-stat-value {
+  font-size: 28px;
   font-weight: 700;
   color: #1e40af;
-}
-
-.stat-change {
-  font-size: 13px;
-  margin-top: 8px;
-}
-
-.stat-change.positive {
-  color: #16a34a;
-}
-
-.stat-change.negative {
-  color: #dc2626;
 }
 
 /* Progress Tracker Section */
-.progress-section {
-  margin-bottom: 30px;
+.doctor-dashboard-progress-section {
+  margin-bottom: 40px;
 }
 
-.progress-section h3 {
-  font-size: 24px; /* Tăng kích thước */
+.doctor-dashboard-progress-section h3 {
+  font-size: 26px;
   font-weight: 700;
   color: #1e40af;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   text-transform: uppercase;
   letter-spacing: 1px;
   position: relative;
@@ -300,611 +327,665 @@
   transition: color 0.3s ease;
 }
 
-.progress-section h3::before {
-  content: '📊';
-  margin-right: 10px;
-  font-size: 22px;
+.doctor-dashboard-progress-section h3::before {
+  content: '📈'; /* Icon biểu đồ tăng trưởng */
+  margin-right: 12px;
+  font-size: 24px;
 }
 
-.progress-section h3:hover {
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-progress-section h3:hover {
+  color: #2563eb;
 }
 
-.progress-grid {
+.doctor-dashboard-progress-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* Tăng kích thước tối thiểu */
-  gap: 20px; /* Tăng khoảng cách */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
 }
 
-.progress-item {
+.doctor-dashboard-progress-item {
   background: #ffffff;
-  padding: 20px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
 }
 
-.progress-item:hover {
-  transform: translateY(-3px); /* Nâng lên khi hover */
+.doctor-dashboard-progress-item:hover {
+  transform: translateY(-5px);
 }
 
-.progress-label {
-  font-size: 15px;
+.doctor-dashboard-progress-label {
+  font-size: 16px;
   font-weight: 500;
   color: #6b7280;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
+  position: relative;
 }
 
-.progress-bar {
+.doctor-dashboard-progress-label::before {
+  content: '✅'; /* Icon checkmark */
+  margin-right: 8px;
+}
+
+.doctor-dashboard-progress-bar {
   background: #e5e7eb;
-  border-radius: 12px; /* Bo tròn hơn */
-  height: 12px; /* Tăng chiều cao */
+  border-radius: 14px;
+  height: 14px;
   overflow: hidden;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
-.progress-fill {
-  background: linear-gradient(90deg, #3b82f6, #60a5fa); /* Gradient cho progress */
+.doctor-dashboard-progress-fill {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
   height: 100%;
   transition: width 0.5s ease;
 }
 
-.progress-value {
-  font-size: 13px;
+.doctor-dashboard-progress-value {
+  font-size: 14px;
   color: #1f2937;
   text-align: right;
 }
 
 /* Bottom Section */
-.dashboard-bottom {
+.doctor-dashboard-bottom {
   display: flex;
-  gap: 25px; /* Tăng khoảng cách */
+  gap: 30px;
   flex-wrap: wrap;
 }
 
 /* Calendar Section */
-.calendar-section {
+.doctor-dashboard-calendar-section {
   flex: 1;
   background: #ffffff;
-  padding: 25px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
 }
 
-.calendar-section:hover {
-  transform: translateY(-3px); /* Nâng lên khi hover */
+.doctor-dashboard-calendar-section:hover {
+  transform: translateY(-5px);
 }
 
-.calendar-section h3 {
-  font-size: 24px; /* Tăng kích thước */
+.doctor-dashboard-calendar-section h3 {
+  font-size: 26px;
   font-weight: 700;
   color: #1e40af;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   position: relative;
-  padding-left: 15px;
+  padding-left: 20px;
   transition: color 0.3s ease;
 }
 
-.calendar-section h3::before {
-  content: '';
+.doctor-dashboard-calendar-section h3::before {
+  content: '📆'; /* Icon lịch khác */
+  margin-right: 10px;
   position: absolute;
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 5px;
+  width: 6px;
   height: 80%;
-  background: #3b82f6;
-  border-radius: 3px;
 }
 
-.calendar-section h3:hover {
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-calendar-section h3:hover {
+  color: #2563eb;
 }
 
-.calendar {
+.doctor-dashboard-calendar {
   width: 100%;
 }
 
-.calendar-header {
+.doctor-dashboard-calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
-.calendar-nav-button {
+.doctor-dashboard-calendar-nav-button {
   background: none;
   border: none;
-  font-size: 18px; /* Tăng kích thước */
+  font-size: 20px;
   cursor: pointer;
   color: #3b82f6;
   transition: color 0.3s ease;
 }
 
-.calendar-nav-button:hover {
+.doctor-dashboard-calendar-nav-button:hover {
   color: #2563eb;
 }
 
-.calendar-days {
+.doctor-dashboard-calendar-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
-  font-size: 13px;
+  font-size: 14px;
   color: #6b7280;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
-.calendar-grid {
+.doctor-dashboard-calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px; /* Tăng khoảng cách */
+  gap: 10px;
   text-align: center;
 }
 
-.calendar-day {
-  padding: 10px; /* Tăng padding */
+.doctor-dashboard-calendar-day {
+  padding: 12px;
   border-radius: 50%;
-  font-size: 15px;
+  font-size: 16px;
   color: #1f2937;
   cursor: pointer;
   position: relative;
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-.calendar-day.empty {
+.doctor-dashboard-calendar-day-empty {
   background: transparent;
   cursor: default;
 }
 
-.calendar-day.today {
+.doctor-dashboard-calendar-day-today {
   background: #3b82f6;
   color: #ffffff;
 }
 
-.calendar-day.selected {
+.doctor-dashboard-calendar-day-selected {
   background: #2563eb;
   color: #ffffff;
 }
 
-.calendar-day.has-event {
+.doctor-dashboard-calendar-day-has-event {
   position: relative;
 }
 
-.event-dot {
+.doctor-dashboard-calendar-day-has-event::after {
+  content: '🔔'; /* Icon chuông thay cho chấm tròn */
   position: absolute;
-  bottom: 2px;
+  bottom: 3px;
   left: 50%;
   transform: translateX(-50%);
-  width: 8px; /* Tăng kích thước */
-  height: 8px;
-  background: #ef4444;
-  border-radius: 50%;
+  font-size: 12px;
+  color: #ef4444;
 }
 
-.calendar-events {
-  margin-top: 20px;
+.doctor-dashboard-calendar-events {
+  margin-top: 25px;
 }
 
-.calendar-events h4 {
-  font-size: 18px; /* Tăng kích thước */
+.doctor-dashboard-calendar-events h4 {
+  font-size: 20px;
   font-weight: 600;
   color: #1e40af;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
   transition: color 0.3s ease;
 }
 
-.calendar-events h4:hover {
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-calendar-events h4::before {
+  content: '📌'; /* Icon ghim */
+  margin-right: 8px;
 }
 
-.calendar-events ul {
+.doctor-dashboard-calendar-events h4:hover {
+  color: #2563eb;
+}
+
+.doctor-dashboard-calendar-events ul {
   list-style: none;
   padding: 0;
 }
 
-.calendar-events li {
-  font-size: 15px;
+.doctor-dashboard-calendar-events li {
+  font-size: 16px;
   color: #1f2937;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 /* User Table Section */
-.user-table-section {
+.doctor-dashboard-user-table-section {
   flex: 2;
   background: #ffffff;
-  padding: 25px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
 }
 
-.user-table-section:hover {
-  transform: translateY(-3px); /* Nâng lên khi hover */
+.doctor-dashboard-user-table-section:hover {
+  transform: translateY(-5px);
 }
 
-.user-table-section h3 {
-  font-size: 24px; /* Tăng kích thước */
+.doctor-dashboard-user-table-section h3 {
+  font-size: 26px;
   font-weight: 700;
   color: #1e40af;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   position: relative;
   display: inline-block;
-  padding: 5px 15px;
+  padding: 6px 18px;
   border: 2px solid #3b82f6;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-.user-table-section h3:hover {
-  background: #dbeafe;
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-user-table-section h3::before {
+  content: '👥'; /* Icon nhóm người */
+  margin-right: 10px;
 }
 
-.user-table {
+.doctor-dashboard-user-table-section h3:hover {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.doctor-dashboard-user-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.user-table th,
-.user-table td {
-  padding: 14px 16px; /* Tăng padding */
+.doctor-dashboard-user-table th,
+.doctor-dashboard-user-table td {
+  padding: 16px 20px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.user-table th {
-  font-size: 13px;
+.doctor-dashboard-user-table th {
+  font-size: 14px;
   font-weight: 500;
   color: #6b7280;
   text-transform: uppercase;
   background: #f9fafb;
 }
 
-.user-table td {
-  font-size: 15px;
-  font-weight: 400; /* Nhẹ hơn để tạo tương phản */
+.doctor-dashboard-user-table td {
+  font-size: 16px;
+  font-weight: 400;
   color: #1f2937;
 }
 
-.user-table tbody tr {
+.doctor-dashboard-user-table tbody tr {
   background: #ffffff;
   transition: all 0.3s ease;
 }
 
-.user-table tbody tr:nth-child(even) {
+.doctor-dashboard-user-table tbody tr:nth-child(even) {
   background: #f9fafb;
 }
 
-.user-table-row {
+.doctor-dashboard-user-table-row {
   cursor: pointer;
 }
 
-.user-table-row:hover {
+.doctor-dashboard-user-table-row:hover {
   background: #f1f5f9;
-  transform: scale(1.01); /* Hiệu ứng phóng to nhẹ khi hover */
+  transform: scale(1.01);
 }
 
-.user-table-row:active {
+.doctor-dashboard-user-table-row:active {
   transform: scale(0.98);
   background: #e2e8f0;
 }
 
 /* Sidebar Section */
-.sidebar-section {
+.doctor-dashboard-sidebar-section {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Tăng khoảng cách */
+  gap: 30px;
 }
 
 /* Profile Card */
-.profile-card {
+.doctor-dashboard-profile-card {
   background: #ffffff;
-  padding: 25px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   text-align: center;
   transition: transform 0.3s ease;
 }
 
-.profile-card:hover {
-  transform: translateY(-3px); /* Nâng lên khi hover */
+.doctor-dashboard-profile-card:hover {
+  transform: translateY(-5px);
 }
 
-.profile-photo {
-  width: 90px; /* Tăng kích thước */
-  height: 90px;
+.doctor-dashboard-profile-photo {
+  width: 100px;
+  height: 100px;
   background: #e5e7eb;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12px;
-  font-size: 45px;
+  margin: 0 auto 15px;
+  font-size: 50px;
   transition: background 0.3s ease;
 }
 
-.profile-card:hover .profile-photo {
-  background: #dbeafe; /* Đổi màu nền khi hover */
+.doctor-dashboard-profile-card:hover .doctor-dashboard-profile-photo {
+  background: #dbeafe;
 }
 
-.profile-card h4 {
-  font-size: 20px; /* Tăng kích thước */
+.doctor-dashboard-profile-card h4 {
+  font-size: 22px;
   font-weight: 600;
   color: #1e40af;
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   transition: color 0.3s ease;
 }
 
-.profile-card h4:hover {
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-profile-card h4::before {
+  content: '👨‍⚕️'; /* Icon bác sĩ */
+  margin-right: 10px;
 }
 
-.profile-card p {
-  font-size: 15px;
-  font-weight: 400; /* Nhẹ hơn để tạo tương phản */
+.doctor-dashboard-profile-card h4:hover {
+  color: #2563eb;
+}
+
+.doctor-dashboard-profile-card p {
+  font-size: 16px;
+  font-weight: 400;
   color: #6b7280;
-  margin: 0 0 12px;
+  margin: 0 0 15px;
 }
 
-.profile-stats {
+.doctor-dashboard-profile-stats {
   display: flex;
   justify-content: space-around;
-  margin-top: 12px;
+  margin-top: 15px;
 }
 
-.profile-stat {
+.doctor-dashboard-profile-stat {
   display: flex;
   flex-direction: column;
 }
 
-.stat-label {
-  font-size: 13px;
+.doctor-dashboard-stat-label {
+  font-size: 14px;
   color: #6b7280;
 }
 
-.stat-value {
-  font-size: 16px; /* Tăng kích thước */
+.doctor-dashboard-stat-value {
+  font-size: 18px;
   font-weight: 600;
   color: #1f2937;
 }
 
 /* Clock Widget */
-.clock-widget {
+.doctor-dashboard-clock-widget {
   background: #ffffff;
-  padding: 20px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   text-align: center;
   transition: transform 0.3s ease;
 }
 
-.clock-widget:hover {
-  transform: translateY(-3px); /* Nâng lên khi hover */
+.doctor-dashboard-clock-widget:hover {
+  transform: translateY(-5px);
 }
 
-.clock-widget h3 {
-  font-size: 18px; /* Tăng kích thước */
+.doctor-dashboard-clock-widget h3 {
+  font-size: 20px;
   font-weight: 600;
   color: #1e40af;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
   transition: color 0.3s ease;
 }
 
-.clock-widget h3:hover {
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-clock-widget h3::before {
+  content: '⏰'; /* Icon đồng hồ */
+  margin-right: 10px;
 }
 
-.clock-widget p {
-  font-size: 20px; /* Tăng kích thước */
+.doctor-dashboard-clock-widget h3:hover {
+  color: #2563eb;
+}
+
+.doctor-dashboard-clock-widget p {
+  font-size: 22px;
   font-weight: 500;
   color: #1f2937;
   margin: 0;
 }
 
 /* Weather Widget */
-.weather-widget {
+.doctor-dashboard-weather-widget {
   background: #ffffff;
-  padding: 20px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
 }
 
-.weather-widget:hover {
-  transform: translateY(-3px); /* Nâng lên khi hover */
+.doctor-dashboard-weather-widget:hover {
+  transform: translateY(-5px);
 }
 
-.weather-widget h3 {
-  font-size: 18px; /* Tăng kích thước */
+.doctor-dashboard-weather-widget h3 {
+  font-size: 20px;
   font-weight: 600;
   color: #1e40af;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
   transition: color 0.3s ease;
 }
 
-.weather-widget h3:hover {
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-weather-widget h3::before {
+  content: '☀️'; /* Icon mặt trời */
+  margin-right: 10px;
 }
 
-.weather-location {
-  margin-bottom: 12px;
+.doctor-dashboard-weather-widget h3:hover {
+  color: #2563eb;
 }
 
-.weather-location select {
+.doctor-dashboard-weather-location {
+  margin-bottom: 15px;
+}
+
+.doctor-dashboard-weather-location select {
   width: 100%;
-  padding: 10px; /* Tăng padding */
+  padding: 12px;
   border: 1px solid #e5e7eb;
-  border-radius: 8px; /* Bo tròn hơn */
-  font-size: 15px;
-  background: url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>') no-repeat right 12px center;
-  background-size: 20px;
-  padding-right: 40px;
+  border-radius: 10px;
+  font-size: 16px;
+  background: url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>') no-repeat right 15px center;
+  background-size: 22px;
+  padding-right: 45px;
   appearance: none;
   transition: border-color 0.3s ease;
 }
 
-.weather-location select:hover {
-  border-color: #3b82f6; /* Đổi màu viền khi hover */
+.doctor-dashboard-weather-location select:hover {
+  border-color: #3b82f6;
 }
 
-.weather-content {
+.doctor-dashboard-weather-content {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 15px;
 }
 
-.weather-details p {
+.doctor-dashboard-weather-icon {
+  font-size: 28px;
+}
+
+.doctor-dashboard-weather-details p {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   color: #1f2937;
 }
 
 /* Quote Section */
-.quote-section {
+.doctor-dashboard-quote-section {
   background: #ffffff;
-  padding: 20px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
 }
 
-.quote-section:hover {
-  transform: translateY(-3px); /* Nâng lên khi hover */
+.doctor-dashboard-quote-section:hover {
+  transform: translateY(-5px);
 }
 
-.quote-section h3 {
-  font-size: 18px; /* Tăng kích thước */
+.doctor-dashboard-quote-section h3 {
+  font-size: 20px;
   font-weight: 600;
   color: #1e40af;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
   transition: color 0.3s ease;
 }
 
-.quote-section h3:hover {
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-quote-section h3::before {
+  content: '💬'; /* Icon trò chuyện */
+  margin-right: 10px;
 }
 
-.quote-text {
-  font-size: 15px;
+.doctor-dashboard-quote-section h3:hover {
+  color: #2563eb;
+}
+
+.doctor-dashboard-quote-text {
+  font-size: 16px;
   font-style: italic;
   color: #1f2937;
 }
 
 /* Tips Section */
-.tips-section {
+.doctor-dashboard-tips-section {
   background: #ffffff;
-  padding: 20px; /* Tăng padding */
-  border-radius: 12px; /* Bo tròn hơn */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
 }
 
-.tips-section:hover {
-  transform: translateY(-3px); /* Nâng lên khi hover */
+.doctor-dashboard-tips-section:hover {
+  transform: translateY(-5px);
 }
 
-.tips-section h3 {
-  font-size: 18px; /* Tăng kích thước */
+.doctor-dashboard-tips-section h3 {
+  font-size: 20px;
   font-weight: 600;
   color: #1e40af;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
   transition: color 0.3s ease;
 }
 
-.tips-section h3:hover {
-  color: #2563eb; /* Đổi màu khi hover */
+.doctor-dashboard-tips-section h3::before {
+  content: '💡'; /* Icon bóng đèn */
+  margin-right: 10px;
 }
 
-.tips-section ul {
+.doctor-dashboard-tips-section h3:hover {
+  color: #2563eb;
+}
+
+.doctor-dashboard-tips-section ul {
   list-style: none;
   padding: 0;
 }
 
-.tips-section li {
-  font-size: 15px;
+.doctor-dashboard-tips-section li {
+  font-size: 16px;
   color: #1f2937;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
   position: relative;
-  padding-left: 18px;
+  padding-left: 20px;
 }
 
-.tips-section li::before {
-  content: '•';
+.doctor-dashboard-tips-section li::before {
+  content: '✔️'; /* Icon check thay cho chấm tròn */
   position: absolute;
   left: 0;
   color: #3b82f6;
 }
 
 /* Pagination */
-.pagination {
+.doctor-dashboard-pagination {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
-  font-size: 15px;
+  margin-top: 25px;
+  font-size: 16px;
   color: #6b7280;
 }
 
-.pagination-info {
+.doctor-dashboard-pagination-info {
   font-weight: 500;
 }
 
-.pagination-buttons {
+.doctor-dashboard-pagination-buttons {
   display: flex;
   align-items: center;
-  gap: 12px; /* Tăng khoảng cách */
+  gap: 15px;
 }
 
-.pagination-buttons button {
-  padding: 8px 14px; /* Tăng padding */
+.doctor-dashboard-pagination-buttons button {
+  padding: 10px 16px;
   border: none;
   background: #e5e7eb;
   color: #1f2937;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
-  border-radius: 8px; /* Bo tròn hơn */
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
 }
 
-.pagination-buttons button:hover:not(.disabled) {
+.doctor-dashboard-pagination-buttons button:first-child::before {
+  content: '⬅️'; /* Icon mũi tên trái */
+  margin-right: 8px;
+}
+
+.doctor-dashboard-pagination-buttons button:last-child::after {
+  content: '➡️'; /* Icon mũi tên phải */
+  margin-left: 8px;
+}
+
+.doctor-dashboard-pagination-buttons button:hover:not(.doctor-dashboard-pagination-button-disabled) {
   background: #d1d5db;
-  transform: translateY(-2px); /* Nâng lên khi hover */
+  transform: translateY(-3px);
 }
 
-.pagination-buttons button:active:not(.disabled) {
+.doctor-dashboard-pagination-buttons button:active:not(.doctor-dashboard-pagination-button-disabled) {
   transform: scale(0.95);
 }
 
-.pagination-buttons button.disabled {
+.doctor-dashboard-pagination-button-disabled {
   background: #f3f4f6;
   color: #9ca3af;
   cursor: not-allowed;
 }
 
-.current-page {
-  padding: 8px 14px; /* Tăng padding */
+.doctor-dashboard-current-page {
+  padding: 10px 16px;
   background: #3b82f6;
   color: #ffffff;
-  border-radius: 8px; /* Bo tròn hơn */
+  border-radius: 10px;
   font-weight: 500;
 }
 
 /* Error Message */
-.error-message {
+.doctor-dashboard-error-message {
   text-align: center;
-  padding: 25px; /* Tăng padding */
+  padding: 30px;
   background: #fee2e2;
   color: #dc2626;
-  border-radius: 12px; /* Bo tròn hơn */
-  margin-top: 25px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Bóng mềm mại hơn */
+  border-radius: 16px;
+  margin-top: 30px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Animations */
-@keyframes fadeIn {
+@keyframes doctorDashboardFadeIn {
   from {
     opacity: 0;
   }
@@ -913,7 +994,7 @@
   }
 }
 
-@keyframes slideUp {
+@keyframes doctorDashboardSlideUp {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -924,7 +1005,7 @@
   }
 }
 
-@keyframes slideLeft {
+@keyframes doctorDashboardSlideLeft {
   from {
     opacity: 0;
     transform: translateX(-20px);
@@ -935,7 +1016,7 @@
   }
 }
 
-@keyframes slideRight {
+@keyframes doctorDashboardSlideRight {
   from {
     opacity: 0;
     transform: translateX(20px);
@@ -946,99 +1027,99 @@
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.5s ease forwards;
+.doctor-dashboard-animate-fade-in {
+  animation: doctorDashboardFadeIn 0.5s ease forwards;
 }
 
-.animate-slide-up {
-  animation: slideUp 0.5s ease forwards;
+.doctor-dashboard-animate-slide-up {
+  animation: doctorDashboardSlideUp 0.5s ease forwards;
 }
 
-.animate-slide-left {
-  animation: slideLeft 0.5s ease forwards;
+.doctor-dashboard-animate-slide-left {
+  animation: doctorDashboardSlideLeft 0.5s ease forwards;
 }
 
-.animate-slide-right {
-  animation: slideRight 0.5s ease forwards;
+.doctor-dashboard-animate-slide-right {
+  animation: doctorDashboardSlideRight 0.5s ease forwards;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
-  .dashboard-main {
+  .doctor-dashboard-main {
     flex-direction: column;
   }
 
-  .schedule-overview-section,
-  .stats-grid {
+  .doctor-dashboard-schedule-overview-section,
+  .doctor-dashboard-stats-grid {
     flex: 1;
   }
 
-  .dashboard-bottom {
+  .doctor-dashboard-bottom {
     flex-direction: column;
   }
 
-  .calendar-section,
-  .user-table-section,
-  .sidebar-section {
+  .doctor-dashboard-calendar-section,
+  .doctor-dashboard-user-table-section,
+  .doctor-dashboard-sidebar-section {
     flex: 1;
   }
 }
 
 @media (max-width: 768px) {
-  .dashboard-container {
-    padding: 20px; /* Điều chỉnh padding */
+  .doctor-dashboard-container {
+    padding: 25px;
   }
 
-  .header-banner {
+  .doctor-dashboard-header-banner {
     flex-direction: column;
     text-align: center;
   }
 
-  .quick-actions {
+  .doctor-dashboard-quick-actions {
     flex-direction: column;
   }
 
-  .quick-action-button {
+  .doctor-dashboard-quick-action-button {
     width: 100%;
   }
 
-  .stats-grid {
+  .doctor-dashboard-stats-grid {
     grid-template-columns: 1fr;
   }
 
-  .progress-grid {
+  .doctor-dashboard-progress-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 480px) {
-  .header-text h1 {
-    font-size: 22px; /* Điều chỉnh kích thước */
+  .doctor-dashboard-header-text h1 {
+    font-size: 24px;
   }
 
-  .header-text p {
+  .doctor-dashboard-header-text p {
+    font-size: 15px;
+  }
+
+  .doctor-dashboard-calendar-day {
+    padding: 10px;
     font-size: 14px;
   }
 
-  .calendar-day {
-    padding: 8px;
+  .doctor-dashboard-user-table th,
+  .doctor-dashboard-user-table td {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .doctor-dashboard-schedule-table th,
+  .doctor-dashboard-schedule-table td {
+    padding: 12px;
     font-size: 13px;
   }
 
-  .user-table th,
-  .user-table td {
-    padding: 10px;
-    font-size: 13px;
-  }
-
-  .schedule-table th,
-  .schedule-table td {
-    padding: 10px;
-    font-size: 12px;
-  }
-
-  .pagination {
+  .doctor-dashboard-pagination {
     flex-direction: column;
-    gap: 12px;
+    gap: 15px;
   }
 }
