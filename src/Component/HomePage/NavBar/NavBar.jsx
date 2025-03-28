@@ -114,7 +114,7 @@ const Navbar = () => {
                   Consultation Request
                 </NavLink>
                 <NavLink
-                  to="/consultation-responses"
+                  to="/ConsultationResponse"
                   className={({ isActive }) => (isActive ? "active-link" : "")}
                 >
                   Consultation Response

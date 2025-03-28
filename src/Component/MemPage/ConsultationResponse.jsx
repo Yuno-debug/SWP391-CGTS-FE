@@ -2,9 +2,11 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import "./ConsultationResponse.css";
 import { AuthContext } from "../../Component/LoginPage/AuthContext";
+import Navbar from "../HomePage/NavBar/NavBar";
+import Footer from "../HomePage/Footer/Footer";
 
-const ConsultationResponse = () => {
-  const { userId } = useContext(AuthContext); // Lấy userId từ AuthContext
+const ConsultationResponse = ({ isLoggedIn }) => {
+  const { userId } = useContext(AuthContext);
   const [responses, setResponses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,15 +28,15 @@ const ConsultationResponse = () => {
       }
 
       try {
-        const response = await axios.get("http://localhost:5200/api/ConsultationResponse/get-all", {
+        const response = await axios.get("http://localhost:5200/api/ConsultationRequest/get-all", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         console.log("Consultation Response Data:", response.data);
 
-        if (Array.isArray(response.data)) {
+        if (response.data.success && response.data.data && Array.isArray(response.data.data.values)) {
           console.log("Current User ID:", userId);
-          const filteredResponses = response.data.filter(res => res.userId === userId);
+          const filteredResponses = response.data.data.values.filter(res => res.userId === String(userId));
           console.log("Filtered Responses:", filteredResponses);
           setResponses(filteredResponses);
         } else {
@@ -42,7 +44,12 @@ const ConsultationResponse = () => {
         }
       } catch (err) {
         console.error("Error fetching consultation responses:", err);
-        setError("Failed to load consultation responses.");
+        if (err.response && err.response.status === 401) {
+          setError("Invalid or expired token. Please log in again.");
+          localStorage.removeItem("token");
+        } else {
+          setError("Failed to load consultation responses.");
+        }
       } finally {
         setLoading(false);
       }
@@ -51,74 +58,50 @@ const ConsultationResponse = () => {
     fetchConsultationResponses();
   }, [userId]);
 
-  useEffect(() => {
-    console.log("showAddModal state:", showAddModal);
-  }, [showAddModal]);
-
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error-message">{error}</div>;
-
   return (
-    <div className="consultation-container">
-      <h2 className="consultation-title">Consultation Responses</h2>
-      <p className="consultation-subtitle">Here are the responses to your consultation requests.</p>
+    <>
+      <Navbar isLoggedIn={isLoggedIn} />
+      <div className="consultation-container">
+        {loading ? (
+          <div className="loading">Loading...</div>
+        ) : error ? (
+          <div className="error-message">{error}</div>
+        ) : (
+          <>
+            <h2 className="consultation-title">Consultation Responses</h2>
+            <p className="consultation-subtitle">Here are the responses to your consultation requests.</p>
 
-      <button
-        className="open-modal-btn"
-        onClick={() => {
-          console.log("Open Modal button clicked");
-          setShowAddModal(true);
-        }}
-      >
-        Open Modal
-      </button>
-
-      {showAddModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2 className="modal-title">My Modal</h2>
-            <button
-              className="close-modal-btn"
-              onClick={() => {
-                console.log("Close Modal button clicked");
-                setShowAddModal(false);
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {responses.length === 0 ? (
-        <div className="no-responses">No responses available.</div>
-      ) : (
-        <table className="response-table">
-          <thead>
-            <tr>
-              <th>Consultation ID</th>
-              <th>Doctor Name</th>
-              <th>Response</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {responses.map((response) => (
-              <tr key={response.consultationResponseId}>
-                <td>{response.consultationId}</td>
-                <td>{response.doctorName || "Unknown"}</td>
-                <td>{response.responseText}</td>
-                <td>
-                  {response.responseDate
-                    ? new Date(response.responseDate).toLocaleDateString()
-                    : "N/A"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+            {responses.length === 0 ? (
+              <div className="no-responses">No responses available.</div>
+            ) : (
+              <table className="response-table">
+                <thead>
+                  <tr>
+                    <th>Consultation ID</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Urgency</th>
+                    <th>Category</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {responses.map((response) => (
+                    <tr key={response.id}>
+                      <td>{response.requestId}</td>
+                      <td>{response.description}</td>
+                      <td>{response.status}</td>
+                      <td>{response.urgency}</td>
+                      <td>{response.category}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </>
+        )}
+      </div>
+      <Footer />
+    </>
   );
 };
 

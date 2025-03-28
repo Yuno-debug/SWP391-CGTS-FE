@@ -47,7 +47,7 @@ const App = () => {
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} /> 
-          <Route path="/consultation-response" element={<ConsultationResponse />} />
+          <Route path="/ConsultationResponse" element={<ConsultationResponse />} />
         </Routes>
       </Router>
     </AuthProvider>
