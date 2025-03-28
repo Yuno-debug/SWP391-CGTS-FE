@@ -1,0 +1,113 @@
+/* Tổng thể container */
+.doctor-mem-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Tiêu đề chính */
+.doctor-mem-container h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Danh sách bác sĩ theo dạng grid */
+.doctor-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Card bác sĩ */
+.doctor-card {
+    background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+        padding: 20px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-align: center;
+        /* Căn giữa toàn bộ nội dung */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Đảm bảo nội dung vào giữa */
+}
+
+/* Hiệu ứng hover */
+.doctor-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Hình ảnh bác sĩ */
+.doctor-image {
+    width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #3498db;
+        margin-bottom: 15px;
+}
+
+/* Tiêu đề bác sĩ */
+.doctor-card h2 {
+    color: #2c3e50;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+}
+
+/* Nội dung trong card */
+.doctor-card p {
+    margin: 6px 0;
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Phần chữ in đậm */
+.doctor-card p strong {
+    color: #333;
+}
+/* Chia cột hiển thị thông tin bác sĩ */
+.doctor-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    /* Khoảng cách giữa các dòng */
+    text-align: center;
+    width: 100%;
+}
+
+/* Định dạng chữ */
+.doctor-info p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Phần chữ in đậm */
+.doctor-info p strong {
+    color: #333;
+}
+
+/* Hiển thị trạng thái Loading */
+.loading {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Hiển thị lỗi */
+.error {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2rem;
+    color: #e74c3c;
+    font-weight: bold;
+}

@@ -19,18 +19,10 @@ const AddChild = ({ isLoggedIn }) => {
     relationship: "",
     avatar: "",
   });
-  const [consultationData, setConsultationData] = useState({
-    childId: "",
-    description: "",
-    urgency: "",
-    category: "",
-  });
   const [errors, setErrors] = useState({});
   const [children, setChildren] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [consultationSuccess, setConsultationSuccess] = useState("");
-  const [consultationError, setConsultationError] = useState("");
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -57,10 +49,6 @@ const AddChild = ({ isLoggedIn }) => {
     setChildData({ ...childData, [e.target.name]: e.target.value });
   };
 
-  const handleConsultationChange = (e) => {
-    setConsultationData({ ...consultationData, [e.target.name]: e.target.value });
-  };
-
   const handleGenderSelect = (gender) => {
     setChildData({ ...childData, gender });
   };
@@ -75,46 +63,46 @@ const AddChild = ({ isLoggedIn }) => {
     return Object.keys(tempErrors).length === 0;
   };
 
-  const validateConsultationForm = () => {
-    if (!consultationData.childId) {
-      setConsultationError("Please select a child.");
-      return false;
-    }
-    if (!consultationData.description.trim()) {
-      setConsultationError("Please enter a description.");
-      return false;
-    }
-    if (!consultationData.urgency) {
-      setConsultationError("Please select an urgency level.");
-      return false;
-    }
-    if (!consultationData.category) {
-      setConsultationError("Please select a category.");
-      return false;
-    }
-    setConsultationError("");
-    return true;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
+
     const requestData = {
       ...childData,
       userId: userId,
       birthWeight: Number(childData.birthWeight),
       birthHeight: Number(childData.birthHeight),
+      allergies: childData.allergies || "",
     };
-    console.log("Request Data:", requestData);
+
+    const tempChild = {
+      ...requestData,
+      childId: Date.now(),
+    };
+
     try {
+      setChildren((prevChildren) => [...prevChildren, tempChild]);
+
       await axios.post("http://localhost:5200/api/Child/create", requestData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      fetchChildren(userId);
-      setChildData({ name: "", dateOfBirth: "", gender: "", birthWeight: "", birthHeight: "", bloodType: "", allergies: "", relationship: "", avatar: "" });
+
+      await fetchChildren(userId);
+
+      setChildData({
+        name: "",
+        dateOfBirth: "",
+        gender: "",
+        birthWeight: "",
+        birthHeight: "",
+        bloodType: "",
+        allergies: "",
+        relationship: "",
+        avatar: "",
+      });
       setShowAddModal(false);
     } catch (error) {
       console.error("Error Details:", {
@@ -122,56 +110,27 @@ const AddChild = ({ isLoggedIn }) => {
         data: error.response?.data,
         message: error.message,
       });
-    }
-  };
-
-  const handleConsultationSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateConsultationForm()) return;
-
-    const requestData = {
-      userId: userId,
-      childId: Number(consultationData.childId),
-      description: consultationData.description,
-      urgency: consultationData.urgency,
-      category: consultationData.category,
-    };
-
-    try {
-      const response = await axios.post("http://localhost:5200/api/ConsultationRequest/create", requestData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      setConsultationSuccess("Consultation request submitted successfully!");
-      setConsultationData({ childId: "", description: "", urgency: "", category: "" });
-      setTimeout(() => setConsultationSuccess(""), 3000);
-    } catch (error) {
-      setConsultationError("Failed to submit consultation request. Please try again.");
-      console.error("Error submitting consultation:", error.response?.data || error.message);
+      setChildren((prevChildren) => prevChildren.filter((child) => child.childId !== tempChild.childId));
     }
   };
 
   const handleSelectChild = (child) => {
-    // If the clicked child is already selected, toggle it off (close details)
     if (selectedChild?.childId === child.childId) {
       setSelectedChild(null);
     } else {
-      // Otherwise, select the new child (open details)
       setSelectedChild(child);
     }
   };
 
   const handleAddChildClick = (e) => {
     e.stopPropagation();
-    console.log("Add Child button clicked, setting showAddModal to true");
+    console.log("Add Child button clicked"); // Kiểm tra xem hàm có được gọi không
     setShowAddModal(true);
   };
 
-  useEffect(() => {
-    console.log("showAddModal state:", showAddModal);
-  }, [showAddModal]);
+  const getAvatarUrl = (child) => {
+    return child.allergies || "";
+  };
 
   return (
     <div className="addchild-page-container">
@@ -179,25 +138,36 @@ const AddChild = ({ isLoggedIn }) => {
       <main className="addchild-page-content">
         <div className="addchild-page-wrapper">
           <h2 className="addchild-title">Child Information</h2>
+          <p className="addchild-welcome-message">
+            Welcome! Let's manage your child's information with ease.
+          </p>
           <div className="addchild-child-list">
             {Array.isArray(children) && children.length > 0 ? (
               children.map((child, index) => (
                 <div
-                  key={index}
+                  key={child.childId || index}
                   className={`addchild-child-card ${selectedChild?.childId === child.childId ? "addchild-child-card-selected" : ""}`}
                   onClick={() => handleSelectChild(child)}
                 >
-                  <span>{child.name}</span>
+                  <div className="addchild-child-card-content">
+                    <img
+                      src={getAvatarUrl(child)}
+                      alt={`${child.name}'s Avatar`}
+                      className="addchild-child-card-avatar"
+                      onError={(e) => (e.target.src = "https://placehold.co/50x50?text=No+Image")}
+                    />
+                    <span className="addchild-child-card-name">{child.name}</span>
+                  </div>
                 </div>
               ))
             ) : (
               <div className="addchild-empty-state">
                 <img
-                  src="https://via.placeholder.com/300x200?text=Add+Your+First+Child"
+                  src="https://placehold.co/300x200?text=Add+Your+First+Child"
                   alt="No children illustration"
                   className="addchild-empty-illustration"
                 />
-                <p>No children added yet. Click below to get started!</p>
+                <p>No children added yet. Click below to add a child!</p>
                 <div className="addchild-add-child-btn" onClick={handleAddChildClick}>
                   <FaPlus size={40} />
                   <p>Add a Child</p>
@@ -218,9 +188,10 @@ const AddChild = ({ isLoggedIn }) => {
               <div className="addchild-child-details-content">
                 <div className="addchild-child-avatar-wrapper">
                   <img
-                    src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(selectedChild.name + selectedChild.gender)}`}
+                    src={getAvatarUrl(selectedChild)}
                     alt="Avatar"
                     className="addchild-child-avatar"
+                    onError={(e) => (e.target.src = "https://placehold.co/100x100?text=No+Image")}
                   />
                 </div>
                 <div className="addchild-child-details-text">
@@ -229,100 +200,12 @@ const AddChild = ({ isLoggedIn }) => {
                   <p><strong>Birth Weight (kg):</strong> {selectedChild.birthWeight}</p>
                   <p><strong>Birth Height (cm):</strong> {selectedChild.birthHeight}</p>
                   <p><strong>Blood Type:</strong> {selectedChild.bloodType || "N/A"}</p>
-                  <p><strong>Allergies:</strong> {selectedChild.allergies || "None"}</p>
                   <p><strong>Relationship:</strong> {selectedChild.relationship === "D" ? "Dad" : selectedChild.relationship === "M" ? "Mom" : selectedChild.relationship}</p>
                   <Link to={`/update-growth-metrics/${selectedChild.childId}`} className="addchild-update-growth-link">
-                    Update Growth
+                    Growth Data
                   </Link>
                 </div>
               </div>
-            </div>
-          )}
-
-          {children.length > 0 && (
-            <div className="addchild-consultation-section">
-              <h3 className="addchild-consultation-title">Consultation Request</h3>
-              <p className="addchild-consultation-subtitle">
-                Need advice? Submit a consultation request for your child.
-              </p>
-              <form onSubmit={handleConsultationSubmit} className="addchild-consultation-form">
-                <div className="addchild-form-group">
-                  <label>Select Child</label>
-                  <select
-                    name="childId"
-                    value={consultationData.childId}
-                    onChange={handleConsultationChange}
-                    className="addchild-form-input"
-                    required
-                  >
-                    <option value="">Select a child</option>
-                    {children.map((child) => (
-                      <option key={child.childId} value={child.childId}>
-                        {child.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="addchild-form-group">
-                  <label>Description</label>
-                  <textarea
-                    name="description"
-                    value={consultationData.description}
-                    onChange={handleConsultationChange}
-                    placeholder="Describe your request (e.g., concerns about growth, health advice, etc.)"
-                    className="addchild-form-input addchild-textarea"
-                    rows="4"
-                    required
-                  />
-                </div>
-                <div className="addchild-form-group">
-                  <label>Urgency</label>
-                  <select
-                    name="urgency"
-                    value={consultationData.urgency}
-                    onChange={handleConsultationChange}
-                    className="addchild-form-input"
-                    required
-                  >
-                    <option value="">Select urgency level</option>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                  </select>
-                </div>
-                <div className="addchild-form-group">
-                  <label>Category</label>
-                  <select
-                    name="category"
-                    value={consultationData.category}
-                    onChange={handleConsultationChange}
-                    className="addchild-form-input"
-                    required
-                  >
-                    <option value="">Select category</option>
-                    <option value="Growth">Growth</option>
-                    <option value="Health">Health</option>
-                    <option value="Nutrition">Nutrition</option>
-                    <option value="Development">Development</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-                {consultationError && (
-                  <span className="addchild-form-error">
-                    <FaExclamationCircle /> {consultationError}
-                  </span>
-                )}
-                {consultationSuccess && (
-                  <span className="addchild-form-success">
-                    {consultationSuccess}
-                  </span>
-                )}
-                <div className="addchild-consultation-actions">
-                  <button type="submit" className="addchild-btn-submit">
-                    Submit Request
-                  </button>
-                </div>
-              </form>
             </div>
           )}
 
@@ -330,12 +213,13 @@ const AddChild = ({ isLoggedIn }) => {
             <div className="addchild-modal-overlay">
               <div className="addchild-modal-box">
                 <h2>Add Child</h2>
-                {childData.name && childData.gender && (
+                {childData.allergies && (
                   <div className="addchild-avatar-preview">
                     <img
-                      src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(childData.name + childData.gender)}`}
+                      src={childData.allergies}
                       alt="Avatar Preview"
                       className="addchild-avatar-preview-img"
+                      onError={(e) => (e.target.src = "https://placehold.co/100x100?text=Invalid+URL")}
                     />
                   </div>
                 )}
@@ -454,11 +338,11 @@ const AddChild = ({ isLoggedIn }) => {
                     <h3>Extra Info</h3>
                     <div className="addchild-form-row">
                       <div className="addchild-form-group">
-                        <label>Allergies</label>
+                        <label>Avatar URL</label>
                         <input
-                          type="text"
+                          type="url"
                           name="allergies"
-                          placeholder="Allergies (if any)"
+                          placeholder="Enter avatar URL (e.g., https://example.com/image.jpg)"
                           value={childData.allergies}
                           onChange={handleChange}
                           className="addchild-form-input"

@@ -27,14 +27,12 @@ body {
   margin: 0 auto;
   padding: 30px;
   background-color: transparent;
-  /* Remove background since page-container has a gradient */
   box-sizing: border-box;
 }
 
 /* Page Title */
 .addchild-page-wrapper h2 {
   font-size: 28px;
-  /* Slightly larger for emphasis */
   color: #1e3a8a;
   margin-bottom: 30px;
   text-align: center;
@@ -53,18 +51,15 @@ body {
 /* Child Card */
 .addchild-child-card {
   background: #fff;
-  padding: 20px;
+  padding: 15px;
   border-radius: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
-  font-size: 18px;
-  font-weight: 500;
-  color: #1e3a8a;
-  text-align: center;
   width: 200px;
-  height: 100px;
+  height: 120px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -83,6 +78,41 @@ body {
 .addchild-child-card-selected:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(107, 72, 255, 0.4);
+}
+
+/* Nội dung trong Child Card */
+.addchild-child-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Avatar trong Child Card */
+.addchild-child-card-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  background-color: #f0f0f0;
+}
+
+/* Tên trong Child Card */
+.addchild-child-card-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1e3a8a;
+  text-align: center;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+/* Khi card được chọn, đổi màu tên */
+.addchild-child-card-selected .addchild-child-card-name {
+  color: white;
 }
 
 /* Add Child Button */
@@ -179,6 +209,7 @@ body {
   object-fit: cover;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   border: 2px solid #ddd;
+  background-color: #f0f0f0;
 }
 
 .addchild-child-details-text {
@@ -322,6 +353,8 @@ body {
   height: 100px;
   border-radius: 50%;
   border: 2px solid #ddd;
+  object-fit: cover;
+  background-color: #f0f0f0;
 }
 
 /* Form */
@@ -422,6 +455,12 @@ body {
   gap: 5px;
   margin-top: 5px;
 }
+.addchild-welcome-message {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 20px;
+  text-align: center;
+}
 
 /* Modal Actions */
 .addchild-modal-actions {
@@ -463,6 +502,21 @@ body {
   transform: translateY(-2px);
 }
 
+/* Placeholder khi URL không hợp lệ */
+.addchild-child-card-avatar[src=""],
+.addchild-child-avatar[src=""],
+.addchild-avatar-preview img[src=""] {
+  background-image: url('https://via.placeholder.com/50?text=No+Image');
+}
+
+.addchild-child-avatar[src=""] {
+  background-image: url('https://via.placeholder.com/100?text=No+Image');
+}
+
+.addchild-avatar-preview img[src=""] {
+  background-image: url('https://via.placeholder.com/100?text=No+Image');
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .addchild-page-content {
@@ -477,11 +531,24 @@ body {
     font-size: 24px;
   }
 
-  .addchild-child-card,
+  .addchild-child-card {
+    width: 150px;
+    height: 100px;
+  }
+
+  .addchild-child-card-avatar {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 8px;
+  }
+
+  .addchild-child-card-name {
+    font-size: 14px;
+  }
+
   .addchild-add-child-btn {
     width: 150px;
     height: 80px;
-    font-size: 16px;
   }
 
   .addchild-add-child-btn svg {
@@ -499,6 +566,8 @@ body {
   }
 
   .addchild-child-avatar {
+    width: 80px;
+    height: 80px;
     margin-bottom: 15px;
   }
 
@@ -509,6 +578,11 @@ body {
 
   .addchild-modal-box h2 {
     font-size: 22px;
+  }
+
+  .addchild-avatar-preview img {
+    width: 80px;
+    height: 80px;
   }
 
   .addchild-form-row {

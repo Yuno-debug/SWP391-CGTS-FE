@@ -17,6 +17,7 @@ import LoginPage from "./Component/LoginPage/Login.jsx";
 import SignupPage from "./Component/SignUp/Signup";
 import PaymentSuccess from "./Component/Membership/PaymentSuccess/PaymentResultPage.jsx";
 import ConsultationResponse from './Component/MemPage/ConsultationResponse.jsx';
+import DoctorMem from './Component/MemPage/DoctorMem.jsx';
 
 const App = () => {
   const [prices, setPrices] = useState({
@@ -48,6 +49,7 @@ const App = () => {
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} /> 
           <Route path="/consultation-response" element={<ConsultationResponse />} />
+          <Route path="/doctors-list" element={<DoctorMem />} />
         </Routes>
       </Router>
     </AuthProvider>

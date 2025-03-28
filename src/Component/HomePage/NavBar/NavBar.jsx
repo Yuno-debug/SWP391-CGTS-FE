@@ -9,10 +9,12 @@ const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showAddChildDropdown, setShowAddChildDropdown] = useState(false);
   const [showAlertsDropdown, setShowAlertsDropdown] = useState(false);
+  const [showDoctorDropdown, setShowDoctorDropdown] = useState(false); // Thêm state cho Doctor dropdown
   const [alerts, setAlerts] = useState([]);
   const dropdownRef = useRef(null);
   const addChildDropdownRef = useRef(null);
   const alertsDropdownRef = useRef(null);
+  const doctorDropdownRef = useRef(null); // Thêm ref cho Doctor dropdown
   const { isLoggedIn, userName, avatar, handleLogout } = useContext(AuthContext);
 
   useEffect(() => {
@@ -33,6 +35,9 @@ const Navbar = () => {
     }
     if (alertsDropdownRef.current && !alertsDropdownRef.current.contains(event.target)) {
       setShowAlertsDropdown(false);
+    }
+    if (doctorDropdownRef.current && !doctorDropdownRef.current.contains(event.target)) {
+      setShowDoctorDropdown(false);
     }
   }, []);
 
@@ -94,7 +99,7 @@ const Navbar = () => {
               className="nav-menu__item-label"
               onClick={() => setShowAddChildDropdown(!showAddChildDropdown)}
             >
-              ADD CHILDREN
+              CHILDREN
               <span className="nav-menu__dropdown-arrow">
                 {showAddChildDropdown ? "▲" : "▼"}
               </span>
@@ -118,6 +123,29 @@ const Navbar = () => {
                   className={({ isActive }) => (isActive ? "active-link" : "")}
                 >
                   Consultation Response
+                </NavLink>
+              </div>
+            )}
+          </li>
+        )}
+        {isLoggedIn && (
+          <li className="nav-menu__item" ref={doctorDropdownRef}>
+            <div
+              className="nav-menu__item-label"
+              onClick={() => setShowDoctorDropdown(!showDoctorDropdown)}
+            >
+              DOCTOR
+              <span className="nav-menu__dropdown-arrow">
+                {showDoctorDropdown ? "▲" : "▼"}
+              </span>
+            </div>
+            {showDoctorDropdown && (
+              <div className="nav-menu__dropdown">
+                <NavLink
+                  to="/doctors-list"
+                  className={({ isActive }) => (isActive ? "active-link" : "")}
+                >
+                  Doctor List
                 </NavLink>
               </div>
             )}
