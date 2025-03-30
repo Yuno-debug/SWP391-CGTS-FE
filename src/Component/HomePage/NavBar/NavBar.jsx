@@ -113,13 +113,13 @@ const Navbar = () => {
                   Add New Child
                 </NavLink>
                 <NavLink
-                  to="/add-child#consultation"
+                  to="/ConsultationResponse"
                   className={({ isActive }) => (isActive ? "active-link" : "")}
                 >
                   Consultation Request
                 </NavLink>
                 <NavLink
-                  to="/consultation-responses"
+                  to="/ConsultationResponse"
                   className={({ isActive }) => (isActive ? "active-link" : "")}
                 >
                   Consultation Response
@@ -128,7 +128,7 @@ const Navbar = () => {
             )}
           </li>
         )}
-        {isLoggedIn && (
+        
           <li className="nav-menu__item" ref={doctorDropdownRef}>
             <div
               className="nav-menu__item-label"
@@ -150,32 +150,9 @@ const Navbar = () => {
               </div>
             )}
           </li>
-        )}
       </ul>
 
       <ul className="nav-right">
-        {isLoggedIn && (
-          <li className="nav-alerts" ref={alertsDropdownRef}>
-            <div className="alerts-icon" onClick={() => setShowAlertsDropdown(!showAlertsDropdown)}>
-              <Bell size={20} />
-              {alerts.length > 0 && <span className="alerts-badge">{alerts.length}</span>}
-            </div>
-            {showAlertsDropdown && (
-              <div className="alerts-dropdown">
-                {alerts.length > 0 ? (
-                  alerts.map((alert) => (
-                    <div key={alert.id} className="alert-item">
-                      {alert.message}
-                    </div>
-                  ))
-                ) : (
-                  <div className="alert-item">Không có thông báo mới</div>
-                )}
-              </div>
-            )}
-          </li>
-        )}
-
         {isLoggedIn ? (
           <li className="nav-user" ref={dropdownRef}>
             <div className="user-infor" onClick={() => setShowDropdown(!showDropdown)}>

@@ -72,7 +72,8 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  /* Giảm gap để trông gọn hơn */
 }
 
 .admin-sidebar nav ul li {
@@ -88,8 +89,10 @@ body {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  padding: 14px 20px;
-  border-radius: 8px;
+  padding: 12px 18px;
+  /* Thu gọn padding một chút */
+  border-radius: 6px;
+  /* Giảm border-radius cho tinh tế */
   transition: background-color 0.3s ease, transform 0.2s ease;
   display: flex;
   align-items: center;
@@ -98,27 +101,35 @@ body {
 }
 
 .admin-menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: translateX(5px);
+  background-color: rgba(255, 255, 255, 0.15);
+  /* Tăng độ tương phản nhẹ khi hover */
+  transform: translateX(3px);
+  /* Giảm translate để mượt hơn */
 }
 
 .admin-menu-item-active {
   background-color: #22d3ee;
   color: #1e3a8a;
   font-weight: 600;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  /* Thêm bóng nhẹ để nổi bật */
 }
 
 .admin-menu-icon {
-  margin-right: 15px;
-  width: 20px;
-  height: 20px;
+  margin-right: 12px;
+  /* Giảm margin để thu gọn */
+  width: 18px;
+  /* Giảm kích thước icon */
+  height: 18px;
 }
 
 .admin-chevron-icon {
   position: absolute;
-  right: 20px;
-  width: 14px;
-  height: 14px;
+  right: 15px;
+  /* Thu gọn khoảng cách từ phải */
+  width: 12px;
+  /* Giảm kích thước chevron */
+  height: 12px;
   transition: transform 0.3s ease;
 }
 
@@ -126,30 +137,41 @@ body {
   transform: rotate(180deg);
 }
 
+/* Submenu cải tiến */
 .admin-submenu {
   list-style: none;
-  padding-left: 40px;
-  margin-top: 8px;
-  background-color: rgba(0, 0, 0, 0.15);
+  padding: 6px 0 6px 30px;
+  /* Giảm padding dọc và thụt vào ít hơn */
+  margin: 4px 0 0 10px;
+  /* Thêm margin-left để thụt vào tự nhiên */
+  background-color: rgba(0, 0, 0, 0.1);
+  /* Giảm opacity cho nhẹ nhàng */
   border-radius: 6px;
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
+  /* Thêm viền trái tinh tế */
 }
 
 .admin-submenu-item {
-  font-size: 15px !important;
-  padding: 10px 15px;
-  margin: 5px 0;
+  font-size: 14px !important;
+  /* Giảm font-size để nhỏ gọn */
+  padding: 8px 12px;
+  /* Thu gọn padding */
+  margin: 2px 0;
+  /* Giảm margin giữa các item */
   background: none;
   border: none;
   color: #e5e7eb;
   cursor: pointer;
   width: 100%;
   text-align: left;
-  border-radius: 6px;
+  border-radius: 4px;
+  /* Giảm border-radius cho nhỏ hơn */
   transition: background-color 0.3s ease;
 }
 
 .admin-submenu-item:hover {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.2);
+  /* Tăng độ tương phản nhẹ */
   color: #ffffff;
 }
 

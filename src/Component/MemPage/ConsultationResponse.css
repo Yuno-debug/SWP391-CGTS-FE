@@ -1,129 +1,155 @@
-/* Container chính */
+/* 🌟 Container chính */
 .consultation-container {
-    max-width: 900px;
-    margin: 30px auto;
-    padding: 25px;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
     background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .consultation-container:hover {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Tiêu đề */
+/* 🌟 Tiêu đề */
 .consultation-title {
     text-align: center;
     color: #1e3a8a;
-    /* Màu xanh đậm */
-    font-size: 28px;
-    margin-bottom: 10px;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 12px;
 }
 
-/* Phụ đề */
+/* 🌟 Phụ đề */
 .consultation-subtitle {
     text-align: center;
     color: #6b7280;
-    /* Màu xám nhẹ */
-    font-size: 16px;
-    margin-bottom: 20px;
+    font-size: 18px;
+    margin-bottom: 25px;
 }
 
-/* Bảng phản hồi */
+/* 🌟 Bảng phản hồi */
 .response-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 25px;
-    font-size: 14px;
+    margin-top: 30px;
+    font-size: 16px;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-.response-table th,
-.response-table td {
-    border: 1px solid #e5e7eb;
-    /* Viền xám nhạt */
-    padding: 12px 15px;
+/* 🌟 Tiêu đề cột */
+.response-table th {
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 16px;
     text-align: left;
 }
 
-.response-table th {
-    background: #eff6ff;
-    /* Màu nền xanh nhạt */
-    color: #1e3a8a;
-    /* Màu chữ xanh đậm */
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
+/* 🌟 Ô dữ liệu */
 .response-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #e5e7eb;
     color: #374151;
-    /* Màu chữ xám đậm */
+    font-size: 15px;
 }
 
-.response-table tbody tr {
-    transition: background-color 0.3s ease;
+/* 🌟 Hàng xen kẽ */
+.response-table tbody tr:nth-child(even) {
+    background: #f8fafc;
 }
 
+/* 🌟 Hover hiệu ứng */
 .response-table tbody tr:hover {
-    background: #f1f5f9;
-    /* Màu nền khi hover */
+    background: #dbeafe;
+    transition: background 0.3s ease;
 }
 
-/* Thông báo không có dữ liệu */
+/* 🌟 Trạng thái đặc biệt */
+.status-active {
+    color: #10b981;
+    font-weight: bold;
+}
+
+.status-pending {
+    color: #f59e0b;
+    font-weight: bold;
+}
+
+.status-closed {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+/* 🌟 Căn giữa nội dung */
+.response-table .center {
+    text-align: center;
+}
+
+/* 🌟 Căn giữa icon */
+.icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 🌟 Căn giữa thông báo */
 .no-responses {
     text-align: center;
-    padding: 25px;
-    color: #9ca3af;
-    /* Màu xám nhạt */
+    padding: 30px;
     font-size: 16px;
     font-style: italic;
+    color: #9ca3af;
 }
 
-/* Trạng thái loading */
+/* 🌟 Loading */
 .loading {
     text-align: center;
     font-size: 18px;
     color: #4b5563;
-    /* Màu xám */
     padding: 20px;
+    font-weight: bold;
 }
 
-/* Thông báo lỗi */
+/* 🌟 Thông báo lỗi */
 .error-message {
     text-align: center;
     font-size: 16px;
     color: #dc2626;
-    /* Màu đỏ */
-    padding: 20px;
-    background: #fef2f2;
-    /* Nền đỏ nhạt */
+    background: #fde8e8;
+    padding: 15px;
     border-radius: 8px;
+    font-weight: bold;
 }
 
-/* Nút mở modal */
+/* 🌟 Nút mở modal */
 .open-modal-btn {
     display: block;
     margin: 0 auto 20px;
-    padding: 10px 20px;
+    padding: 12px 24px;
     background: #2563eb;
-    /* Màu xanh dương */
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .open-modal-btn:hover {
     background: #1e40af;
-    /* Màu xanh đậm hơn khi hover */
     transform: translateY(-2px);
 }
 
-/* Modal overlay */
+/* 🌟 Modal overlay */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -131,56 +157,67 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    /* Nền mờ */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
 }
 
-/* Nội dung modal */
+/* 🌟 Nội dung modal */
 .modal-content {
     background: white;
     padding: 30px;
-    border-radius: 10px;
-    width: 400px;
+    border-radius: 12px;
+    width: 450px;
     max-width: 90%;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     position: relative;
     animation: slideIn 0.3s ease-out;
 }
 
-/* Tiêu đề modal */
+/* 🌟 Tiêu đề modal */
 .modal-title {
     text-align: center;
     color: #1e3a8a;
     font-size: 24px;
+    font-weight: bold;
     margin-bottom: 20px;
 }
 
-/* Nút đóng modal */
+/* 🌟 Nút đóng modal */
 .close-modal-btn {
     display: block;
     margin: 20px auto 0;
-    padding: 8px 16px;
+    padding: 10px 20px;
     background: #dc2626;
-    /* Màu đỏ */
     color: white;
     border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .close-modal-btn:hover {
     background: #b91c1c;
-    /* Màu đỏ đậm hơn khi hover */
     transform: translateY(-2px);
 }
 
-/* Hiệu ứng slide-in cho modal */
+/* 🌟 Hiệu ứng khi modal xuất hiện */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -190,5 +227,21 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* 🌟 Responsive cho mobile */
+@media (max-width: 768px) {
+    .consultation-container {
+        padding: 20px;
+    }
+
+    .response-table {
+        font-size: 14px;
+    }
+
+    .modal-content {
+        width: 90%;
+        padding: 20px;
     }
 }

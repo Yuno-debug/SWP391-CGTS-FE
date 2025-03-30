@@ -8,6 +8,7 @@ const ConsultationRequests = () => {
   const [children, setChildren] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isChildrenLoaded, setIsChildrenLoaded] = useState(false);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,13 +49,20 @@ const ConsultationRequests = () => {
 
       if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
         const childMap = response.data.data.$values.reduce((acc, child) => {
-          acc[child.id] = child.name; // Map childId to name
+          console.log("Child ID:", child.childId, "Name:", child.name);
+          acc[String(child.childId)] = child.name;
           return acc;
         }, {});
+        console.log("Child Map:", childMap);
         setChildren(childMap);
+        setIsChildrenLoaded(true);
+      } else {
+        console.error("Unexpected children response format:", response.data);
+        setError("Failed to load children: Invalid response format.");
       }
     } catch (error) {
       console.error('Error fetching children:', error);
+      setError(`Failed to fetch children: ${error.message}`);
     }
   };
 
@@ -71,11 +79,15 @@ const ConsultationRequests = () => {
       console.log("Consultation Requests Response:", response.data);
 
       if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-        const requestsWithTimestamps = response.data.data.$values.map(req => ({
-          ...req,
-          requestDate: req.requestDate || new Date().toISOString(), // Use existing or mock request date
-          lastUpdated: new Date().toISOString(), // Mock last updated
-        }));
+        const requestsWithTimestamps = response.data.data.$values.map(req => {
+          console.log("Request Child ID:", req.childId);
+          return {
+            ...req,
+            childId: String(req.childId),
+            requestDate: req.requestDate || new Date().toISOString(),
+            lastUpdated: new Date().toISOString(),
+          };
+        });
         setRequests(requestsWithTimestamps);
         setFilteredRequests(requestsWithTimestamps);
       } else {
@@ -134,7 +146,7 @@ const ConsultationRequests = () => {
     });
 
     setFilteredRequests(filtered);
-    setCurrentPage(1); // Reset to first page on filter/sort change
+    setCurrentPage(1);
   }, [searchTerm, statusFilter, sortField, sortOrder, requests, children]);
 
   // Pagination logic
@@ -180,7 +192,7 @@ const ConsultationRequests = () => {
     setSelectedRequest(request);
     setRequestDescription(request.description || '');
     setRequestStatus(request.status || 'Pending');
-    setChildId(request.childId || '');
+    setChildId(String(request.childId) || '');
     setIsModalOpen(true);
   };
 
@@ -220,7 +232,7 @@ const ConsultationRequests = () => {
       await axios.delete(`http://localhost:5200/api/ConsultationRequest/delete/${requestId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      await fetchRequests(); // Refresh the requests
+      await fetchRequests();
     } catch (error) {
       console.error("Error deleting consultation request:", error);
       setError("Failed to delete request. Please try again.");
@@ -276,7 +288,6 @@ const ConsultationRequests = () => {
 
     try {
       if (isEditMode) {
-        // Update existing request
         await axios.put(
           `http://localhost:5200/api/ConsultationRequest/update/${selectedRequest.requestId}`,
           {
@@ -289,7 +300,6 @@ const ConsultationRequests = () => {
           }
         );
       } else {
-        // Create new request
         await axios.post(
           'http://localhost:5200/api/ConsultationRequest/create',
           {
@@ -319,7 +329,7 @@ const ConsultationRequests = () => {
   // Get recent requests (last 3)
   const recentRequests = requests.slice(0, 3);
 
-  if (loading) return (
+  if (!isChildrenLoaded || loading) return (
     <div className="loading-spinner">
       <div className="spinner"></div>
       <p>Loading data...</p>
@@ -400,9 +410,7 @@ const ConsultationRequests = () => {
         <table className="consultation-requests-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort('requestId')}>
-                REQUEST ID {sortField === 'requestId' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
+              <th>No</th> {/* Changed from REQUEST ID to No, removed sorting */}
               <th onClick={() => handleSort('childId')}>
                 CHILD {sortField === 'childId' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
@@ -423,42 +431,48 @@ const ConsultationRequests = () => {
           </thead>
           <tbody>
             {currentRequests.length > 0 ? (
-              currentRequests.map((request, index) => (
-                <tr key={request.requestId || index} className="request-table-row">
-                  <td>{request.requestId || 'N/A'}</td>
-                  <td>
-                    <div className="child-info">
-                      <span className="child-avatar">{children[request.childId]?.[0] || 'C'}</span>
-                      {children[request.childId] || request.childId || 'N/A'}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="request-description" title={request.description || 'N/A'}>
-                      {request.description || 'N/A'}
-                    </div>
-                  </td>
-                  <td>{request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'N/A'}</td>
-                  <td>
-                    <span className={`status-badge status-${request.status?.toLowerCase() || 'unknown'}`}>
-                      {request.status || 'N/A'}
-                    </span>
-                  </td>
-                  <td>{request.lastUpdated ? new Date(request.lastUpdated).toLocaleDateString() : 'N/A'}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button className="edit-button" onClick={() => openEditModal(request)}>
-                        Edit
-                      </button>
-                      <button className="delete-button" onClick={() => handleDeleteRequest(request.requestId)}>
-                        Delete
-                      </button>
-                      <button className="details-button" onClick={() => openDetailsModal(request)}>
-                        Details
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+              currentRequests.map((request, index) => {
+                const childName = children[String(request.childId)] || 'Unknown Child';
+                if (childName === 'Unknown Child') {
+                  console.log("Missing childId in table:", request.childId, "children keys:", Object.keys(children));
+                }
+                return (
+                  <tr key={request.requestId || index} className="request-table-row">
+                    <td>{index + 1}</td> {/* Display row number (1, 2, 3, ...) */}
+                    <td>
+                      <div className="child-info">
+                        <span className="child-avatar">{childName?.[0] || 'C'}</span>
+                        {childName}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="request-description" title={request.description || 'N/A'}>
+                        {request.description || 'N/A'}
+                      </div>
+                    </td>
+                    <td>{request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                      <span className={`status-badge status-${request.status?.toLowerCase() || 'unknown'}`}>
+                        {request.status || 'N/A'}
+                      </span>
+                    </td>
+                    <td>{request.lastUpdated ? new Date(request.lastUpdated).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                      <div className="action-buttons">
+                        <button className="edit-button" onClick={() => openEditModal(request)}>
+                          Edit
+                        </button>
+                        <button className="delete-button" onClick={() => handleDeleteRequest(request.requestId)}>
+                          Delete
+                        </button>
+                        <button className="details-button" onClick={() => openDetailsModal(request)}>
+                          Details
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
                 <td colSpan="7" style={{ textAlign: 'center' }}>
@@ -497,19 +511,25 @@ const ConsultationRequests = () => {
         <h3>Recent Requests</h3>
         <div className="recent-requests">
           {recentRequests.length > 0 ? (
-            recentRequests.map(request => (
-              <div key={request.requestId} className="recent-request-card">
-                <div className="recent-request-header">
-                  <h4>Request #{request.requestId}</h4>
-                  <span className={`status-badge status-${request.status?.toLowerCase() || 'unknown'}`}>
-                    {request.status || 'N/A'}
-                  </span>
+            recentRequests.map(request => {
+              const childName = children[String(request.childId)] || 'Unknown Child';
+              if (childName === 'Unknown Child') {
+                console.log("Missing childId in recent requests:", request.childId, "children keys:", Object.keys(children));
+              }
+              return (
+                <div key={request.requestId} className="recent-request-card">
+                  <div className="recent-request-header">
+                    <h4>Request #{request.requestId}</h4>
+                    <span className={`status-badge status-${request.status?.toLowerCase() || 'unknown'}`}>
+                      {request.status || 'N/A'}
+                    </span>
+                  </div>
+                  <p><strong>Child:</strong> {childName}</p>
+                  <p><strong>Description:</strong> {request.description || 'N/A'}</p>
+                  <p><strong>Request Date:</strong> {request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'N/A'}</p>
                 </div>
-                <p><strong>Child:</strong> {children[request.childId] || 'N/A'}</p>
-                <p><strong>Description:</strong> {request.description || 'N/A'}</p>
-                <p><strong>Request Date:</strong> {request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'N/A'}</p>
-              </div>
-            ))
+              );
+            })
           ) : (
             <p>No recent requests available.</p>
           )}
@@ -601,7 +621,7 @@ const ConsultationRequests = () => {
               </div>
               <div className="modal-field">
                 <label>Child</label>
-                <p>{children[selectedDetailsRequest.childId] || selectedDetailsRequest.childId || 'N/A'}</p>
+                <p>{children[String(selectedDetailsRequest.childId)] || selectedDetailsRequest.childId || 'Unknown Child'}</p>
               </div>
               <div className="modal-field">
                 <label>Description</label>

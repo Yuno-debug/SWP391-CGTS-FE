@@ -104,6 +104,15 @@ const BlogManage = () => {
     "link",
     "image",
   ];
+  const handleDisapprove = async (id) => {
+  try {
+    await axios.put(`http://localhost:5200/api/Blog/disapprove/${id}`);
+    fetchBlogs(); // Cập nhật lại danh sách blog
+  } catch (error) {
+    console.error("Error disapproving blog:", error);
+  }
+};
+
 
   return (
     <div className="blog-management">
@@ -132,6 +141,7 @@ const BlogManage = () => {
                 <td>
                   <button onClick={() => openEditModal(blog)}>Edit</button>
                   <button onClick={() => handleApprove(blog.blogId)}>Approve</button>
+                  <button onClick={() => handleDisapprove(blog.blogId)}>Disapprove</button>
                   <button onClick={() => handleDelete(blog.blogId)}>Delete</button>
                 </td>
               </tr>

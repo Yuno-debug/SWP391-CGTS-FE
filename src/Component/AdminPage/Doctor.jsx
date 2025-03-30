@@ -6,10 +6,12 @@ const DoctorTable = () => {
   const [doctors, setDoctors] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
+  
   // Trạng thái modal
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // New state for details modal
+  const [selectedDoctor, setSelectedDoctor] = useState(null); // Store selected doctor for details
 
   // Dữ liệu form thêm bác sĩ
   const [addFormData, setAddFormData] = useState({
@@ -110,7 +112,6 @@ const DoctorTable = () => {
   // Xử lý mở modal chỉnh sửa
   const handleEdit = (doctor) => {
     console.log("Editing Doctor:", doctor);
-
     setEditingDoctorId(doctor.doctorId || doctor.id);
     setEditFormData({
       name: doctor.name || "",
@@ -122,8 +123,13 @@ const DoctorTable = () => {
       licenseNumber: doctor.licenseNumber || "",
       biography: doctor.biography || ""
     });
-
     setIsEditModalOpen(true);
+  };
+
+  // Xử lý mở modal chi tiết
+  const handleShowDetails = (doctor) => {
+    setSelectedDoctor(doctor);
+    setIsDetailsModalOpen(true);
   };
 
   // Xử lý cập nhật thông tin bác sĩ
@@ -173,6 +179,9 @@ const DoctorTable = () => {
     try {
       const response = await fetch(`http://localhost:5200/api/Doctor/${doctorId}`, {
         method: "DELETE",
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+        }
       });
 
       if (!response.ok) {
@@ -197,6 +206,7 @@ const DoctorTable = () => {
           <div className="modal-content">
             <h2>Add Doctor</h2>
             <div className="form-grid">
+              {/* ... Existing add form fields ... */}
               <div className="input-wrapper">
                 <label>Username:</label>
                 <input 
@@ -321,7 +331,11 @@ const DoctorTable = () => {
             </thead>
             <tbody>
               {doctors.map(doctor => (
-                <tr key={doctor.id}>
+                <tr 
+                  key={doctor.id} 
+                  onClick={() => handleShowDetails(doctor)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td>{doctor.name}</td>
                   <td>{doctor.email}</td>
                   <td>{doctor.phoneNumber}</td>
@@ -336,7 +350,7 @@ const DoctorTable = () => {
                   <td className="truncate" title={doctor.biography}>
                     {doctor.biography}
                   </td>
-                  <td>
+                  <td onClick={(e) => e.stopPropagation()}> {/* Prevent row click when clicking buttons */}
                     <button className="edit-btn" onClick={() => handleEdit(doctor)}>Edit</button>
                     <button className="del-btn" onClick={() => handleDelete(doctor.doctorId)}>Delete</button>
                   </td>
@@ -351,6 +365,7 @@ const DoctorTable = () => {
       {isEditModalOpen && (
         <div className="modal">
           <div className="modal-content">
+            {/* ... Existing edit modal content ... */}
             <h2>Edit Doctor</h2>
             <div className="form-grid">
               <div className="input-wrapper">
@@ -427,6 +442,42 @@ const DoctorTable = () => {
             </div>
             <button className="Update-modal" onClick={() => handleEditSubmit(editingDoctorId)}>Save</button>
             <button onClick={() => setIsEditModalOpen(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {/* Details Doctor Modal */}
+      {isDetailsModalOpen && selectedDoctor && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Doctor Details</h2>
+            <div className="details-grid">
+              <div className="detail-item">
+                <strong>Full Name:</strong> {selectedDoctor.name}
+              </div>
+              <div className="detail-item">
+                <strong>Email:</strong> {selectedDoctor.email}
+              </div>
+              <div className="detail-item">
+                <strong>Phone Number:</strong> {selectedDoctor.phoneNumber}
+              </div>
+              <div className="detail-item">
+                <strong>Specialization:</strong> {selectedDoctor.specialization}
+              </div>
+              <div className="detail-item">
+                <strong>Degree:</strong> {selectedDoctor.degree}
+              </div>
+              <div className="detail-item">
+                <strong>Hospital:</strong> {selectedDoctor.hospital}
+              </div>
+              <div className="detail-item">
+                <strong>License Number:</strong> {selectedDoctor.licenseNumber}
+              </div>
+              <div className="detail-item full-width">
+                <strong>Biography:</strong> {selectedDoctor.biography}
+              </div>
+            </div>
+            <button onClick={() => setIsDetailsModalOpen(false)}>Close</button>
           </div>
         </div>
       )}

@@ -62,9 +62,10 @@ const ConsultationResponse = () => {
     }
   };
 
+  // Fetch doctor data using the correct API /api/Doctor
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get('http://localhost:5200/api/UserAccount/get-all', {
+      const response = await axios.get('http://localhost:5200/api/Doctor', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("token")}`
         }
@@ -73,13 +74,14 @@ const ConsultationResponse = () => {
       console.log("Doctors Response:", response.data);
 
       if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-        const doctorMap = response.data.data.$values
-          .filter(user => user.role === 3) // Assuming role 3 is Doctor
-          .reduce((acc, doctor) => {
-            acc[doctor.id] = doctor.username; // Map doctorId to username
-            return acc;
-          }, {});
+        const doctorMap = response.data.data.$values.reduce((acc, doctor) => {
+          acc[doctor.id] = doctor.name; // Giả sử API trả về trường 'name'
+          return acc;
+        }, {});
+        console.log("Doctor Map:", doctorMap); // Kiểm tra ánh xạ
         setDoctors(doctorMap);
+      } else {
+        console.error("Unexpected response format for doctors:", response.data);
       }
     } catch (error) {
       console.error('Error fetching doctors:', error);
@@ -101,8 +103,8 @@ const ConsultationResponse = () => {
       if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
         const responsesWithTimestamps = response.data.data.$values.map(resp => ({
           ...resp,
-          createdDate: new Date().toISOString(), // Mock created date
-          lastUpdated: new Date().toISOString(), // Mock last updated
+          createdDate: resp.createdDate || new Date().toISOString(), // Sử dụng createdDate từ API nếu có
+          lastUpdated: resp.lastUpdated || new Date().toISOString(), // Sử dụng lastUpdated từ API nếu có
         }));
         setResponses(responsesWithTimestamps);
         setFilteredResponses(responsesWithTimestamps);

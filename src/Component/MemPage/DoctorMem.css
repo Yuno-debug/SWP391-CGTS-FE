@@ -21,19 +21,24 @@
     gap: 20px;
 }
 
+/* Mỗi mục bác sĩ (bao gồm card và rating) */
+.doctor-item {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 /* Card bác sĩ */
 .doctor-card {
     background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-        padding: 20px;
-        transition: transform 0.3s, box-shadow 0.3s;
-        text-align: center;
-        /* Căn giữa toàn bộ nội dung */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        /* Đảm bảo nội dung vào giữa */
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Hiệu ứng hover */
@@ -45,54 +50,125 @@
 /* Hình ảnh bác sĩ */
 .doctor-image {
     width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid #3498db;
-        margin-bottom: 15px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #3498db;
+    margin-bottom: 15px;
 }
 
 /* Tiêu đề bác sĩ */
 .doctor-card h2 {
     color: #2c3e50;
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-/* Nội dung trong card */
-.doctor-card p {
-    margin: 6px 0;
-    color: #666;
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-/* Phần chữ in đậm */
-.doctor-card p strong {
-    color: #333;
-}
 /* Chia cột hiển thị thông tin bác sĩ */
 .doctor-info {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5px;
-    /* Khoảng cách giữa các dòng */
     text-align: center;
     width: 100%;
 }
 
-/* Định dạng chữ */
+/* Định dạng chữ trong info */
 .doctor-info p {
     margin: 5px 0;
     color: #666;
     font-size: 1rem;
 }
 
-/* Phần chữ in đậm */
+/* Phần chữ in đậm trong info */
 .doctor-info p strong {
     color: #333;
+}
+
+/* Phần rating */
+.rating-section {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+}
+
+.rating-display {
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.star-rating {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+}
+
+.star {
+    color: #ccc;
+}
+
+.star.full {
+    color: #ffd700;
+}
+
+.star.half {
+    color: #ffd700;
+    position: relative;
+}
+
+.star.half::before {
+    content: "★";
+    position: absolute;
+    width: 50%;
+    overflow: hidden;
+    color: #ffd700;
+}
+
+.rating-number {
+    font-size: 16px;
+    margin-left: 8px;
+    color: #666;
+}
+
+.feedback-form {
+    margin-top: 15px;
+}
+
+.feedback-form h3 {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.rating-select {
+    padding: 8px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    width: 100%;
+    background: #fff;
+}
+
+.submit-rating-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.submit-rating-btn:hover {
+    background-color: #0056b3;
 }
 
 /* Hiển thị trạng thái Loading */
@@ -109,5 +185,145 @@
     padding: 50px;
     font-size: 1.2rem;
     color: #e74c3c;
+    font-weight: bold;
+}
+/* Add to DoctorMem.css */
+
+/* Notification */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out;
+}
+
+.notification.error {
+    background-color: #e74c3c;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+/* Centralized rating section */
+.centralized.rating-section {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 500px;
+    text-align: center;
+}
+
+/* Star rating input */
+.star-rating-input {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.star-rating-input .star {
+    font-size: 24px;
+    transition: color 0.2s;
+}
+
+.star-rating-input .star.full {
+    color: #ffd700;
+}
+
+.star-rating-input .star.empty {
+    color: #ccc;
+}
+
+.star-rating-input .star:hover {
+    color: #ffcc00;
+}
+
+/* Rating input container */
+.rating-input {
+    margin: 15px 0;
+}
+.star-rating-input {
+    display: flex;
+    gap: 5px;
+    font-size: 30px;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.star {
+    color: #ccc;
+    transition: color 0.3s, transform 0.2s;
+}
+
+.star.full {
+    color: #ffcc00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.star:hover {
+    color: #ffdd44;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.rating-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #ffcc00;
+}
+
+.submit-rating-btn {
+    padding: 10px 20px;
+    background: #ff7e5f;
+    color: white;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.submit-rating-btn:hover {
+    background: #ff5733;
+    cursor: pointer;
+}
+.paginationMem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.paginationMem button {
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.paginationMem button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.paginationMem span {
+    font-size: 16px;
     font-weight: bold;
 }

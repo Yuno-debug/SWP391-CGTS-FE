@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './DoctorDashboard.css';
 
-// Mock weather icon
+// Weather Icon Component
 const WeatherIcon = ({ condition }) => {
   const icons = {
     Sunny: '☀️',
@@ -24,6 +24,8 @@ const DoctorDashboard = () => {
   const [totalChildren, setTotalChildren] = useState(0);
   const [totalConsultationRequests, setTotalConsultationRequests] = useState(0);
   const [totalConsultationResponses, setTotalConsultationResponses] = useState(0);
+  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   // Calendar state
@@ -45,7 +47,7 @@ const DoctorDashboard = () => {
   // Clock state
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // Mock weather data
+  // Mock weather data (thay thế bằng API thực nếu có)
   const mockWeatherData = {
     'Ho Chi Minh City': { condition: 'Sunny', temperature: 24 },
     'Hanoi': { condition: 'Cloudy', temperature: 20 },
@@ -53,7 +55,7 @@ const DoctorDashboard = () => {
     'Singapore': { condition: 'Stormy', temperature: 26 },
   };
 
-  // Mock schedule data
+  // Mock schedule data (thay thế bằng API thực nếu có)
   const doctorSchedule = [
     { id: 1, time: "9:00 AM", patient: "John Smith", type: "In-Person Visit" },
     { id: 2, time: "10:30 AM", patient: "Emma Johnson", type: "Online Consultation" },
@@ -78,9 +80,12 @@ const DoctorDashboard = () => {
     const timer = setInterval(() => {
       const now = new Date();
       setCurrentTime(now);
-      if (now.getDate() !== currentDate.getDate() ||
-          now.getMonth() !== currentDate.getMonth() ||
-          now.getFullYear() !== currentDate.getFullYear()) {
+      // Chỉ cập nhật currentDate và selectedDate khi ngày thay đổi
+      if (
+        now.getDate() !== currentDate.getDate() ||
+        now.getMonth() !== currentDate.getMonth() ||
+        now.getFullYear() !== currentDate.getFullYear()
+      ) {
         setCurrentDate(new Date(now));
         setSelectedDate(new Date(now));
       }
@@ -97,127 +102,89 @@ const DoctorDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchTotalGrowthRecords = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorAndRedirect("No authorization token found. Redirecting to login...");
-        return;
-      }
-      try {
-        const response = await axios.get("http://localhost:5200/api/growth-records/count", {
+  // Gộp tất cả các API gọi vào một hàm duy nhất
+  const fetchAllData = async () => {
+    setLoading(true);
+    setError(null);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("No authorization token found. Redirecting to login...");
+      setTimeout(() => navigate("/login"), 3000); // Tăng thời gian hiển thị lỗi lên 3 giây
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Gọi tất cả API song song để tăng hiệu suất
+      const [
+        growthRecordsResponse,
+        childrenResponse,
+        consultationRequestsResponse,
+        consultationResponsesResponse,
+        usersResponse,
+      ] = await Promise.all([
+        axios.get("http://localhost:5200/api/growth-records/count", {
           headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (typeof response.data === "number") {
-          setTotalGrowthRecords(response.data);
-        } else if (typeof response.data === "object" && response.data?.totalGrowthRecords !== undefined) {
-          setTotalGrowthRecords(response.data.totalGrowthRecords);
-        } else if (typeof response.data === "object" && response.data?.$values?.[0]?.count !== undefined) {
-          setTotalGrowthRecords(response.data.$values[0].count);
-        } else {
-          setTotalGrowthRecords(0);
-        }
-      } catch (error) {
-        console.error("Error fetching total growth records:", error);
+        }),
+        axios.get('http://localhost:5200/api/Child/count', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        axios.get('http://localhost:5200/api/ConsultationRequest/get-all', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        axios.get('http://localhost:5200/api/ConsultationResponse/get-all', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        axios.get('http://localhost:5200/api/UserAccount/get-all', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+      ]);
+
+      // Xử lý totalGrowthRecords
+      if (typeof growthRecordsResponse.data === "number") {
+        setTotalGrowthRecords(growthRecordsResponse.data);
+      } else if (growthRecordsResponse.data?.totalGrowthRecords !== undefined) {
+        setTotalGrowthRecords(growthRecordsResponse.data.totalGrowthRecords);
+      } else if (growthRecordsResponse.data?.$values?.[0]?.count !== undefined) {
+        setTotalGrowthRecords(growthRecordsResponse.data.$values[0].count);
+      } else {
         setTotalGrowthRecords(0);
       }
-    };
 
-    const fetchTotalChildren = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorAndRedirect("No authorization token found. Redirecting to login...");
-        return;
-      }
-      try {
-        const response = await axios.get('http://localhost:5200/api/Child/count', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        setTotalChildren(response.data.count || 0);
-      } catch (error) {
-        console.error("Error fetching total children:", error);
-        setTotalChildren(0);
-      }
-    };
+      // Xử lý totalChildren
+      setTotalChildren(childrenResponse.data.count || 0);
 
-    const fetchTotalConsultationRequests = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorAndRedirect("No authorization token found. Redirecting to login...");
-        return;
-      }
-      try {
-        const response = await axios.get('http://localhost:5200/api/ConsultationRequest/get-all', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-          setTotalConsultationRequests(response.data.data.$values.length);
-        } else {
-          setTotalConsultationRequests(0);
-        }
-      } catch (error) {
-        console.error("Error fetching total consultation requests:", error);
+      // Xử lý totalConsultationRequests
+      if (consultationRequestsResponse.data?.success && Array.isArray(consultationRequestsResponse.data?.data?.$values)) {
+        setTotalConsultationRequests(consultationRequestsResponse.data.data.$values.length);
+      } else {
         setTotalConsultationRequests(0);
       }
-    };
 
-    const fetchTotalConsultationResponses = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorAndRedirect("No authorization token found. Redirecting to login...");
-        return;
-      }
-      try {
-        const response = await axios.get('http://localhost:5200/api/ConsultationResponse/get-all', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-          setTotalConsultationResponses(response.data.data.$values.length);
-        } else {
-          setTotalConsultationResponses(0);
-        }
-      } catch (error) {
-        console.error("Error fetching total consultation responses:", error);
+      // Xử lý totalConsultationResponses
+      if (consultationResponsesResponse.data?.success && Array.isArray(consultationResponsesResponse.data?.data?.$values)) {
+        setTotalConsultationResponses(consultationResponsesResponse.data.data.$values.length);
+      } else {
         setTotalConsultationResponses(0);
       }
-    };
 
-    const fetchUsers = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorAndRedirect("No authorization token found. Redirecting to login...");
-        return;
-      }
-      try {
-        const response = await axios.get('http://localhost:5200/api/UserAccount/get-all', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-          setUsers(response.data.data.$values);
-        } else {
-          setUsers([]);
-        }
-      } catch (error) {
-        console.error('Error fetching users data:', error);
+      // Xử lý users
+      if (usersResponse.data?.success && Array.isArray(usersResponse.data?.data?.$values)) {
+        setUsers(usersResponse.data.data.$values);
+      } else {
         setUsers([]);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Failed to load data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const setErrorAndRedirect = (message) => {
-      setError(message);
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-    };
-
-    fetchTotalGrowthRecords();
-    fetchTotalChildren();
-    fetchTotalConsultationRequests();
-    fetchTotalConsultationResponses();
-    fetchUsers();
+  useEffect(() => {
+    fetchAllData();
   }, [navigate]);
-
-  const [error, setError] = useState(null);
 
   // Calendar navigation
   const handlePrevMonth = () => {
@@ -246,7 +213,7 @@ const DoctorDashboard = () => {
     console.log(`Clicked on user: ${user.username || 'N/A'}`);
   };
 
-  // Mock calendar events
+  // Mock calendar events (thay thế bằng API thực nếu có)
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
@@ -318,9 +285,9 @@ const DoctorDashboard = () => {
     }
   };
 
-  // Mock quick actions
+  // Mock quick actions (thay thế bằng hành động thực nếu cần)
   const quickActions = [
-    { label: "View Schedule", onClick: () => console.log("View Schedule clicked") },
+    { label: "View Schedule", onClick: () => navigate('/doctor/schedule') },
     { label: "Send Message", onClick: () => console.log("Send Message clicked") },
     { label: "Generate Report", onClick: () => console.log("Generate Report clicked") },
   ];
@@ -346,11 +313,20 @@ const DoctorDashboard = () => {
     return quotes[dayOfYear % quotes.length];
   };
 
-  // Mock progress data
+  // Mock progress data (thay thế bằng dữ liệu thực nếu có)
   const progressData = [
     { label: "Consultations Completed", value: 75, max: 100 },
     { label: "Reports Generated", value: 40, max: 50 },
   ];
+
+  if (loading) {
+    return (
+      <div className="doctor-dashboard-loading">
+        <div className="doctor-dashboard-spinner"></div>
+        <p>Loading dashboard data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="doctor-dashboard-container">
@@ -631,6 +607,9 @@ const DoctorDashboard = () => {
       {error && (
         <div className="doctor-dashboard-error-message doctor-dashboard-animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <p>{error}</p>
+          <button onClick={fetchAllData} className="doctor-dashboard-retry-button">
+            Retry
+          </button>
         </div>
       )}
     </div>

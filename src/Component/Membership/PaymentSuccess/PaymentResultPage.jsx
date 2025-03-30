@@ -6,7 +6,6 @@ import "../../Membership/PaymentSuccess/PaymentSuccess.css";
 const PaymentResultPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const [amount, setAmount] = useState(0);
   const [status, setStatus] = useState("");
 
@@ -21,69 +20,113 @@ const PaymentResultPage = () => {
 
   const handleGoHome = async () => {
     try {
-      const userId = localStorage.getItem("userId"); // Lấy userId từ localStorage
+      const userId = localStorage.getItem("userId"); // Get userId from localStorage
       if (!userId) {
-        console.error("Không tìm thấy userId trong LocalStorage!");
+        console.error("UserId not found in LocalStorage!");
         navigate("/");
         return;
       }
-  
-      // 1. Lấy danh sách userMembership
+
+      // 1. Get list of user memberships
       const userMembershipRes = await axios.get("/api/UserMembership/get-all");
-      const userMemberships = userMembershipRes.data.data.$values; // Lấy mảng $values
-  
-      // 2. Tìm membership theo userId
+      const userMemberships = userMembershipRes.data.data.$values; // Get $values array
+
+      // 2. Find membership by userId
       const userMembership = userMemberships.find(um => um.userId === parseInt(userId));
       if (!userMembership) {
-        console.error("Không tìm thấy membership cho userId:", userId);
+        console.error("No membership found for userId:", userId);
         navigate("/");
         return;
       }
       const membershipId = userMembership.membershipid;
       console.log("MembershipId:", membershipId);
-  
-      // 3. Lấy payment theo membershipId
+
+      // 3. Get payment by membershipId
       const paymentRes = await axios.get(`/api/Payment/${membershipId}`);
-      console.log("Kết quả payment API:", paymentRes.data); // Kiểm tra để chắc chắn đúng dữ liệu
-  
-      const paymentIdFromAPI = paymentRes.data?.paymentId; // Lấy paymentId đúng
-      console.log("Payment ID lấy được:", paymentIdFromAPI);
-  
+      console.log("Payment API result:", paymentRes.data); // Check to ensure correct data
+
+      const paymentIdFromAPI = paymentRes.data?.paymentId; // Get correct paymentId
+      console.log("Retrieved Payment ID:", paymentIdFromAPI);
+
       if (!paymentIdFromAPI) {
-        console.error("Không lấy được paymentId từ API!");
+        console.error("Could not retrieve paymentId from API!");
         return;
       }
-  
-      // 4. Gọi API cập nhật payment
+
+      // 4. Call API to update payment
       await axios.put(`/api/Payment/update/${paymentIdFromAPI}`);
-      console.log("Cập nhật thanh toán thành công!");
-  
+      console.log("Payment updated successfully!");
+
     } catch (error) {
-      console.error("Lỗi khi cập nhật thanh toán:", error);
+      console.error("Error updating payment:", error);
     }
-  
-    navigate("/"); // Điều hướng về trang chủ
+
+    navigate("/"); // Navigate to home page
   };
-  
-  
-  
+
+  const handleFailedPayment = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        console.error("UserId not found in LocalStorage!");
+        navigate("/");
+        return;
+      }
+
+      // 1. Get user membership
+      const userMembershipRes = await axios.get("/api/UserMembership/get-all");
+      const userMemberships = userMembershipRes.data.data.$values;
+      const userMembership = userMemberships.find(um => um.userId === parseInt(userId));
+      
+      if (!userMembership) {
+        console.error("No membership found for userId:", userId);
+        navigate("/");
+        return;
+      }
+      
+      const membershipId = userMembership.membershipid;
+
+      // 2. Get payment
+      const paymentRes = await axios.get(`/api/Payment/${membershipId}`);
+      const paymentId = paymentRes.data?.paymentId;
+
+      if (!paymentId) {
+        console.error("Could not retrieve paymentId from API!");
+        navigate("/");
+        return;
+      }
+
+      // 3. Delete payment
+      await axios.delete(`/api/Payment/delete/${paymentId}`);
+      console.log("Payment deleted successfully");
+
+      // 4. Delete membership
+      await axios.delete(`/api/UserMembership/delete/${membershipId}`);
+      console.log("Membership deleted successfully");
+
+    } catch (error) {
+      console.error("Error handling failed payment:", error);
+    }
+    
+    navigate("/"); // Always navigate to home, even if there's an error
+  };
 
   return (
     <div className="payment-result-container">
       {status === "success" ? (
         <div className="payment-success">
-          <h1>🎉 Thanh toán thành công!</h1>
-          <p>Số tiền: {amount.toLocaleString()} VNĐ</p>
+          <h1>🎉 Payment Successful!</h1>
+          <p>Amount: {amount.toLocaleString()} VND</p>
           <button className="btn-back-home" onClick={handleGoHome}>
-            Về trang chủ
+            Back to Home
           </button>
         </div>
       ) : (
         <div className="payment-failed">
-          <h1>❌ Thanh toán thất bại!</h1>
-          <p>Vui lòng thử lại sau.</p>
-          <button className="btn-back-home" onClick={handleGoHome}>
-            Về trang chủ
+          <h1>❌ Payment Failed!</h1>
+          <p>Please try again later.</p>
+          <button className="btn-back-home" onClick={handleFailedPayment}>
+            Back to Home
           </button>
         </div>
       )}

@@ -21,6 +21,7 @@ const AddChild = ({ isLoggedIn }) => {
   });
   const [errors, setErrors] = useState({});
   const [children, setChildren] = useState([]);
+  const [alerts, setAlerts] = useState({});
   const [selectedChild, setSelectedChild] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -32,6 +33,7 @@ const AddChild = ({ isLoggedIn }) => {
     }
     setUserId(Number(storedUserId));
     fetchChildren(storedUserId);
+    fetchAlerts();
   }, []);
 
   const fetchChildren = async (userId) => {
@@ -42,6 +44,27 @@ const AddChild = ({ isLoggedIn }) => {
       setChildren(response.data?.data?.$values || []);
     } catch (error) {
       console.error("Error fetching children:", error);
+    }
+  };
+
+  const fetchAlerts = async () => {
+    try {
+      const response = await axios.get("http://localhost:5200/api/Alert", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+
+      const alertsData = response.data?.data?.$values || [];
+      const groupedAlerts = alertsData.reduce((acc, alert) => {
+        if (!acc[alert.childId]) {
+          acc[alert.childId] = [];
+        }
+        acc[alert.childId].push(alert);
+        return acc;
+      }, {});
+
+      setAlerts(groupedAlerts);
+    } catch (error) {
+      console.error("Error fetching alerts:", error);
     }
   };
 
@@ -75,14 +98,7 @@ const AddChild = ({ isLoggedIn }) => {
       allergies: childData.allergies || "",
     };
 
-    const tempChild = {
-      ...requestData,
-      childId: Date.now(),
-    };
-
     try {
-      setChildren((prevChildren) => [...prevChildren, tempChild]);
-
       await axios.post("http://localhost:5200/api/Child/create", requestData, {
         headers: {
           "Content-Type": "application/json",
@@ -110,7 +126,6 @@ const AddChild = ({ isLoggedIn }) => {
         data: error.response?.data,
         message: error.message,
       });
-      setChildren((prevChildren) => prevChildren.filter((child) => child.childId !== tempChild.childId));
     }
   };
 
@@ -120,12 +135,6 @@ const AddChild = ({ isLoggedIn }) => {
     } else {
       setSelectedChild(child);
     }
-  };
-
-  const handleAddChildClick = (e) => {
-    e.stopPropagation();
-    console.log("Add Child button clicked"); // Kiểm tra xem hàm có được gọi không
-    setShowAddModal(true);
   };
 
   const getAvatarUrl = (child) => {
@@ -157,6 +166,9 @@ const AddChild = ({ isLoggedIn }) => {
                       onError={(e) => (e.target.src = "https://placehold.co/50x50?text=No+Image")}
                     />
                     <span className="addchild-child-card-name">{child.name}</span>
+                    {alerts[child.childId] && alerts[child.childId].length > 0 && (
+                      <span className="addchild-alert-indicator">!</span>
+                    )}
                   </div>
                 </div>
               ))
@@ -168,14 +180,14 @@ const AddChild = ({ isLoggedIn }) => {
                   className="addchild-empty-illustration"
                 />
                 <p>No children added yet. Click below to add a child!</p>
-                <div className="addchild-add-child-btn" onClick={handleAddChildClick}>
+                <div className="addchild-add-child-btn" onClick={() => setShowAddModal(true)}>
                   <FaPlus size={40} />
                   <p>Add a Child</p>
                 </div>
               </div>
             )}
             {children.length > 0 && (
-              <div className="addchild-add-child-btn" onClick={handleAddChildClick}>
+              <div className="addchild-add-child-btn" onClick={() => setShowAddModal(true)}>
                 <FaPlus size={40} />
                 <p>Add a Child</p>
               </div>
@@ -204,6 +216,18 @@ const AddChild = ({ isLoggedIn }) => {
                   <Link to={`/update-growth-metrics/${selectedChild.childId}`} className="addchild-update-growth-link">
                     Growth Data
                   </Link>
+                  {alerts[selectedChild.childId] && alerts[selectedChild.childId].length > 0 && (
+                    <div className="addchild-alert-details">
+                      <h4>Alerts</h4>
+                      <ul>
+                        {alerts[selectedChild.childId].map((alert, index) => (
+                          <li key={index}>
+                            <strong>{alert.title}:</strong> {alert.message}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

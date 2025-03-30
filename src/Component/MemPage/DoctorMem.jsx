@@ -5,12 +5,18 @@ import "./DoctorMem.css";
 
 const DoctorMem = () => {
   const [doctors, setDoctors] = useState([]);
-  const [feedbacks, setFeedbacks] = useState([]);
+  const [feedbacks, setFeedbacks] = useState(() => {
+    const savedFeedbacks = localStorage.getItem("doctorFeedbacks");
+    return savedFeedbacks ? JSON.parse(savedFeedbacks) : [];
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [newFeedback, setNewFeedback] = useState({ licenseNumber: "", rating: 5, comment: "" });
+  const [selectedDoctorId, setSelectedDoctorId] = useState("");
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [notification, setNotification] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); // 🔹 Trang hiện tại
+  const doctorsPerPage = 3; // 🔹 Giới hạn hiển thị bác sĩ mỗi trang
 
-  // Fetch Doctors
   useEffect(() => {
     fetch("/api/Doctor")
       .then((res) => {
@@ -27,59 +33,127 @@ const DoctorMem = () => {
       });
   }, []);
 
-  // Fetch Feedbacks
   useEffect(() => {
-    fetch("/api/RatingFeedback")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch feedback");
-        return res.json();
-      })
-      .then((data) => setFeedbacks(data?.$values || []))
-      .catch((error) => console.error("Error fetching feedback:", error));
-  }, []);
+    localStorage.setItem("doctorFeedbacks", JSON.stringify(feedbacks));
+  }, [feedbacks]);
 
-  // Tính điểm trung bình sao của bác sĩ
-  const getDoctorRating = (licenseNumber) => {
-    const doctorFeedbacks = feedbacks.filter(fb => fb.licenseNumber === licenseNumber);
+  const getDoctorRating = (doctorId) => {
+    const doctorFeedbacks = feedbacks.filter(fb => fb.doctorId === doctorId);
     if (doctorFeedbacks.length === 0) return 0;
-
-    const totalStars = doctorFeedbacks.reduce((sum, fb) => sum + fb.rating, 0);
-    return (totalStars / doctorFeedbacks.length).toFixed(1);
+    const totalStars = doctorFeedbacks.reduce((sum, fb) => sum + (fb.rating || 0), 0);
+    return Math.min(5, (totalStars / doctorFeedbacks.length).toFixed(1));
   };
 
-  // Xử lý người dùng nhập đánh giá
-  const handleFeedbackChange = (e) => {
-    setNewFeedback({ ...newFeedback, [e.target.name]: e.target.value });
+  const handleDoctorChange = (e) => {
+    setSelectedDoctorId(e.target.value);
   };
 
-  // Gửi đánh giá lên API
-  const handleSubmitFeedback = (licenseNumber) => {
-    if (!newFeedback.comment.trim()) {
-      alert("Please enter a comment!");
+  const handleStarClick = (rating) => {
+    setSelectedRating(rating);
+  };
+
+  const handleSubmitFeedback = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      setNotification("⚠️ Error: User not logged in");
+      setTimeout(() => setNotification(null), 3000);
+      return;
+    }
+
+    if (!selectedDoctorId) {
+      setNotification("⚠️ Error: Please select a doctor");
+      setTimeout(() => setNotification(null), 3000);
+      return;
+    }
+
+    if (selectedRating === 0) {
+      setNotification("⚠️ Error: Please select a rating");
+      setTimeout(() => setNotification(null), 3000);
+      return;
+    }
+
+    const numericDoctorId = Number(selectedDoctorId);
+    if (isNaN(numericDoctorId) || numericDoctorId <= 0) {
+      setNotification("⚠️ Error: Invalid Doctor ID");
+      setTimeout(() => setNotification(null), 3000);
       return;
     }
 
     const feedbackToSend = {
-      licenseNumber,
-      rating: parseInt(newFeedback.rating),
-      comment: newFeedback.comment,
-      user: "Anonymous" // Hoặc có thể lấy từ tài khoản đăng nhập
+      doctorId: numericDoctorId,
+      rating: selectedRating,
+      userId: parseInt(userId) || 0,
     };
 
-    fetch("/api/RatingFeedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(feedbackToSend)
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to submit feedback");
-        return res.json();
-      })
-      .then((data) => {
-        setFeedbacks([...feedbacks, data]); // Cập nhật danh sách đánh giá
-        setNewFeedback({ licenseNumber: "", rating: 5, comment: "" }); // Reset form
-      })
-      .catch((error) => console.error("Error submitting feedback:", error));
+    try {
+      const res = await fetch("/api/RatingFeedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(feedbackToSend),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to submit feedback: ${errorText}`);
+      }
+
+      const data = await res.json();
+      const newFeedbackEntry = {
+        doctorId: data.dto?.doctorId ?? numericDoctorId,
+        rating: data.dto?.rating ?? selectedRating,
+        userId: data.dto?.userId ?? parseInt(userId),
+        feedbackId: data.feedbackId,
+        feedbackDate: data.feedbackDate,
+      };
+
+      setFeedbacks((prev) => [...prev, newFeedbackEntry]);
+
+      setSelectedDoctorId("");
+      setSelectedRating(0);
+      setNotification("✅ Rating submitted successfully!");
+      setTimeout(() => setNotification(null), 3000);
+    } catch (error) {
+      setNotification(`❌ Failed to submit rating: ${error.message}`);
+      setTimeout(() => setNotification(null), 3000);
+    }
+  };
+
+  const renderRatingStars = () => (
+    <div className="rating-box">
+      <h3>Your Rating</h3>
+      <div className="star-rating-input">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            className={`star ${selectedRating >= star ? "full" : "empty"}`}
+            onClick={() => handleStarClick(star)}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+      <button onClick={handleSubmitFeedback} className="submit-rating-btn">
+        Submit Rating
+      </button>
+    </div>
+  );
+
+  // 🔹 Tính toán danh sách bác sĩ trên trang hiện tại
+  const indexOfLastDoctor = currentPage * doctorsPerPage;
+  const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
+  const currentDoctors = doctors.slice(indexOfFirstDoctor, indexOfLastDoctor);
+
+  // 🔹 Xử lý chuyển trang
+  const nextPage = () => {
+    if (currentPage < Math.ceil(doctors.length / doctorsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   if (loading) return <div className="loading">Loading doctors...</div>;
@@ -87,76 +161,67 @@ const DoctorMem = () => {
 
   return (
     <>
-      <Navbar />  
+      <Navbar />
       <div className="doctor-mem-container">
         <h1>Our Doctors</h1>
-        <div className="doctor-list">
-          {doctors.length > 0 ? (
-            doctors.map((doctor) => {
-              const rating = getDoctorRating(doctor.licenseNumber);
+        {notification && <div className="notification">{notification}</div>}
+
+        <div className="rating-section centralized">
+          <h3>Rate a Doctor</h3>
+          <select
+            value={selectedDoctorId || ""}
+            onChange={handleDoctorChange}
+            className="rating-select"
+          >
+            <option value="">Select a Doctor</option>
+            {doctors.map((doctor) => {
+              const doctorId = doctor.doctorId || doctor.licenseNumber;
               return (
-                <div key={doctor.licenseNumber} className="doctor-card">
+                <option key={doctorId} value={doctorId}>
+                  {doctor.name}
+                </option>
+              );
+            })}
+          </select>
+          {renderRatingStars()}
+        </div>
+
+        <div className="doctor-list">
+          {currentDoctors.map((doctor) => {
+            const doctorId = doctor.doctorId || doctor.licenseNumber;
+            return (
+              <div key={doctorId} className="doctor-item">
+                <div className="doctor-card">
                   <img 
-                    src={`/images/doctors/${doctor.licenseNumber}.jpg`} 
+                    src={doctor.hospital} 
                     alt={doctor.name} 
                     className="doctor-image" 
-                    onError={(e) => e.target.src = "/default-doctor.jpg"} 
+                    onError={(e) => (e.target.src = "/default-doctor.jpg")} 
                   />
                   <h2>{doctor.name}</h2>
-                  <div className="doctor-info">
-                    <p><strong>Specialization:</strong> {doctor.specialization}</p>
-                    <p><strong>Email:</strong> {doctor.email}</p>
-                    <p><strong>Phone:</strong> {doctor.phoneNumber}</p>
-                    <p><strong>Degree:</strong> {doctor.degree}</p>
-                    <p><strong>Hospital:</strong> {doctor.hospital}</p>
-                    <p><strong>License Number:</strong> {doctor.licenseNumber}</p>
-                    <p><strong>Biography:</strong> {doctor.biography}</p>
-                    <p><strong>Rating:</strong> ⭐ {rating} / 5</p>
-                  </div>
-                  
-                  {/* Hiển thị feedback */}
-                  <div className="feedback-section">
-                    <h3>Feedback</h3>
-                    {feedbacks.filter(fb => fb.licenseNumber === doctor.licenseNumber).length > 0 ? (
-                      feedbacks
-                        .filter(fb => fb.licenseNumber === doctor.licenseNumber)
-                        .map((fb, index) => (
-                          <div key={index} className="feedback">
-                            <p><strong>{fb.user}:</strong> ⭐ {fb.rating} - {fb.comment}</p>
-                          </div>
-                        ))
-                    ) : (
-                      <p>No feedback available.</p>
-                    )}
-                  </div>
-
-                  {/* Form đánh giá */}
-                  <div className="feedback-form">
-                    <h3>Leave a Review</h3>
-                    <select name="rating" value={newFeedback.rating} onChange={handleFeedbackChange}>
-                      <option value="5">⭐⭐⭐⭐⭐</option>
-                      <option value="4">⭐⭐⭐⭐</option>
-                      <option value="3">⭐⭐⭐</option>
-                      <option value="2">⭐⭐</option>
-                      <option value="1">⭐</option>
-                    </select>
-                    <textarea
-                      name="comment"
-                      placeholder="Write your feedback..."
-                      value={newFeedback.comment}
-                      onChange={handleFeedbackChange}
-                    />
-                    <button onClick={() => handleSubmitFeedback(doctor.licenseNumber)}>Submit</button>
+                  <p><strong>Email:</strong> {doctor.email}</p>
+                  <p><strong>Biography:</strong> {doctor.biography}</p>
+                  <div className="rating-display">
+                    <strong>Rating:</strong> {getDoctorRating(doctorId)} / 5 ⭐
                   </div>
                 </div>
-              );
-            })
-          ) : (
-            <p>No doctors found.</p>
-          )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 🔹 Nút phân trang */}
+        <div className="paginationMem">
+          <button onClick={prevPage} disabled={currentPage === 1}>
+            ⬅️ Previous
+          </button>
+          <span>Page {currentPage} of {Math.ceil(doctors.length / doctorsPerPage)}</span>
+          <button onClick={nextPage} disabled={currentPage >= Math.ceil(doctors.length / doctorsPerPage)}>
+            Next ➡️
+          </button>
         </div>
       </div>
-      <Footer />  
+      <Footer />
     </>
   );
 };
