@@ -85,7 +85,7 @@ const RatingFeedback = () => {
     };
 
     fetchDoctors();
-  }, [feedbacks, token]); // Cập nhật khi feedbacks thay đổi
+  }, [feedbacks, token]);
 
   useEffect(() => {
     let filtered = [...feedbacks];
@@ -96,11 +96,8 @@ const RatingFeedback = () => {
 
     if (searchTerm) {
       filtered = filtered.filter(feedback =>
-        (feedback.feedbackId?.toString().includes(searchTerm) ||
-        doctors[feedback.doctorId]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (doctors[feedback.doctorId]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         feedback.rating?.toString().includes(searchTerm) ||
-        feedback.comment?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        feedback.feedbackType?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         new Date(feedback.feedbackDate).toLocaleString().toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
@@ -128,15 +125,14 @@ const RatingFeedback = () => {
     setFilteredFeedbacks(filtered);
     setCurrentPage(1);
   }, [feedbackTypeFilter, searchTerm, sortField, sortOrder, feedbacks, doctors]);
-  
+
   const handlePrevPage = () => {
-  setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
-};
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
 
-const handleNextPage = () => {
-  setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
-};
-
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
 
   const indexOfLastFeedback = currentPage * feedbacksPerPage;
   const indexOfFirstFeedback = indexOfLastFeedback - feedbacksPerPage;
@@ -167,9 +163,6 @@ const handleNextPage = () => {
               <th>Feedback Date</th>
               <th>Doctor Name</th>
               <th>Rating</th>
-              <th>Comment</th>
-              <th>Type</th>
-              <th>ID</th>
             </tr>
           </thead>
           <tbody>
@@ -179,14 +172,11 @@ const handleNextPage = () => {
                   <td>{new Date(feedback.feedbackDate).toLocaleString()}</td>
                   <td>{feedback.doctorId ? (doctors[feedback.doctorId] || "Fetching...") : "N/A"}</td>
                   <td>{feedback.rating}</td>
-                  <td>{feedback.comment || "N/A"}</td>
-                  <td>{feedback.feedbackType || "N/A"}</td>
-                  <td>{feedback.feedbackId}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="rating-feedback-no-data">
+                <td colSpan="3" className="rating-feedback-no-data">
                   No feedback available.
                 </td>
               </tr>
@@ -195,27 +185,27 @@ const handleNextPage = () => {
         </table>
 
         <div className="pagination">
-            <span className="pagination-info">
-              Showing {indexOfFirstFeedback + 1} to {Math.min(indexOfLastFeedback, filteredFeedbacks.length)} of {filteredFeedbacks.length} entries
-            </span>
-            <div className="pagination-buttons">
-              <button
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-                className={currentPage === 1 ? "disabled" : ""}
-              >
-                Previous
-              </button>
-              <span className="current-page">{currentPage}</span>
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                className={currentPage === totalPages ? "disabled" : ""}
-              >
-                Next
-              </button>
-            </div>
+          <span className="pagination-info">
+            Showing {indexOfFirstFeedback + 1} to {Math.min(indexOfLastFeedback, filteredFeedbacks.length)} of {filteredFeedbacks.length} entries
+          </span>
+          <div className="pagination-buttons">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className={currentPage === 1 ? "disabled" : ""}
+            >
+              Previous
+            </button>
+            <span className="current-page">{currentPage}</span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className={currentPage === totalPages ? "disabled" : ""}
+            >
+              Next
+            </button>
           </div>
+        </div>
       </div>
     </div>
   );

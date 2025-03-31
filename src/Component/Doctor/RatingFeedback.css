@@ -169,7 +169,8 @@
 
 .rating-feedback-table {
   width: 100%;
-  min-width: 1200px;
+  min-width: 600px;
+  /* Giảm min-width để phù hợp với 3 cột */
   table-layout: fixed;
   border-collapse: collapse;
 }
@@ -177,7 +178,8 @@
 .rating-feedback-table th,
 .rating-feedback-table td {
   padding: 20px 24px;
-  text-align: left;
+  text-align: center;
+  /* Căn giữa nội dung */
   border-bottom: 1px solid #e5e7eb;
   word-wrap: break-word;
 }
@@ -190,7 +192,8 @@
   background: #f9fafb;
   cursor: pointer;
   transition: background 0.3s ease;
-  width: 16.66%;
+  width: 33.33%;
+  /* Điều chỉnh chiều rộng cho 3 cột */
 }
 
 .rating-feedback-table th:hover {
@@ -201,7 +204,8 @@
   font-size: 16px;
   font-weight: 400;
   color: #000000;
-  width: 16.66%;
+  width: 33.33%;
+  /* Điều chỉnh chiều rộng cho 3 cột */
 }
 
 .rating-feedback-table tr {
@@ -284,7 +288,8 @@
 .current-page {
   padding: 8px 14px;
   background: #3b82f6;
-  color: #000000;
+  color: #ffffff;
+  /* Đổi màu chữ thành trắng cho nổi bật */
   border-radius: 8px;
   font-weight: 500;
 }

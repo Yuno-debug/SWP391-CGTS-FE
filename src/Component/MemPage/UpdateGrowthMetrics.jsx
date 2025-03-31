@@ -23,6 +23,7 @@ const UpdateGrowthMetrics = () => {
     recordedByUser: "",
     old: "",
   });
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     if (!childId) {
@@ -86,6 +87,7 @@ const UpdateGrowthMetrics = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setGrowthData((prevData) => ({ ...prevData, [name]: value }));
+    setFormErrors((prevErrors) => ({ ...prevErrors, [name]: "" })); // Clear error on change
   };
 
   const calculateBMI = (weight, height) => {
@@ -142,66 +144,116 @@ const UpdateGrowthMetrics = () => {
     const element = document.getElementById(sectionId);
     if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-  const handleSubmit = async (e) => {
-  e.preventDefault(); // Ngăn chặn reload trang
 
-  try {
-    const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("token");
+  const validateForm = () => {
+    let tempErrors = {};
 
-    if (!userId || !token) {
-      setErrorMessage("User ID or token not found. Please log in again.");
-      return;
+    if (!growthData.month) {
+      tempErrors.month = "Month is required";
+    } else if (isNaN(growthData.month) || parseInt(growthData.month) < 1 || parseInt(growthData.month) > 12) {
+      tempErrors.month = "Month must be between 1 and 12";
     }
 
-    // Chuẩn bị dữ liệu để gửi lên server
-    const newRecord = {
-      childId: childId,
-      month: parseInt(growthData.month),
-      old: parseInt(growthData.old),
-      weight: parseFloat(growthData.weight),
-      height: parseFloat(growthData.height),
-      headCircumference: parseFloat(growthData.headCircumference),
-      upperArmCircumference: parseFloat(growthData.upperArmCircumference),
-      recordedByUser: growthData.recordedByUser,
-      notes: growthData.notes,
-    };
+    if (!growthData.old) {
+      tempErrors.old = "Age is required";
+    } else if (isNaN(growthData.old) || parseInt(growthData.old) < 0 || parseInt(growthData.old) > 19) {
+      tempErrors.old = "Age must be between 0 and 19";
+    }
 
-    // Gửi POST request lên API
-    const response = await axios.post(
-      `http://localhost:5200/api/growth-records/create`,
-      newRecord,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    if (!growthData.weight) {
+      tempErrors.weight = "Weight is required";
+    } else if (isNaN(growthData.weight) || parseFloat(growthData.weight) <= 0) {
+      tempErrors.weight = "Weight must be a positive number";
+    }
+
+    if (!growthData.height) {
+      tempErrors.height = "Height is required";
+    } else if (isNaN(growthData.height) || parseFloat(growthData.height) <= 0) {
+      tempErrors.height = "Height must be a positive number";
+    }
+
+    if (!growthData.headCircumference) {
+      tempErrors.headCircumference = "Head Circumference is required";
+    } else if (isNaN(growthData.headCircumference) || parseFloat(growthData.headCircumference) <= 0) {
+      tempErrors.headCircumference = "Head Circumference must be a positive number";
+    }
+
+    if (!growthData.upperArmCircumference) {
+      tempErrors.upperArmCircumference = "Upper Arm Circumference is required";
+    } else if (isNaN(growthData.upperArmCircumference) || parseFloat(growthData.upperArmCircumference) <= 0) {
+      tempErrors.upperArmCircumference = "Upper Arm Circumference must be a positive number";
+    }
+
+    if (!growthData.recordedByUser.trim()) {
+      tempErrors.recordedByUser = "Recorded By is required";
+    } else if (growthData.recordedByUser.length < 2) {
+      tempErrors.recordedByUser = "Recorded By must be at least 2 characters long";
+    }
+
+    setFormErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0; // Returns true if no errors
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return; // Stop if validation fails
+    }
+
+    try {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+
+      if (!userId || !token) {
+        setErrorMessage("User ID or token not found. Please log in again.");
+        return;
       }
-    );
 
-    // Cập nhật danh sách growthRecords với bản ghi mới
-    setGrowthRecords((prevRecords) => {
-      const updatedRecords = [...prevRecords, response.data].sort((a, b) => a.month - b.month);
-      return updatedRecords;
-    });
+      const newRecord = {
+        childId: childId,
+        month: parseInt(growthData.month),
+        old: parseInt(growthData.old),
+        weight: parseFloat(growthData.weight),
+        height: parseFloat(growthData.height),
+        headCircumference: parseFloat(growthData.headCircumference),
+        upperArmCircumference: parseFloat(growthData.upperArmCircumference),
+        recordedByUser: growthData.recordedByUser,
+        notes: growthData.notes,
+      };
 
-    // Reset form và đóng modal
-    setGrowthData({
-      weight: "",
-      height: "",
-      headCircumference: "",
-      upperArmCircumference: "",
-      month: "",
-      notes: "",
-      recordedByUser: "",
-      old: "",
-    });
-    setIsModalOpen(false);
-    setErrorMessage(""); // Xóa thông báo lỗi nếu có
-  } catch (error) {
-    console.error("❌ Error adding growth record:", error);
-    setErrorMessage("Failed to add growth record. Please try again.");
-  }
-};
+      const response = await axios.post(
+        `http://localhost:5200/api/growth-records/create`,
+        newRecord,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setGrowthRecords((prevRecords) => {
+        const updatedRecords = [...prevRecords, response.data].sort((a, b) => a.month - b.month);
+        return updatedRecords;
+      });
+
+      setGrowthData({
+        weight: "",
+        height: "",
+        headCircumference: "",
+        upperArmCircumference: "",
+        month: "",
+        notes: "",
+        recordedByUser: "",
+        old: "",
+      });
+      setIsModalOpen(false);
+      setErrorMessage("");
+    } catch (error) {
+      console.error("❌ Error adding growth record:", error);
+      setErrorMessage("Failed to add growth record. Please try again.");
+    }
+  };
 
   return (
     <>
@@ -223,44 +275,100 @@ const UpdateGrowthMetrics = () => {
             <div className="modal-overlay">
               <div className="modal-content">
                 <h3>Add New Record</h3>
-                <form className="modal-form">
+                <form className="modal-form" onSubmit={handleSubmit}>
                   <div className="form-container">
                     <div className="form-group">
                       <label>Month (1-12):</label>
-                      <input type="number" name="month" value={growthData.month} onChange={handleChange} min="1" max="12" required />
+                      <input
+                        type="number"
+                        name="month"
+                        value={growthData.month}
+                        onChange={handleChange}
+                        min="1"
+                        max="12"
+                        required
+                      />
+                      {formErrors.month && <span className="form-error">{formErrors.month}</span>}
                     </div>
                     <div className="form-group">
                       <label>Age (years):</label>
-                      <input type="number" name="old" value={growthData.old} onChange={handleChange} required />
+                      <input
+                        type="number"
+                        name="old"
+                        value={growthData.old}
+                        onChange={handleChange}
+                        required
+                      />
+                      {formErrors.old && <span className="form-error">{formErrors.old}</span>}
                     </div>
                     <div className="form-group">
                       <label>Weight (kg):</label>
-                      <input type="number" name="weight" value={growthData.weight} onChange={handleChange} required />
+                      <input
+                        type="number"
+                        name="weight"
+                        value={growthData.weight}
+                        onChange={handleChange}
+                        required
+                      />
+                      {formErrors.weight && <span className="form-error">{formErrors.weight}</span>}
                     </div>
                     <div className="form-group">
                       <label>Height (cm):</label>
-                      <input type="number" name="height" value={growthData.height} onChange={handleChange} required />
+                      <input
+                        type="number"
+                        name="height"
+                        value={growthData.height}
+                        onChange={handleChange}
+                        required
+                      />
+                      {formErrors.height && <span className="form-error">{formErrors.height}</span>}
                     </div>
                     <div className="form-group">
                       <label>Head Circumference (cm):</label>
-                      <input type="number" name="headCircumference" value={growthData.headCircumference} onChange={handleChange} required />
+                      <input
+                        type="number"
+                        name="headCircumference"
+                        value={growthData.headCircumference}
+                        onChange={handleChange}
+                        required
+                      />
+                      {formErrors.headCircumference && <span className="form-error">{formErrors.headCircumference}</span>}
                     </div>
                     <div className="form-group">
                       <label>Upper Arm Circumference (cm):</label>
-                      <input type="number" name="upperArmCircumference" value={growthData.upperArmCircumference} onChange={handleChange} required />
+                      <input
+                        type="number"
+                        name="upperArmCircumference"
+                        value={growthData.upperArmCircumference}
+                        onChange={handleChange}
+                        required
+                      />
+                      {formErrors.upperArmCircumference && <span className="form-error">{formErrors.upperArmCircumference}</span>}
                     </div>
                     <div className="form-group">
                       <label>Recorded By:</label>
-                      <input type="text" name="recordedByUser" value={growthData.recordedByUser} onChange={handleChange} required />
+                      <input
+                        type="text"
+                        name="recordedByUser"
+                        value={growthData.recordedByUser}
+                        onChange={handleChange}
+                        required
+                      />
+                      {formErrors.recordedByUser && <span className="form-error">{formErrors.recordedByUser}</span>}
                     </div>
                   </div>
                   <div className="form-group full-width">
                     <label>Notes:</label>
-                    <textarea name="notes" value={growthData.notes} onChange={handleChange} rows="3" />
+                    <textarea
+                      name="notes"
+                      value={growthData.notes}
+                      onChange={handleChange}
+                      rows="3"
+                    />
                   </div>
                   <div className="modal-buttons">
                     <button type="button" onClick={() => setIsModalOpen(false)} className="cancel-button">Cancel</button>
-                    <button type="submit" onClick={handleSubmit} className="submit-button">Submit</button>
+                    <button type="submit" className="submit-button">Submit</button>
                   </div>
                 </form>
               </div>
@@ -272,6 +380,7 @@ const UpdateGrowthMetrics = () => {
             <table className="growth-records-table">
               <thead>
                 <tr>
+                  <th>No</th>
                   <th>Age</th>
                   <th>Month</th>
                   <th>Weight</th>
@@ -281,10 +390,11 @@ const UpdateGrowthMetrics = () => {
                 </tr>
               </thead>
               <tbody>
-                {growthRecords.map((record) => {
+                {growthRecords.map((record, index) => {
                   const bmi = calculateBMI(record.weight, record.height);
                   return (
                     <tr key={record.recordId}>
+                      <td>{index + 1}</td>
                       <td>{record.old}</td>
                       <td>{record.month}</td>
                       <td>{record.weight}</td>

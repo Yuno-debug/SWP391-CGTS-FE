@@ -1,162 +1,256 @@
+/* Overlay bao phủ toàn màn hình */
 .payment-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-  }
-  
-  /* Khi modal mở, hiển thị overlay */
-  .payment-modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  /* Tăng độ tối để nổi bật modal */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Hiển thị overlay khi modal mở */
+.payment-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal chính */
+.payment-modal {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 420px;
+  /* Tăng nhẹ chiều rộng cho thoáng */
+  max-width: 90%;
+  /* Giới hạn tối đa trên mobile */
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  /* Đổ bóng mềm hơn */
+  transform: translateY(-50px);
+  /* Hiệu ứng trượt xuống xa hơn */
+  opacity: 0;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  /* Thêm thuộc tính để modal dài hơn */
+  min-height: 320px;
+  /* Tăng nhẹ chiều cao tối thiểu để chứa thêm dòng */
+  display: flex;
+  flex-direction: column;
+  /* Để các phần tử bên trong sắp xếp theo cột */
+}
+
+/* Hiệu ứng khi modal mở */
+.payment-modal-overlay.active .payment-modal {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Tiêu đề modal */
+.payment-modal h2 {
+  font-size: 2.0rem;
+  /* Tăng kích thước tiêu đề */
+  font-weight: bold;
+  /* Làm đậm tiêu đề */
+  color: #333;
+  /* Màu sắc tiêu đề */
+  margin-bottom: 20px;
+  /* Tăng khoảng cách bên dưới tiêu đề */
+}
+
+/* Chi tiết thanh toán */
+.payment-details {
+  margin: 20px 0;
+  text-align: left;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Font hiện đại */
+  flex-grow: 1;
+  /* Cho phép phần này mở rộng để modal dài hơn nếu cần */
+}
+
+.payment-details p {
+  margin-bottom: 10px;
+  /* Giảm khoảng cách giữa các dòng một chút */
+  font-size: 16px;
+  /* Điều chỉnh kích thước chữ */
+  color: #555;
+  /* Màu chữ nhẹ nhàng hơn */
+}
+
+.payment-details p strong {
+  font-weight: 600;
+  /* Đậm hơn một chút */
+  color: #222;
+}
+
+.payment-details p:last-child {
+  /* Style cho dòng Method */
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  color: #333;
+}
+
+.payment-details p:last-child img {
+  height: 20px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* Select thanh toán (nếu có) */
+select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  font-size: 15px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+select:focus {
+  border-color: #28a745;
+  /* Đồng bộ màu với nút thanh toán */
+  outline: none;
+}
+
+/* Nhóm nút */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  /* Khoảng cách giữa các nút */
+  margin-top: 25px;
+}
+
+/* Nút Hủy */
+.cancel-btn {
+  background: #e0e0e0;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  width: 48%;
+  font-size: 15px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.cancel-btn:hover {
+  background: #d1d1d1;
+}
+
+.cancel-btn:active {
+  transform: scale(0.98);
+  /* Hiệu ứng nhấn nhẹ */
+}
+
+/* Nút Thanh toán */
+.continue-btn {
+  background: #007bff;
+  /* Màu xanh dương */
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  width: 48%;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  display: flex;
+  /* Để căn logo và chữ */
+  align-items: center;
+  justify-content: center;
+}
+
+.continue-btn:hover:not(:disabled) {
+  background: #0153ab;
+}
+
+.continue-btn:disabled {
+  background: #b5e0b7;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.continue-btn:disabled::after {
+  content: " 🔄";
+  /* Icon loading */
+  font-size: 14px;
+}
+
+.continue-btn:active:not(:disabled) {
+  transform: scale(0.98);
+  /* Hiệu ứng nhấn */
+}
+
+.continue-btn img {
+  height: 20px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* Thông báo lỗi */
+.error-message {
+  color: #d32f2f;
+  font-size: 14px;
+  margin-top: 15px;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
   .payment-modal {
-    background: white;
+    width: 90%;
     padding: 20px;
     border-radius: 10px;
-    width: 400px;
-    text-align: center;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-    transform: translateY(-30px);
-    opacity: 0;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   }
-  
-  /* Khi modal mở, hiển thị với hiệu ứng pop-up */
-  .payment-modal-overlay.active .payment-modal {
-    transform: translateY(0);
-    opacity: 1;
+
+  .payment-details p {
+    font-size: 15px;
+    /* Điều chỉnh kích thước chữ nhỏ hơn */
+    margin-bottom: 8px;
+    /* Giảm khoảng cách dòng trên mobile */
   }
-  
-  /* Các style khác không thay đổi */
-  .payment-details, .payment-method {
-    margin: 15px 0;
+
+  .payment-row {
+    flex-direction: column;
+    gap: 5px;
     text-align: left;
   }
-  
-  .payment-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 5px 0;
-  }
-  
-  .payment-row span:first-child {
-    font-weight: bold;
-  }
-  
-  select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-  }
-  
+
   .button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
+    flex-direction: column;
+    gap: 10px;
   }
-  
-  .cancel-btn {
-    background: #ccc;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    width: 45%;
-    border-radius: 5px;
-    transition: background 0.2s;
-  }
-  
-  .cancel-btn:hover {
-    background: #b3b3b3;
-  }
-  
+
+  .cancel-btn,
   .continue-btn {
-    background: #28a745;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    width: 45%;
-    border-radius: 5px;
-    transition: background 0.2s;
-  }
-  
-  .continue-btn:hover:not(:disabled) {
-    background: #218838;
-  }
-  
-  .continue-btn:disabled {
-    background: #b5e0b7;
-    cursor: not-allowed;
-  }
-  
-  .continue-btn:disabled::after {
-    content: " 🔄";
-    font-size: 14px;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 14px;
-    margin-top: 10px;
-  }
-  
-  @media (max-width: 480px) {
-    .payment-modal {
-      width: 90%;
-      padding: 15px;
-    }
-    
-    .button-group {
-      flex-direction: column;
-    }
-  
-    .cancel-btn, .continue-btn {
-      width: 100%;
-      margin-top: 10px;
-    }
-  }
-  .payment-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+    padding: 14px;
   }
-  
-  .payment-modal {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 400px;
-    text-align: center;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-    transform: translateY(-30px);
+}
+
+/* Animation mượt mà hơn */
+@keyframes fadeIn {
+  from {
     opacity: 0;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transform: translateY(-50px);
   }
-  
-  /* Khi modal mở, áp dụng hiệu ứng */
-  .payment-modal-overlay.active .payment-modal {
-    transform: translateY(0);
+
+  to {
     opacity: 1;
+    transform: translateY(0);
   }
-  
+}

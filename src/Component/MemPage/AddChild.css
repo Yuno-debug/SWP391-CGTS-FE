@@ -12,13 +12,13 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
 }
 
 /* Main Content */
 .addchild-page-content {
   flex: 1;
   padding: 40px 20px;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 /* Page Wrapper */
@@ -26,8 +26,11 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 30px;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.9);
+  /* Semi-transparent white overlay */
   box-sizing: border-box;
+  border-radius: 15px;
+  /* Optional: Add rounded corners */
 }
 
 /* Page Title */
@@ -37,6 +40,14 @@ body {
   margin-bottom: 30px;
   text-align: center;
   font-weight: 600;
+}
+
+/* Welcome Message */
+.addchild-welcome-message {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 /* Container for the List of Children */
@@ -51,17 +62,18 @@ body {
 /* Child Card */
 .addchild-child-card {
   background: #fff;
-  padding: 15px;
+  padding: 10px;
   border-radius: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
   width: 200px;
-  height: 120px;
+  min-height: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .addchild-child-card:hover {
@@ -80,16 +92,20 @@ body {
   box-shadow: 0 8px 20px rgba(107, 72, 255, 0.4);
 }
 
-/* Nội dung trong Child Card */
-.addchild-child-card-content {
+/* Clickable Area in Child Card */
+.addchild-child-card-clickable-area {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
   height: 100%;
+  cursor: pointer;
+  padding-bottom: 5px;
+  position: relative;
 }
 
-/* Avatar trong Child Card */
+/* Avatar in Child Card */
 .addchild-child-card-avatar {
   width: 50px;
   height: 50px;
@@ -100,7 +116,7 @@ body {
   background-color: #f0f0f0;
 }
 
-/* Tên trong Child Card */
+/* Name in Child Card */
 .addchild-child-card-name {
   font-size: 16px;
   font-weight: 500;
@@ -110,9 +126,25 @@ body {
   max-width: 100%;
 }
 
-/* Khi card được chọn, đổi màu tên */
 .addchild-child-card-selected .addchild-child-card-name {
   color: white;
+}
+
+/* Alert Icon Wrapper */
+.addchild-alert-icon-wrapper {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  z-index: 2;
+  color: #6b48ff;
+}
+
+.addchild-alert-icon-wrapper:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Add Child Button */
@@ -149,41 +181,22 @@ body {
   font-weight: 500;
 }
 
-/* Small Add Button (Hidden) */
-.addchild-add-button-small {
-  display: none;
-}
-
-/* Empty State */
-.addchild-empty-state {
-  text-align: center;
-  margin-top: 50px;
+/* Display Area */
+.addchild-display-area {
+  margin-top: 30px;
   width: 100%;
-}
-
-.addchild-empty-illustration {
-  width: 300px;
-  height: auto;
-  margin-bottom: 20px;
-}
-
-.addchild-empty-state p {
-  font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 20px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Child Details Section */
 .addchild-child-details {
-  margin-top: 30px;
   background: #fff;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .addchild-child-details h3 {
@@ -247,65 +260,71 @@ body {
   transform: translateY(-2px);
 }
 
-/* Consultation Request Section */
-.addchild-consultation-section {
-  margin-top: 40px;
+/* Alerts Display Section */
+.addchild-child-alerts-display {
   background: #fff;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-.addchild-consultation-title {
+.addchild-child-alerts-display h3 {
   font-size: 22px;
   color: #1e3a8a;
-  margin-bottom: 10px;
-}
-
-.addchild-consultation-subtitle {
-  font-size: 16px;
-  color: #666;
   margin-bottom: 20px;
 }
 
-.addchild-consultation-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.addchild-child-alerts-display ul {
+  list-style: none;
+  padding: 0;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-.addchild-textarea {
-  resize: vertical;
-  min-height: 120px;
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 15px;
+.addchild-child-alerts-display .addchild-alert-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: #f9f9f9;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #ddd;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  font-size: 1em;
+  line-height: 1.5;
 }
 
-.addchild-textarea:focus {
-  border-color: #6b48ff;
-  box-shadow: 0 0 5px rgba(107, 72, 255, 0.3);
-  outline: none;
+.addchild-child-alerts-display .addchild-alert-content {
+  flex-grow: 1;
 }
 
-.addchild-form-success {
-  color: #28a745;
-  font-size: 14px;
-  margin-top: 10px;
-  text-align: center;
+.addchild-child-alerts-display .addchild-alert-item small {
+  color: #555;
+  display: block;
+  margin-top: 5px;
 }
 
-.addchild-consultation-actions {
-  display: flex;
-  justify-content: flex-end;
+.addchild-child-alerts-display .addchild-alert-unread {
+  background-color: #fff8e1;
+  border-left: 4px solid #ffc107;
+  padding-left: 12px;
+}
+
+.addchild-child-alerts-display .addchild-unread-indicator {
+  font-weight: bold;
+  color: #d9534f;
+  margin-left: 8px;
+}
+
+.addchild-mark-read-btn {
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.addchild-mark-read-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Modal Overlay */
@@ -455,12 +474,6 @@ body {
   gap: 5px;
   margin-top: 5px;
 }
-.addchild-welcome-message {
-  font-size: 1.2rem;
-  color: #555;
-  margin-bottom: 20px;
-  text-align: center;
-}
 
 /* Modal Actions */
 .addchild-modal-actions {
@@ -502,7 +515,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* Placeholder khi URL không hợp lệ */
+/* Placeholder for Invalid URLs */
 .addchild-child-card-avatar[src=""],
 .addchild-child-avatar[src=""],
 .addchild-avatar-preview img[src=""] {
@@ -533,7 +546,7 @@ body {
 
   .addchild-child-card {
     width: 150px;
-    height: 100px;
+    min-height: 100px;
   }
 
   .addchild-child-card-avatar {
@@ -571,6 +584,20 @@ body {
     margin-bottom: 15px;
   }
 
+  .addchild-child-alerts-display {
+    padding: 20px;
+  }
+
+  .addchild-child-alerts-display .addchild-alert-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .addchild-mark-read-btn {
+    align-self: flex-end;
+  }
+
   .addchild-modal-box {
     padding: 20px;
     width: 90%;
@@ -592,13 +619,5 @@ body {
 
   .addchild-form-group {
     min-width: 100%;
-  }
-
-  .addchild-consultation-section {
-    padding: 20px;
-  }
-
-  .addchild-consultation-title {
-    font-size: 20px;
   }
 }

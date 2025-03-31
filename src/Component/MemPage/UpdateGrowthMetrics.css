@@ -485,3 +485,21 @@
     grid-template-columns: 1fr;
   }
 }
+.form-error {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+  display: block;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.modal-form input,
+.modal-form textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}

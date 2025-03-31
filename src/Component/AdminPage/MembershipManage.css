@@ -362,3 +362,14 @@ button:hover {
         font-size: 14px;
     }
 }
+.form-group input[type="text"] {
+    text-align: right;
+    /* Align numbers to the right */
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block;
+}

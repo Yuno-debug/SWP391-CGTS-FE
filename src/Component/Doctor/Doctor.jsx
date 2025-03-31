@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp, faBars, faStethoscope, faChartLine, faStar, faSignOutAlt, faUser, faHome, faEnvelope, faComment, faChartPie } from '@fortawesome/free-solid-svg-icons';
@@ -10,9 +10,10 @@ import ConsultationResponses from "./ConsultationResponses";
 import GrowthData from "./GrowthData";
 import RatingFeedback from "./RatingFeedback";
 import { AuthContext } from "../../Component/LoginPage/AuthContext";
+import DoctorProfile from "./DoctorProfile";
+import axios from "axios";
 
-// Updated profile image with the provided URL
-const profileImage = "https://lirp.cdn-website.com/md/dmip/dms3rep/multi/opt/medical-doctor-office-1920w.jpg";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5200";
 
 const DoctorPage = () => {
   const [selectedSection, setSelectedSection] = useState("dashboard");
@@ -23,9 +24,46 @@ const DoctorPage = () => {
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
+  const [doctorData, setDoctorData] = useState({
+    name: "John Doe", // Giá trị mặc định
+    hospital: "https://lirp.cdn-website.com/md/dmip/dms3rep/multi/opt/medical-doctor-office-1920w.jpg", // Ảnh mặc định
+  });
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const { handleLogout } = useContext(AuthContext);
+
+  // Hàm lấy dữ liệu bác sĩ từ API
+  useEffect(() => {
+    const fetchDoctorData = async () => {
+      try {
+        setLoading(true);
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+          console.error("No userId found in localStorage");
+          return;
+        }
+
+        const parsedUserId = Number(userId);
+        const response = await axios.get(`${API_URL}/api/Doctor`);
+        const doctors = response.data.$values;
+
+        const matchedDoctor = doctors.find((d) => Number(d.userId) === parsedUserId);
+        if (matchedDoctor) {
+          setDoctorData({
+            name: matchedDoctor.name || "Unknown Doctor",
+            hospital: matchedDoctor.hospital || "https://via.placeholder.com/150", // hospital là URL avatar
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching doctor data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctorData();
+  }, []);
 
   const handleLogoutAndRedirect = () => {
     handleLogout();
@@ -60,7 +98,7 @@ const DoctorPage = () => {
       case "feedback":
         return <RatingFeedback />;
       case "profile":
-        return <div><h1>Profile Page</h1></div>;
+        return <DoctorProfile />;
       default:
         return <DoctorDashboard />;
     }
@@ -81,14 +119,16 @@ const DoctorPage = () => {
         <div className="doctor-sidebar__profile">
           <div className="doctor-sidebar__profile-button">
             <img
-              src={profileImage}
+              src={doctorData.hospital} // Sử dụng hospital làm URL avatar
               alt="Profile"
               className="doctor-sidebar__profile-picture"
             />
-            <div className="doctor-sidebar__profile-info">
-              <div className="doctor-sidebar__profile-name">John Doe</div>
-              <div className="doctor-sidebar__profile-role">Doctor</div>
-            </div>
+            {!sidebarCollapsed && (
+              <div className="doctor-sidebar__profile-info">
+                <div className="doctor-sidebar__profile-name">{doctorData.name}</div>
+                <div className="doctor-sidebar__profile-role">Doctor</div>
+              </div>
+            )}
           </div>
         </div>
         <nav className="doctor-sidebar__nav">

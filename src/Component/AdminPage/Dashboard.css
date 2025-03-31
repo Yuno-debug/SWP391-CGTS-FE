@@ -109,3 +109,32 @@
 .cancel {
   background-color: red;
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 5px;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.pagination button:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+
+.pagination button.active {
+  background-color: #4bc0c0;
+  color: white;
+  border-color: #4bc0c0;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #f5f5f5;
+}

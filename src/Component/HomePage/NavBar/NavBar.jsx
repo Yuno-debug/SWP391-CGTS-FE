@@ -4,6 +4,7 @@ import { Bell } from "react-feather";
 import "./Navbar.css";
 import logo2 from "../../../assets/logo.png";
 import { AuthContext } from "../../LoginPage/AuthContext";
+import defaultAvatar from "../../../assets/userAvatar.svg"; // Import the default avatar
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -113,7 +114,7 @@ const Navbar = () => {
                   Add New Child
                 </NavLink>
                 <NavLink
-                  to="/ConsultationResponse"
+                  to="/ConsultationRequest"
                   className={({ isActive }) => (isActive ? "active-link" : "")}
                 >
                   Consultation Request
@@ -128,7 +129,7 @@ const Navbar = () => {
             )}
           </li>
         )}
-        
+        {isLoggedIn && (
           <li className="nav-menu__item" ref={doctorDropdownRef}>
             <div
               className="nav-menu__item-label"
@@ -150,13 +151,18 @@ const Navbar = () => {
               </div>
             )}
           </li>
+        )}
       </ul>
 
       <ul className="nav-right">
         {isLoggedIn ? (
           <li className="nav-user" ref={dropdownRef}>
             <div className="user-infor" onClick={() => setShowDropdown(!showDropdown)}>
-              <img src={avatar || "/defaultAvatar.jpg"} alt="User Avatar" className="navbar-avatar" />
+              <img
+                src={avatar || defaultAvatar} // Use defaultAvatar if avatar is not provided
+                alt="User Avatar"
+                className="navbar-avatar"
+              />
               <span className="user-name">{userName || "Guest"}</span>
               <span className="dropdown-arrow">{showDropdown ? "▲" : "▼"}</span>
             </div>

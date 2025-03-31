@@ -2,10 +2,12 @@
 .doctor-dashboard-container {
   padding: 40px;
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #f8fafc 0%, #e5e7eb 100%);
+  background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
   min-height: 100vh;
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 /* Header Section */
@@ -14,53 +16,66 @@
 }
 
 .doctor-dashboard-header-banner {
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
-  padding: 30px;
-  border-radius: 16px;
+  background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+  padding: 35px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 20px;
   color: #ffffff;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .doctor-dashboard-header-banner::before {
   content: '🏥';
-  /* Icon bệnh viện */
-  font-size: 28px;
-  margin-right: 10px;
+  font-size: 32px;
+  margin-right: 15px;
+}
+
+.doctor-dashboard-header-banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);
+  pointer-events: none;
 }
 
 .doctor-dashboard-header-banner:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-}
-
-.doctor-dashboard-header-icon {
-  font-size: 28px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
 .doctor-dashboard-header-text h1 {
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 36px;
+  font-weight: 800;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.5px;
 }
 
 .doctor-dashboard-header-text p {
   font-size: 18px;
   font-weight: 400;
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   opacity: 0.9;
 }
 
 .doctor-dashboard-motivational-quote {
   font-style: italic;
   font-size: 16px;
-  margin-top: 15px;
-  opacity: 0.85;
+  margin-top: 20px;
+  opacity: 0.8;
   transition: opacity 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 10px;
 }
 
 .doctor-dashboard-motivational-quote:hover {
@@ -73,40 +88,28 @@
 }
 
 .doctor-dashboard-quick-actions-section h3 {
-  font-size: 26px;
-  font-weight: 700;
-  color: #1e40af;
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e3a8a;
   margin-bottom: 25px;
   position: relative;
   display: inline-block;
-  padding-bottom: 8px;
-  transition: color 0.3s ease;
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #dbeafe, #f0f4f8);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .doctor-dashboard-quick-actions-section h3::before {
   content: '⚡';
-  /* Icon tia sét biểu thị hành động nhanh */
-  margin-right: 10px;
-}
-
-.doctor-dashboard-quick-actions-section h3::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 50%;
-  height: 3px;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
-  border-radius: 2px;
-  transition: width 0.3s ease;
+  margin-right: 12px;
+  font-size: 24px;
 }
 
 .doctor-dashboard-quick-actions-section h3:hover {
   color: #2563eb;
-}
-
-.doctor-dashboard-quick-actions-section h3:hover::after {
-  width: 100%;
+  transform: translateY(-3px);
 }
 
 .doctor-dashboard-quick-actions {
@@ -116,29 +119,29 @@
 }
 
 .doctor-dashboard-quick-action-button {
-  padding: 14px 28px;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  padding: 16px 32px;
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
   color: #ffffff;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   position: relative;
+  overflow: hidden;
 }
 
 .doctor-dashboard-quick-action-button::before {
   content: '➡️';
-  /* Icon mũi tên phải */
-  margin-right: 8px;
+  margin-right: 10px;
 }
 
 .doctor-dashboard-quick-action-button:hover {
-  background: linear-gradient(90deg, #2563eb, #3b82f6);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(90deg, #1e40af, #3b82f6);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Main Content */
@@ -149,171 +152,90 @@
   flex-wrap: wrap;
 }
 
-/* Doctor's Schedule Overview Section */
-.doctor-dashboard-schedule-overview-section {
+/* Consultation Chart Section */
+.doctor-dashboard-consultation-chart-section {
   flex: 2;
   background: #ffffff;
   padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  /* Đảm bảo nội dung xếp dọc */
+  min-height: 400px;
+  /* Tăng chiều cao tối thiểu để chứa biểu đồ lớn hơn */
 }
 
-.doctor-dashboard-schedule-overview-section:hover {
+.doctor-dashboard-consultation-chart-section:hover {
   transform: translateY(-5px);
 }
 
-.doctor-dashboard-schedule-overview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.doctor-dashboard-schedule-overview-header h3 {
+.doctor-dashboard-consultation-chart-section h3 {
   font-size: 26px;
   font-weight: 700;
-  color: #1e40af;
-  margin: 0;
-  position: relative;
-  padding: 6px 12px;
-  background: linear-gradient(90deg, #dbeafe, #eff6ff);
-  border-radius: 8px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.3s ease;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+  padding-left: 15px;
+  border-left: 4px solid #3b82f6;
 }
 
-.doctor-dashboard-schedule-overview-header h3::before {
-  content: '📅';
-  /* Icon lịch */
-  margin-right: 10px;
-}
-
-.doctor-dashboard-schedule-overview-header h3:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
-  color: #2563eb;
-}
-
-.doctor-dashboard-view-all-button {
-  padding: 12px 24px;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
-  color: #ffffff;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.doctor-dashboard-view-all-button::before {
-  content: '👁️';
-  /* Icon mắt */
-  margin-right: 8px;
-}
-
-.doctor-dashboard-view-all-button:hover {
-  background: linear-gradient(90deg, #2563eb, #3b82f6);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-}
-
-.doctor-dashboard-schedule-table {
+.doctor-dashboard-consultation-chart-container {
+  height: 100%;
+  /* Chiếm toàn bộ chiều cao còn lại của section */
+  min-height: 350px;
+  /* Tăng chiều cao tối thiểu của biểu đồ */
   width: 100%;
-  border-collapse: collapse;
-}
-
-.doctor-dashboard-schedule-table th,
-.doctor-dashboard-schedule-table td {
-  padding: 16px 20px;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.doctor-dashboard-schedule-table th {
-  font-size: 14px;
-  font-weight: 500;
-  color: #6b7280;
-  text-transform: uppercase;
-  background: #f9fafb;
-}
-
-.doctor-dashboard-schedule-table td {
-  font-size: 16px;
-  font-weight: 400;
-  color: #1f2937;
-}
-
-.doctor-dashboard-schedule-table tbody tr {
-  background: #ffffff;
-  transition: all 0.3s ease;
-}
-
-.doctor-dashboard-schedule-table tbody tr:nth-child(even) {
-  background: #f9fafb;
-}
-
-.doctor-dashboard-schedule-table-row {
-  cursor: pointer;
-}
-
-.doctor-dashboard-schedule-table-row:hover {
-  background: #f1f5f9;
-  transform: scale(1.01);
-}
-
-.doctor-dashboard-schedule-table-row:active {
-  transform: scale(0.98);
-  background: #e2e8f0;
+  /* Đảm bảo biểu đồ chiếm hết chiều ngang */
+  position: relative;
+  margin: 0;
+  /* Loại bỏ margin dư thừa */
+  padding: 0;
+  /* Loại bỏ padding dư thừa */
 }
 
 /* Stats Grid */
 .doctor-dashboard-stats-grid {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 25px;
 }
 
 .doctor-dashboard-stat-card {
   background: #ffffff;
-  padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   text-align: center;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
 }
 
 .doctor-dashboard-stat-card::before {
   content: '📊';
-  /* Icon biểu đồ */
   display: block;
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 28px;
+  margin-bottom: 15px;
   color: #3b82f6;
 }
 
 .doctor-dashboard-stat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
 .doctor-dashboard-stat-card h4 {
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
   color: #6b7280;
   margin-bottom: 15px;
 }
 
 .doctor-dashboard-stat-value {
-  font-size: 28px;
-  font-weight: 700;
-  color: #1e40af;
+  font-size: 32px;
+  font-weight: 800;
+  color: #1e3a8a;
 }
 
 /* Progress Tracker Section */
@@ -322,39 +244,39 @@
 }
 
 .doctor-dashboard-progress-section h3 {
-  font-size: 26px;
-  font-weight: 700;
-  color: #1e40af;
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e3a8a;
   margin-bottom: 25px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  position: relative;
-  display: inline-block;
-  transition: color 0.3s ease;
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #dbeafe, #f0f4f8);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .doctor-dashboard-progress-section h3::before {
   content: '📈';
-  /* Icon biểu đồ tăng trưởng */
   margin-right: 12px;
   font-size: 24px;
 }
 
 .doctor-dashboard-progress-section h3:hover {
   color: #2563eb;
+  transform: translateY(-3px);
 }
 
 .doctor-dashboard-progress-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 25px;
 }
 
 .doctor-dashboard-progress-item {
   background: #ffffff;
   padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
 
@@ -364,36 +286,35 @@
 
 .doctor-dashboard-progress-label {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   color: #6b7280;
   margin-bottom: 15px;
-  position: relative;
 }
 
 .doctor-dashboard-progress-label::before {
   content: '✅';
-  /* Icon checkmark */
-  margin-right: 8px;
+  margin-right: 10px;
 }
 
 .doctor-dashboard-progress-bar {
   background: #e5e7eb;
-  border-radius: 14px;
-  height: 14px;
+  border-radius: 20px;
+  height: 16px;
   overflow: hidden;
   margin-bottom: 10px;
 }
 
 .doctor-dashboard-progress-fill {
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
   height: 100%;
-  transition: width 0.5s ease;
+  transition: width 0.6s ease;
 }
 
 .doctor-dashboard-progress-value {
   font-size: 14px;
-  color: #1f2937;
+  color: #1e3a8a;
   text-align: right;
+  font-weight: 600;
 }
 
 /* Bottom Section */
@@ -408,8 +329,8 @@
   flex: 1;
   background: #ffffff;
   padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
 
@@ -420,51 +341,40 @@
 .doctor-dashboard-calendar-section h3 {
   font-size: 26px;
   font-weight: 700;
-  color: #1e40af;
+  color: #1e3a8a;
   margin-bottom: 25px;
-  position: relative;
-  padding-left: 20px;
+  padding-left: 15px;
+  border-left: 4px solid #3b82f6;
   transition: color 0.3s ease;
 }
 
 .doctor-dashboard-calendar-section h3::before {
   content: '📆';
-  /* Icon lịch khác */
   margin-right: 10px;
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 80%;
 }
 
 .doctor-dashboard-calendar-section h3:hover {
   color: #2563eb;
 }
 
-.doctor-dashboard-calendar {
-  width: 100%;
-}
-
 .doctor-dashboard-calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .doctor-dashboard-calendar-nav-button {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
   color: #3b82f6;
   transition: color 0.3s ease;
 }
 
 .doctor-dashboard-calendar-nav-button:hover {
-  color: #2563eb;
+  color: #1e40af;
 }
 
 .doctor-dashboard-calendar-days {
@@ -473,13 +383,13 @@
   text-align: center;
   font-size: 14px;
   color: #6b7280;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .doctor-dashboard-calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  gap: 12px;
   text-align: center;
 }
 
@@ -487,9 +397,8 @@
   padding: 12px;
   border-radius: 50%;
   font-size: 16px;
-  color: #1f2937;
+  color: #1e3a8a;
   cursor: pointer;
-  position: relative;
   transition: background 0.3s ease, color 0.3s ease;
 }
 
@@ -504,19 +413,14 @@
 }
 
 .doctor-dashboard-calendar-day-selected {
-  background: #2563eb;
+  background: #1e40af;
   color: #ffffff;
-}
-
-.doctor-dashboard-calendar-day-has-event {
-  position: relative;
 }
 
 .doctor-dashboard-calendar-day-has-event::after {
   content: '🔔';
-  /* Icon chuông thay cho chấm tròn */
   position: absolute;
-  bottom: 3px;
+  bottom: 2px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 12px;
@@ -530,30 +434,24 @@
 .doctor-dashboard-calendar-events h4 {
   font-size: 20px;
   font-weight: 600;
-  color: #1e40af;
+  color: #1e3a8a;
   margin-bottom: 15px;
-  transition: color 0.3s ease;
 }
 
 .doctor-dashboard-calendar-events h4::before {
   content: '📌';
-  /* Icon ghim */
-  margin-right: 8px;
-}
-
-.doctor-dashboard-calendar-events h4:hover {
-  color: #2563eb;
+  margin-right: 10px;
 }
 
 .doctor-dashboard-calendar-events ul {
-  list-style: none;
   padding: 0;
+  list-style: none;
 }
 
 .doctor-dashboard-calendar-events li {
   font-size: 16px;
-  color: #1f2937;
-  margin-bottom: 10px;
+  color: #1e3a8a;
+  margin-bottom: 12px;
 }
 
 /* User Table Section */
@@ -561,8 +459,8 @@
   flex: 2;
   background: #ffffff;
   padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
 
@@ -571,27 +469,25 @@
 }
 
 .doctor-dashboard-user-table-section h3 {
-  font-size: 26px;
-  font-weight: 700;
-  color: #1e40af;
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e3a8a;
   margin-bottom: 25px;
-  position: relative;
-  display: inline-block;
-  padding: 6px 18px;
-  border: 2px solid #3b82f6;
-  border-radius: 10px;
-  transition: background 0.3s ease, color 0.3s ease;
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #dbeafe, #f0f4f8);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .doctor-dashboard-user-table-section h3::before {
   content: '👥';
-  /* Icon nhóm người */
-  margin-right: 10px;
+  margin-right: 12px;
 }
 
 .doctor-dashboard-user-table-section h3:hover {
-  background: #dbeafe;
   color: #2563eb;
+  transform: translateY(-3px);
 }
 
 .doctor-dashboard-user-table {
@@ -601,14 +497,14 @@
 
 .doctor-dashboard-user-table th,
 .doctor-dashboard-user-table td {
-  padding: 16px 20px;
+  padding: 18px 20px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
 }
 
 .doctor-dashboard-user-table th {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: #6b7280;
   text-transform: uppercase;
   background: #f9fafb;
@@ -617,30 +513,19 @@
 .doctor-dashboard-user-table td {
   font-size: 16px;
   font-weight: 400;
-  color: #1f2937;
+  color: #1e3a8a;
 }
 
 .doctor-dashboard-user-table tbody tr {
-  background: #ffffff;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .doctor-dashboard-user-table tbody tr:nth-child(even) {
   background: #f9fafb;
 }
 
-.doctor-dashboard-user-table-row {
-  cursor: pointer;
-}
-
 .doctor-dashboard-user-table-row:hover {
-  background: #f1f5f9;
-  transform: scale(1.01);
-}
-
-.doctor-dashboard-user-table-row:active {
-  transform: scale(0.98);
-  background: #e2e8f0;
+  background: #dbeafe;
 }
 
 /* Sidebar Section */
@@ -655,8 +540,8 @@
 .doctor-dashboard-profile-card {
   background: #ffffff;
   padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: transform 0.3s ease;
 }
@@ -666,51 +551,46 @@
 }
 
 .doctor-dashboard-profile-photo {
-  width: 100px;
-  height: 100px;
-  background: #e5e7eb;
+  width: 110px;
+  height: 110px;
+  background: linear-gradient(135deg, #dbeafe, #e5e7eb);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 15px;
+  margin: 0 auto 20px;
   font-size: 50px;
   transition: background 0.3s ease;
 }
 
 .doctor-dashboard-profile-card:hover .doctor-dashboard-profile-photo {
-  background: #dbeafe;
+  background: #3b82f6;
+  color: #ffffff;
 }
 
 .doctor-dashboard-profile-card h4 {
-  font-size: 22px;
-  font-weight: 600;
-  color: #1e40af;
-  margin: 0 0 10px;
-  transition: color 0.3s ease;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin: 0 0 15px;
 }
 
 .doctor-dashboard-profile-card h4::before {
   content: '👨‍⚕️';
-  /* Icon bác sĩ */
   margin-right: 10px;
-}
-
-.doctor-dashboard-profile-card h4:hover {
-  color: #2563eb;
 }
 
 .doctor-dashboard-profile-card p {
   font-size: 16px;
   font-weight: 400;
   color: #6b7280;
-  margin: 0 0 15px;
+  margin: 0 0 20px;
 }
 
 .doctor-dashboard-profile-stats {
   display: flex;
   justify-content: space-around;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .doctor-dashboard-profile-stat {
@@ -724,17 +604,17 @@
 }
 
 .doctor-dashboard-stat-value {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e3a8a;
 }
 
 /* Clock Widget */
 .doctor-dashboard-clock-widget {
   background: #ffffff;
   padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: transform 0.3s ease;
 }
@@ -746,25 +626,19 @@
 .doctor-dashboard-clock-widget h3 {
   font-size: 20px;
   font-weight: 600;
-  color: #1e40af;
+  color: #1e3a8a;
   margin-bottom: 15px;
-  transition: color 0.3s ease;
 }
 
 .doctor-dashboard-clock-widget h3::before {
   content: '⏰';
-  /* Icon đồng hồ */
   margin-right: 10px;
 }
 
-.doctor-dashboard-clock-widget h3:hover {
-  color: #2563eb;
-}
-
 .doctor-dashboard-clock-widget p {
-  font-size: 22px;
-  font-weight: 500;
-  color: #1f2937;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e3a8a;
   margin: 0;
 }
 
@@ -772,8 +646,8 @@
 .doctor-dashboard-weather-widget {
   background: #ffffff;
   padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
 
@@ -784,35 +658,23 @@
 .doctor-dashboard-weather-widget h3 {
   font-size: 20px;
   font-weight: 600;
-  color: #1e40af;
+  color: #1e3a8a;
   margin-bottom: 15px;
-  transition: color 0.3s ease;
 }
 
 .doctor-dashboard-weather-widget h3::before {
   content: '☀️';
-  /* Icon mặt trời */
   margin-right: 10px;
-}
-
-.doctor-dashboard-weather-widget h3:hover {
-  color: #2563eb;
-}
-
-.doctor-dashboard-weather-location {
-  margin-bottom: 15px;
 }
 
 .doctor-dashboard-weather-location select {
   width: 100%;
   padding: 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
   font-size: 16px;
   background: url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>') no-repeat right 15px center;
-  background-size: 22px;
-  padding-right: 45px;
-  appearance: none;
+  background-size: 20px;
   transition: border-color 0.3s ease;
 }
 
@@ -823,25 +685,25 @@
 .doctor-dashboard-weather-content {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 }
 
 .doctor-dashboard-weather-icon {
-  font-size: 28px;
+  font-size: 32px;
 }
 
 .doctor-dashboard-weather-details p {
   margin: 0;
   font-size: 16px;
-  color: #1f2937;
+  color: #1e3a8a;
 }
 
 /* Quote Section */
 .doctor-dashboard-quote-section {
   background: #ffffff;
   padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
 
@@ -852,33 +714,27 @@
 .doctor-dashboard-quote-section h3 {
   font-size: 20px;
   font-weight: 600;
-  color: #1e40af;
+  color: #1e3a8a;
   margin-bottom: 15px;
-  transition: color 0.3s ease;
 }
 
 .doctor-dashboard-quote-section h3::before {
   content: '💬';
-  /* Icon trò chuyện */
   margin-right: 10px;
-}
-
-.doctor-dashboard-quote-section h3:hover {
-  color: #2563eb;
 }
 
 .doctor-dashboard-quote-text {
   font-size: 16px;
   font-style: italic;
-  color: #1f2937;
+  color: #1e3a8a;
 }
 
 /* Tips Section */
 .doctor-dashboard-tips-section {
   background: #ffffff;
   padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
 
@@ -889,19 +745,13 @@
 .doctor-dashboard-tips-section h3 {
   font-size: 20px;
   font-weight: 600;
-  color: #1e40af;
+  color: #1e3a8a;
   margin-bottom: 15px;
-  transition: color 0.3s ease;
 }
 
 .doctor-dashboard-tips-section h3::before {
   content: '💡';
-  /* Icon bóng đèn */
   margin-right: 10px;
-}
-
-.doctor-dashboard-tips-section h3:hover {
-  color: #2563eb;
 }
 
 .doctor-dashboard-tips-section ul {
@@ -911,15 +761,14 @@
 
 .doctor-dashboard-tips-section li {
   font-size: 16px;
-  color: #1f2937;
+  color: #1e3a8a;
   margin-bottom: 15px;
+  padding-left: 25px;
   position: relative;
-  padding-left: 20px;
 }
 
 .doctor-dashboard-tips-section li::before {
   content: '✔️';
-  /* Icon check thay cho chấm tròn */
   position: absolute;
   left: 0;
   color: #3b82f6;
@@ -935,48 +784,21 @@
   color: #6b7280;
 }
 
-.doctor-dashboard-pagination-info {
-  font-weight: 500;
-}
-
-.doctor-dashboard-pagination-buttons {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
 .doctor-dashboard-pagination-buttons button {
-  padding: 10px 16px;
+  padding: 12px 20px;
   border: none;
   background: #e5e7eb;
-  color: #1f2937;
+  color: #1e3a8a;
   font-size: 16px;
-  font-weight: 500;
-  border-radius: 10px;
+  font-weight: 600;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
-}
-
-.doctor-dashboard-pagination-buttons button:first-child::before {
-  content: '⬅️';
-  /* Icon mũi tên trái */
-  margin-right: 8px;
-}
-
-.doctor-dashboard-pagination-buttons button:last-child::after {
-  content: '➡️';
-  /* Icon mũi tên phải */
-  margin-left: 8px;
 }
 
 .doctor-dashboard-pagination-buttons button:hover:not(.doctor-dashboard-pagination-button-disabled) {
-  background: #d1d5db;
-  transform: translateY(-3px);
-}
-
-.doctor-dashboard-pagination-buttons button:active:not(.doctor-dashboard-pagination-button-disabled) {
-  transform: scale(0.95);
+  background: #3b82f6;
+  color: #ffffff;
 }
 
 .doctor-dashboard-pagination-button-disabled {
@@ -986,11 +808,11 @@
 }
 
 .doctor-dashboard-current-page {
-  padding: 10px 16px;
-  background: #3b82f6;
+  padding: 12px 20px;
+  background: #1e40af;
   color: #ffffff;
-  border-radius: 10px;
-  font-weight: 500;
+  border-radius: 12px;
+  font-weight: 600;
 }
 
 /* Error Message */
@@ -999,9 +821,9 @@
   padding: 30px;
   background: #fee2e2;
   color: #dc2626;
-  border-radius: 16px;
+  border-radius: 20px;
   margin-top: 30px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 /* Animations */
@@ -1018,7 +840,7 @@
 @keyframes doctorDashboardSlideUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
   }
 
   to {
@@ -1027,76 +849,48 @@
   }
 }
 
-@keyframes doctorDashboardSlideLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes doctorDashboardSlideRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
 .doctor-dashboard-animate-fade-in {
-  animation: doctorDashboardFadeIn 0.5s ease forwards;
+  animation: doctorDashboardFadeIn 0.6s ease forwards;
 }
 
 .doctor-dashboard-animate-slide-up {
-  animation: doctorDashboardSlideUp 0.5s ease forwards;
-}
-
-.doctor-dashboard-animate-slide-left {
-  animation: doctorDashboardSlideLeft 0.5s ease forwards;
-}
-
-.doctor-dashboard-animate-slide-right {
-  animation: doctorDashboardSlideRight 0.5s ease forwards;
+  animation: doctorDashboardSlideUp 0.6s ease forwards;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
-  .doctor-dashboard-main {
-    flex-direction: column;
-  }
 
-  .doctor-dashboard-schedule-overview-section,
-  .doctor-dashboard-stats-grid {
-    flex: 1;
-  }
-
+  .doctor-dashboard-main,
   .doctor-dashboard-bottom {
     flex-direction: column;
   }
 
+  .doctor-dashboard-consultation-chart-section,
+  .doctor-dashboard-stats-grid,
   .doctor-dashboard-calendar-section,
   .doctor-dashboard-user-table-section,
   .doctor-dashboard-sidebar-section {
     flex: 1;
   }
+
+  .doctor-dashboard-consultation-chart-section {
+    min-height: 350px;
+  }
+
+  .doctor-dashboard-consultation-chart-container {
+    min-height: 300px;
+  }
 }
 
 @media (max-width: 768px) {
   .doctor-dashboard-container {
-    padding: 25px;
+    padding: 20px;
   }
 
   .doctor-dashboard-header-banner {
     flex-direction: column;
     text-align: center;
+    padding: 25px;
   }
 
   .doctor-dashboard-quick-actions {
@@ -1107,43 +901,40 @@
     width: 100%;
   }
 
-  .doctor-dashboard-stats-grid {
+  .doctor-dashboard-stats-grid,
+  .doctor-dashboard-progress-grid {
     grid-template-columns: 1fr;
   }
 
-  .doctor-dashboard-progress-grid {
-    grid-template-columns: 1fr;
+  .doctor-dashboard-consultation-chart-section {
+    min-height: 300px;
+  }
+
+  .doctor-dashboard-consultation-chart-container {
+    min-height: 250px;
   }
 }
 
 @media (max-width: 480px) {
   .doctor-dashboard-header-text h1 {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .doctor-dashboard-header-text p {
-    font-size: 15px;
+    font-size: 16px;
   }
 
-  .doctor-dashboard-calendar-day {
-    padding: 10px;
-    font-size: 14px;
+  .doctor-dashboard-quick-actions-section h3,
+  .doctor-dashboard-progress-section h3,
+  .doctor-dashboard-user-table-section h3 {
+    font-size: 24px;
   }
 
-  .doctor-dashboard-user-table th,
-  .doctor-dashboard-user-table td {
-    padding: 12px;
-    font-size: 14px;
+  .doctor-dashboard-consultation-chart-section {
+    min-height: 250px;
   }
 
-  .doctor-dashboard-schedule-table th,
-  .doctor-dashboard-schedule-table td {
-    padding: 12px;
-    font-size: 13px;
-  }
-
-  .doctor-dashboard-pagination {
-    flex-direction: column;
-    gap: 15px;
+  .doctor-dashboard-consultation-chart-container {
+    min-height: 200px;
   }
 }

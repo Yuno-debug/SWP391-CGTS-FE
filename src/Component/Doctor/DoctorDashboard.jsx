@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import './DoctorDashboard.css';
+
+// Register ChartJS components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 // Weather Icon Component
 const WeatherIcon = ({ condition }) => {
@@ -24,7 +29,7 @@ const DoctorDashboard = () => {
   const [totalChildren, setTotalChildren] = useState(0);
   const [totalConsultationRequests, setTotalConsultationRequests] = useState(0);
   const [totalConsultationResponses, setTotalConsultationResponses] = useState(0);
-  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -47,7 +52,15 @@ const DoctorDashboard = () => {
   // Clock state
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // Mock weather data (thay thế bằng API thực nếu có)
+  // Chart state
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
+  const [requestsByMonth, setRequestsByMonth] = useState({});
+  const [responsesByMonth, setResponsesByMonth] = useState({});
+
+  // Mock weather data
   const mockWeatherData = {
     'Ho Chi Minh City': { condition: 'Sunny', temperature: 24 },
     'Hanoi': { condition: 'Cloudy', temperature: 20 },
@@ -55,14 +68,100 @@ const DoctorDashboard = () => {
     'Singapore': { condition: 'Stormy', temperature: 26 },
   };
 
-  // Mock schedule data (thay thế bằng API thực nếu có)
-  const doctorSchedule = [
-    { id: 1, time: "9:00 AM", patient: "John Smith", type: "In-Person Visit" },
-    { id: 2, time: "10:30 AM", patient: "Emma Johnson", type: "Online Consultation" },
-    { id: 3, time: "1:00 PM", patient: "Michael Brown", type: "In-Person Visit" },
-    { id: 4, time: "3:00 PM", patient: "Sarah Davis", type: "Follow-Up Call" },
-    { id: 5, time: "4:30 PM", patient: "David Wilson", type: "Online Consultation" },
-  ];
+  // Chart options
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          font: {
+            size: 18, // Tăng kích thước font của legend
+            weight: 'bold', // Làm đậm
+          },
+        },
+      },
+      title: {
+        display: true,
+        text: 'Consultation Statistics by Month',
+        font: {
+          size: 24, // Tăng kích thước font của tiêu đề
+          weight: 'bold', // Làm đậm
+        },
+        color: '#1e3a8a', // Màu chữ đồng bộ với giao diện
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Count',
+          font: {
+            size: 18, // Tăng kích thước font của nhãn trục Y
+            weight: 'bold', // Làm đậm
+          },
+          color: '#1e3a8a',
+        },
+        ticks: {
+          font: {
+            size: 14, // Tăng kích thước font của số trên trục Y
+            weight: 'bold', // Làm đậm
+          },
+          color: '#1e3a8a',
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Month-Year',
+          font: {
+            size: 18, // Tăng kích thước font của nhãn trục X
+            weight: 'bold', // Làm đậm
+          },
+          color: '#1e3a8a',
+        },
+        ticks: {
+          font: {
+            size: 14, // Tăng kích thước font của nhãn tháng trên trục X
+            weight: 'bold', // Làm đậm
+          },
+          color: '#1e3a8a',
+        },
+      },
+    },
+  };
+
+  // Helper function to group data by month-year
+  const groupByMonthYear = (items, dateKey) => {
+    const grouped = {};
+    if (!Array.isArray(items)) {
+      console.error(`groupByMonthYear: items is not an array, received:`, items);
+      return grouped;
+    }
+    items.forEach((item) => {
+      const date = new Date(item[dateKey]);
+      if (isNaN(date.getTime())) {
+        console.warn(`Invalid date for ${dateKey} in item:`, item);
+        return;
+      }
+      const monthYear = date.toLocaleString('default', { month: 'short', year: 'numeric' });
+      grouped[monthYear] = (grouped[monthYear] || 0) + 1;
+    });
+    return grouped;
+  };
+
+  // Generate all months for the current year
+  const generateAllMonths = (year) => {
+    const months = [];
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(year, i, 1);
+      const monthYear = date.toLocaleString('default', { month: 'short', year: 'numeric' });
+      months.push(monthYear);
+    }
+    return months;
+  };
 
   // Update weather when location changes
   const handleWeatherLocationChange = (e) => {
@@ -80,7 +179,6 @@ const DoctorDashboard = () => {
     const timer = setInterval(() => {
       const now = new Date();
       setCurrentTime(now);
-      // Chỉ cập nhật currentDate và selectedDate khi ngày thay đổi
       if (
         now.getDate() !== currentDate.getDate() ||
         now.getMonth() !== currentDate.getMonth() ||
@@ -102,20 +200,18 @@ const DoctorDashboard = () => {
     }
   };
 
-  // Gộp tất cả các API gọi vào một hàm duy nhất
   const fetchAllData = async () => {
     setLoading(true);
     setError(null);
     const token = localStorage.getItem("token");
     if (!token) {
       setError("No authorization token found. Redirecting to login...");
-      setTimeout(() => navigate("/login"), 3000); // Tăng thời gian hiển thị lỗi lên 3 giây
+      setTimeout(() => navigate("/login"), 3000);
       setLoading(false);
       return;
     }
 
     try {
-      // Gọi tất cả API song song để tăng hiệu suất
       const [
         growthRecordsResponse,
         childrenResponse,
@@ -140,40 +236,48 @@ const DoctorDashboard = () => {
         }),
       ]);
 
-      // Xử lý totalGrowthRecords
-      if (typeof growthRecordsResponse.data === "number") {
-        setTotalGrowthRecords(growthRecordsResponse.data);
-      } else if (growthRecordsResponse.data?.totalGrowthRecords !== undefined) {
-        setTotalGrowthRecords(growthRecordsResponse.data.totalGrowthRecords);
-      } else if (growthRecordsResponse.data?.$values?.[0]?.count !== undefined) {
-        setTotalGrowthRecords(growthRecordsResponse.data.$values[0].count);
-      } else {
-        setTotalGrowthRecords(0);
-      }
+      const requests = consultationRequestsResponse.data?.data?.$values || [];
+      const responses = consultationResponsesResponse.data?.data?.$values || [];
 
-      // Xử lý totalChildren
+      console.log('Requests:', requests);
+      console.log('Responses:', responses);
+
+      // Group data by month-year
+      const requestsGrouped = groupByMonthYear(requests, 'requestDate');
+      const responsesGrouped = groupByMonthYear(responses, 'responseDate');
+
+      // Generate all months for the current year
+      const currentYear = new Date().getFullYear(); // Có thể thay bằng năm từ dữ liệu nếu cần
+      const allMonths = generateAllMonths(currentYear);
+
+      setTotalGrowthRecords(growthRecordsResponse.data?.totalGrowthRecords || growthRecordsResponse.data || 0);
       setTotalChildren(childrenResponse.data.count || 0);
+      setTotalConsultationRequests(requests.length);
+      setTotalConsultationResponses(responses.length);
+      setUsers(usersResponse.data?.data?.$values || []);
+      setRequestsByMonth(requestsGrouped);
+      setResponsesByMonth(responsesGrouped);
 
-      // Xử lý totalConsultationRequests
-      if (consultationRequestsResponse.data?.success && Array.isArray(consultationRequestsResponse.data?.data?.$values)) {
-        setTotalConsultationRequests(consultationRequestsResponse.data.data.$values.length);
-      } else {
-        setTotalConsultationRequests(0);
-      }
-
-      // Xử lý totalConsultationResponses
-      if (consultationResponsesResponse.data?.success && Array.isArray(consultationResponsesResponse.data?.data?.$values)) {
-        setTotalConsultationResponses(consultationResponsesResponse.data.data.$values.length);
-      } else {
-        setTotalConsultationResponses(0);
-      }
-
-      // Xử lý users
-      if (usersResponse.data?.success && Array.isArray(usersResponse.data?.data?.$values)) {
-        setUsers(usersResponse.data.data.$values);
-      } else {
-        setUsers([]);
-      }
+      // Update chart data with all months
+      setChartData({
+        labels: allMonths,
+        datasets: [
+          {
+            label: 'Consultation Requests',
+            data: allMonths.map(month => requestsGrouped[month] || 0),
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+          },
+          {
+            label: 'Consultation Responses',
+            data: allMonths.map(month => responsesGrouped[month] || 0),
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+          },
+        ],
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("Failed to load data. Please try again.");
@@ -213,7 +317,7 @@ const DoctorDashboard = () => {
     console.log(`Clicked on user: ${user.username || 'N/A'}`);
   };
 
-  // Mock calendar events (thay thế bằng API thực nếu có)
+  // Mock calendar events
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
@@ -267,39 +371,27 @@ const DoctorDashboard = () => {
     return currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
   };
 
-  // Pagination logic for Recent Users
+  // Pagination logic
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
   const totalPages = Math.ceil(users.length / usersPerPage);
 
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  // Mock quick actions (thay thế bằng hành động thực nếu cần)
-  const quickActions = [
-    { label: "View Schedule", onClick: () => navigate('/doctor/schedule') },
-    { label: "Send Message", onClick: () => console.log("Send Message clicked") },
-    { label: "Generate Report", onClick: () => console.log("Generate Report clicked") },
+  // Updated progress data based on real API data
+  const progressData = [
+    { label: "Consultation Requests Handled", value: totalConsultationResponses, max: totalConsultationRequests || 1 },
+    { label: "Children Examined", value: totalGrowthRecords, max: totalChildren || 1 },
   ];
 
-  // Mock tips/reminders
-  const tips = [
-    "Remember to review patient charts today!",
-    "Schedule a follow-up with your patients this week.",
-    "Stay hydrated and take breaks between appointments.",
-  ];
-
-  // Mock quotes for Quote of the Day
+  // Mock quotes
   const quotes = [
     "The art of medicine consists in amusing the patient while nature cures the disease. – Voltaire",
     "Wherever the art of medicine is loved, there is also a love of humanity. – Hippocrates",
@@ -313,10 +405,11 @@ const DoctorDashboard = () => {
     return quotes[dayOfYear % quotes.length];
   };
 
-  // Mock progress data (thay thế bằng dữ liệu thực nếu có)
-  const progressData = [
-    { label: "Consultations Completed", value: 75, max: 100 },
-    { label: "Reports Generated", value: 40, max: 50 },
+  // Mock tips/reminders
+  const tips = [
+    "Remember to review patient charts today!",
+    "Schedule a follow-up with your patients this week.",
+    "Stay hydrated and take breaks between appointments.",
   ];
 
   if (loading) {
@@ -330,7 +423,7 @@ const DoctorDashboard = () => {
 
   return (
     <div className="doctor-dashboard-container">
-      {/* Enhanced Header Section */}
+      {/* Header Section */}
       <div className="doctor-dashboard-header doctor-dashboard-animate-fade-in">
         <div className="doctor-dashboard-header-banner">
           <span role="img" aria-label="doctor" className="doctor-dashboard-header-icon">
@@ -344,69 +437,16 @@ const DoctorDashboard = () => {
         </div>
       </div>
 
-      {/* Quick Actions Section */}
-      <div className="doctor-dashboard-quick-actions-section doctor-dashboard-animate-fade-in" style={{ animationDelay: '0.2s' }}>
-        <h3>Quick Actions</h3>
-        <div className="doctor-dashboard-quick-actions">
-          {quickActions.map((action, index) => (
-            <button
-              key={index}
-              className="doctor-dashboard-quick-action-button doctor-dashboard-animate-slide-up"
-              style={{ animationDelay: `${0.4 + index * 0.1}s` }}
-              onClick={action.onClick}
-            >
-              {action.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="doctor-dashboard-main doctor-dashboard-animate-fade-in" style={{ animationDelay: '0.6s' }}>
-        {/* Left: Doctor's Schedule Overview */}
-        <div className="doctor-dashboard-schedule-overview-section doctor-dashboard-animate-slide-left" style={{ animationDelay: '0.8s' }}>
-          <div className="doctor-dashboard-schedule-overview-header">
-            <h3>Today's Schedule</h3>
-            <button
-              className="doctor-dashboard-view-all-button"
-              onClick={() => navigate('/doctor/schedule')}
-            >
-              View Full Schedule
-            </button>
+        {/* Consultation Statistics Chart */}
+        <div className="doctor-dashboard-consultation-chart-section doctor-dashboard-animate-slide-left" style={{ animationDelay: '0.8s' }}>
+          <div className="doctor-dashboard-consultation-chart-container">
+            <Bar data={chartData} options={chartOptions} height={300} />
           </div>
-          <table className="doctor-dashboard-schedule-table">
-            <thead>
-              <tr>
-                <th>TIME</th>
-                <th>PATIENT</th>
-                <th>APPOINTMENT TYPE</th>
-              </tr>
-            </thead>
-            <tbody>
-              {doctorSchedule.length > 0 ? (
-                doctorSchedule.map((appointment, index) => (
-                  <tr
-                    key={appointment.id}
-                    className="doctor-dashboard-schedule-table-row doctor-dashboard-animate-slide-up"
-                    style={{ animationDelay: `${1.0 + index * 0.05}s` }}
-                  >
-                    <td>{appointment.time}</td>
-                    <td>{appointment.patient}</td>
-                    <td>{appointment.type}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="3" style={{ textAlign: 'center' }}>
-                    No appointments scheduled for today.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
         </div>
 
-        {/* Right: Stats Grid */}
+        {/* Stats Grid */}
         <div className="doctor-dashboard-stats-grid">
           {[
             { title: "Number of examined children", value: totalGrowthRecords.toLocaleString() },
@@ -437,7 +477,7 @@ const DoctorDashboard = () => {
               <div className="doctor-dashboard-progress-bar">
                 <div
                   className="doctor-dashboard-progress-fill"
-                  style={{ width: `${(progress.value / progress.max) * 100}%` }}
+                  style={{ width: `${Math.min((progress.value / progress.max) * 100, 100)}%` }}
                 ></div>
               </div>
               <div className="doctor-dashboard-progress-value">{progress.value}/{progress.max}</div>
@@ -448,7 +488,7 @@ const DoctorDashboard = () => {
 
       {/* Bottom Section */}
       <div className="doctor-dashboard-bottom doctor-dashboard-animate-fade-in" style={{ animationDelay: '1.6s' }}>
-        {/* Left: Calendar */}
+        {/* Calendar */}
         <div className="doctor-dashboard-calendar-section doctor-dashboard-animate-slide-left" style={{ animationDelay: '1.8s' }}>
           <h3>Calendar</h3>
           <div className="doctor-dashboard-calendar">
@@ -476,7 +516,7 @@ const DoctorDashboard = () => {
           )}
         </div>
 
-        {/* Middle: Recent Users Table */}
+        {/* Recent Users Table */}
         <div className="doctor-dashboard-user-table-section doctor-dashboard-animate-slide-right" style={{ animationDelay: '2.0s' }}>
           <h3>Recent Requests</h3>
           <table className="doctor-dashboard-user-table">
@@ -535,9 +575,8 @@ const DoctorDashboard = () => {
           </div>
         </div>
 
-        {/* Right: Sidebar Section */}
+        {/* Sidebar Section */}
         <div className="doctor-dashboard-sidebar-section doctor-dashboard-animate-slide-right" style={{ animationDelay: '2.4s' }}>
-          {/* Profile Card */}
           <div className="doctor-dashboard-profile-card">
             <div className="doctor-dashboard-profile-photo">
               <span role="img" aria-label="doctor">👨‍⚕️</span>
@@ -556,13 +595,11 @@ const DoctorDashboard = () => {
             </div>
           </div>
 
-          {/* Clock Widget */}
           <div className="doctor-dashboard-clock-widget">
             <h3>Current Time</h3>
             <p>{currentTime.toLocaleTimeString()}</p>
           </div>
 
-          {/* Weather Widget */}
           <div className="doctor-dashboard-weather-widget">
             <h3>Weather Today</h3>
             <div className="doctor-dashboard-weather-location">
@@ -584,13 +621,11 @@ const DoctorDashboard = () => {
             </div>
           </div>
 
-          {/* Quote of the Day */}
           <div className="doctor-dashboard-quote-section">
             <h3>Quote of the Day</h3>
             <p className="doctor-dashboard-quote-text">{getQuoteOfTheDay()}</p>
           </div>
 
-          {/* Tips/Reminders */}
           <div className="doctor-dashboard-tips-section">
             <h3>Daily Tips</h3>
             <ul>

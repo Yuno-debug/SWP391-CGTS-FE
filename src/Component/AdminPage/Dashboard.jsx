@@ -26,7 +26,7 @@ Chart.register(
 
 const Dashboard = ({ totalChildren, totalDoctors }) => {
   const chartRef = useRef(null);
-  const [users, setUsers] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [monthlyRevenueData, setMonthlyRevenueData] = useState({
     labels: [],
@@ -47,15 +47,8 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
   });
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-
-  const getRoleName = (role) => {
-    switch (role) {
-      case 1: return "Admin";
-      case 2: return "Customer";
-      case 3: return "Doctor";
-      default: return "Unknown";
-    }
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Number of items per page
 
   useEffect(() => {
     const fetchTotalRevenue = async () => {
@@ -70,28 +63,19 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
     const fetchMonthlyRevenue = async () => {
       try {
         const response = await axios.get(`http://localhost:5200/api/Payment/payments-for-month?month=${selectedMonth}`);
-        console.log("Monthly Revenue Response:", response.data);
-
         const monthlyData = response.data.$values || [];
-
-        // Calculate days in the selected month for 2025
         const daysInMonth = new Date(2025, selectedMonth, 0).getDate();
         const labels = Array.from({ length: daysInMonth }, (_, i) => `Day ${i + 1}`);
-
-        // Initialize data array with zeros
         const data = Array(daysInMonth).fill(0);
 
-        // Aggregate payments by day
         if (Array.isArray(monthlyData)) {
           monthlyData.forEach(payment => {
             const paymentDate = new Date(payment.paymentDate);
-            const day = paymentDate.getDate(); // Get day of the month (1-31)
+            const day = paymentDate.getDate();
             if (day >= 1 && day <= daysInMonth) {
-              data[day - 1] += payment.paymentAmount || 0; // Add payment amount to the correct day
+              data[day - 1] += payment.paymentAmount || 0;
             }
           });
-        } else {
-          console.warn("Unexpected monthly data format:", monthlyData);
         }
 
         setMonthlyRevenueData({
@@ -105,7 +89,6 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
         });
       } catch (error) {
         console.error("Error fetching monthly revenue:", error);
-        // Fallback to empty chart
         const daysInMonth = new Date(2025, selectedMonth, 0).getDate();
         const labels = Array.from({ length: daysInMonth }, (_, i) => `Day ${i + 1}`);
         setMonthlyRevenueData({
@@ -160,25 +143,60 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
   };
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchRequests = async () => {
       try {
-        const response = await axios.get('/api/UserAccount/get-all', {
+        const requestsResponse = await axios.get('/api/ConsultationRequest/get-all', {
           headers: {
             'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
           }
         });
 
-        if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-          setUsers(response.data.data.$values);
+        if (requestsResponse.data?.success && Array.isArray(requestsResponse.data?.data?.$values)) {
+          const requestData = requestsResponse.data.data.$values;
+
+          const enrichedRequests = await Promise.all(
+            requestData.map(async (request) => {
+              try {
+                const userResponse = await axios.get(`/api/UserAccount/${request.userId}`, {
+                  headers: {
+                    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+                  }
+                });
+                const username = userResponse.data.success ? userResponse.data.data.username : 'Unknown';
+
+                const childResponse = await axios.get(`/api/Child/${request.childId}`, {
+                  headers: {
+                    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+                  }
+                });
+                const childName = childResponse.data.success ? childResponse.data.data.name : 'Unknown';
+
+                return {
+                  ...request,
+                  username,
+                  childName
+                };
+              } catch (error) {
+                console.error(`Error fetching details for request ${request.id}:`, error);
+                return {
+                  ...request,
+                  username: 'Unknown',
+                  childName: 'Unknown'
+                };
+              }
+            })
+          );
+
+          setRequests(enrichedRequests);
         } else {
-          console.error("Unexpected response format:", response.data);
+          console.error("Unexpected requests response format:", requestsResponse.data);
         }
       } catch (error) {
-        console.error('Error fetching users data:', error);
+        console.error('Error fetching consultation requests:', error);
       }
     };
 
-    fetchUsers();
+    fetchRequests();
   }, []);
 
   const sortData = (key) => {
@@ -188,17 +206,20 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
     }
     setSortConfig({ key, direction });
 
-    const sortedUsers = [...users].sort((a, b) => {
-      if (key === 'role') {
-        const roleA = getRoleName(a[key]);
-        const roleB = getRoleName(b[key]);
-        return direction === 'asc' ? roleA.localeCompare(roleB) : roleB.localeCompare(roleA);
-      }
+    const sortedRequests = [...requests].sort((a, b) => {
       const valueA = a[key] || '';
       const valueB = b[key] || '';
-      return direction === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+      if (key === 'requestDate') {
+        return direction === 'asc' 
+          ? new Date(valueA) - new Date(valueB)
+          : new Date(valueB) - new Date(valueA);
+      }
+      return direction === 'asc' 
+        ? valueA.toString().localeCompare(valueB.toString())
+        : valueB.toString().localeCompare(valueA.toString());
     });
-    setUsers(sortedUsers);
+    setRequests(sortedRequests);
+    setCurrentPage(1); // Reset to first page when sorting
   };
 
   const getSortIndicator = (key) => {
@@ -207,6 +228,14 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
     }
     return '';
   };
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = requests.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(requests.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -256,35 +285,56 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
         </div>
       </div>
       <div className="user-table-container">
-        <h3>Recent Request</h3>
+        <h3>Recent Requests</h3>
         <table className="user-table">
           <thead>
             <tr>
+              <th>STT</th>
               <th onClick={() => sortData('username')}>
-                Name{getSortIndicator('username')}
+                Username{getSortIndicator('username')}
               </th>
-              <th onClick={() => sortData('email')}>
-                Email{getSortIndicator('email')}
+              <th onClick={() => sortData('childName')}>
+                Child Name{getSortIndicator('childName')}
               </th>
-              <th onClick={() => sortData('role')}>
-                Role{getSortIndicator('role')}
-              </th>
-              <th onClick={() => sortData('status')}>
-                Status{getSortIndicator('status')}
+              <th onClick={() => sortData('requestDate')}>
+                Request Date{getSortIndicator('requestDate')}
               </th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
-              <tr key={user.id || index}>
-                <td>{user.username}</td>
-                <td>{user.email}</td>
-                <td>{getRoleName(user.role)}</td>
-                <td>{user.status}</td>
+            {currentItems.map((request, index) => (
+              <tr key={request.id || index}>
+                <td>{indexOfFirstItem + index + 1}</td>
+                <td>{request.username}</td>
+                <td>{request.childName}</td>
+                <td>{new Date(request.requestDate).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div className="pagination">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => paginate(i + 1)}
+              className={currentPage === i + 1 ? 'active' : ''}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

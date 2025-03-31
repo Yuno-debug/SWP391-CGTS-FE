@@ -1,14 +1,31 @@
 /* Wrapper for the entire page */
 .membership-page-wrapper {
   padding: 40px 20px;
-  background-color: #f5f5f5;
   min-height: 100vh;
+  position: relative;
+  /* For the overlay */
+}
+
+/* Add an overlay to improve readability */
+.membership-page-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent dark overlay */
+  z-index: 0;
 }
 
 /* Container to center content */
 .membership-page-container {
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  /* Ensure content is above the overlay */
+  z-index: 1;
 }
 
 /* Content area */
@@ -20,7 +37,8 @@
 .membership-page-title {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #333333;
+  color: #ffffff;
+  /* Change to white for better contrast on dark overlay */
   margin-bottom: 40px;
 }
 

@@ -1,0 +1,217 @@
+/* Tổng thể trang */
+.profile-page {
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #eff6ff, #e0e7ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* Container chính */
+.profile-container {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 600px;
+    width: 100%;
+}
+
+/* Nút quay lại */
+.back-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: #4f46e5;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.back-button:hover {
+    color: #4338ca;
+}
+
+/* Header (Avatar và Tiêu đề) */
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e0e7ff;
+    margin-right: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiêu đề */
+.profile-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+}
+
+.profile-title svg {
+    margin-right: 0.75rem;
+    color: #4f46e5;
+}
+
+/* Thông tin chi tiết */
+.profile-details {
+    color: #4b5563;
+    font-size: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.detail-item svg {
+    width: 20px;
+    margin-right: 0.75rem;
+    color: #4f46e5;
+}
+
+.detail-item span {
+    font-weight: 500;
+    margin-right: 0.5rem;
+}
+
+/* Form chỉnh sửa */
+.edit-form {
+    margin-top: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    color: #4b5563;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #374151;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+/* Nút Lưu */
+.save-button {
+    width: 100%;
+    background: #4f46e5;
+    color: #ffffff;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.save-button svg {
+    margin-right: 0.5rem;
+}
+
+.save-button:hover {
+    background: #4338ca;
+}
+
+/* Nút Chỉnh sửa */
+.edit-button {
+    width: 100%;
+    background: #16a34a;
+    color: #ffffff;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.edit-button svg {
+    margin-right: 0.5rem;
+}
+
+.edit-button:hover {
+    background: #15803d;
+}
+
+/* Loading */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: garanti100vh;
+}
+
+.loading-text {
+    color: #6b7280;
+    font-size: 1.25rem;
+    font-weight: 600;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Error */
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.error-text {
+    color: #dc2626;
+    font-size: 1.25rem;
+    font-weight: 600;
+}

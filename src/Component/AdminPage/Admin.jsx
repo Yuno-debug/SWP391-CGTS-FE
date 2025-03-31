@@ -2,8 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-  faChevronDown, 
-  faChevronUp,
   faTachometerAlt,
   faUsers,
   faUserMd,
@@ -25,11 +23,6 @@ import { useNavigate } from "react-router-dom";
 
 const Admin = () => {
   const [selectedSection, setSelectedSection] = useState('dashboard');
-  const [expandedSections, setExpandedSections] = useState({
-    'user-management': false,
-    'child-profile': false,
-    'doctor-management': false,
-  });
   const navigate = useNavigate();
   const { handleLogout } = useContext(AuthContext);
 
@@ -85,13 +78,6 @@ const Admin = () => {
     fetchData();
   }, []);
 
-  const toggleSection = (section) => {
-    setExpandedSections(prevState => ({
-      ...prevState,
-      [section]: !prevState[section]
-    }));
-  };
-
   const handleSiteTitleChange = (e) => {
     setSiteTitle(e.target.value);
   };
@@ -130,15 +116,6 @@ const Admin = () => {
     }
   };
 
-  // Table of Contents for navigation
-  const tocItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: faTachometerAlt },
-    { id: 'user-management', label: 'User Management', icon: faUsers },
-    { id: 'doctor-management', label: 'Doctor Management', icon: faUserMd },
-    { id: 'membership-management', label: 'Membership Management', icon: faDollarSign },
-    { id: 'blog-management', label: 'Blog Management', icon: faBlog },
-  ];
-
   return (
     <div className="admin-container">
       <aside className="admin-sidebar">
@@ -161,53 +138,21 @@ const Admin = () => {
             </li>
             <li>
               <button 
-                onClick={() => toggleSection('user-management')}
+                onClick={() => setSelectedSection('user-management')}
                 className={selectedSection === 'user-management' ? 'admin-menu-item-active' : 'admin-menu-item'}
               >
                 <FontAwesomeIcon icon={faUsers} className="admin-menu-icon" />
                 <span>User Management</span>
-                <FontAwesomeIcon 
-                  icon={expandedSections['user-management'] ? faChevronUp : faChevronDown} 
-                  className="admin-chevron-icon" 
-                />
               </button>
-              {expandedSections['user-management'] && (
-                <ul className="admin-submenu">
-                  <li>
-                    <button 
-                      onClick={() => setSelectedSection('user-management')}
-                      className="admin-submenu-item"
-                    >
-                      Manage Users
-                    </button>
-                  </li>
-                </ul>
-              )}
             </li>
             <li>
               <button 
-                onClick={() => toggleSection('doctor-management')}
+                onClick={() => setSelectedSection('doctor-management')}
                 className={selectedSection === 'doctor-management' ? 'admin-menu-item-active' : 'admin-menu-item'}
               >
                 <FontAwesomeIcon icon={faUserMd} className="admin-menu-icon" />
                 <span>Doctor Management</span>
-                <FontAwesomeIcon 
-                  icon={expandedSections['doctor-management'] ? faChevronUp : faChevronDown} 
-                  className="admin-chevron-icon" 
-                />
               </button>
-              {expandedSections['doctor-management'] && (
-                <ul className="admin-submenu">
-                  <li>
-                    <button 
-                      onClick={() => setSelectedSection('doctor-management')}
-                      className="admin-submenu-item"
-                    >
-                      Manage Doctors
-                    </button>
-                  </li>
-                </ul>
-              )}
             </li>
             <li>
               <button 
@@ -240,23 +185,6 @@ const Admin = () => {
         </nav>
       </aside>
       <main className="admin-content">
-        {/* Table of Contents */}
-        <div className="admin-toc">
-          <h3 className="admin-toc-title">Navigation</h3>
-          <ul className="admin-toc-list">
-            {tocItems.map(item => (
-              <li key={item.id} className="admin-toc-item">
-                <button
-                  onClick={() => setSelectedSection(item.id)}
-                  className={selectedSection === item.id ? 'admin-toc-button-active' : 'admin-toc-button'}
-                >
-                  <FontAwesomeIcon icon={item.icon} className="admin-toc-icon" />
-                  {item.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
         {renderSection()}
       </main>
     </div>

@@ -292,6 +292,7 @@ const UserTable = () => {
       <table className="user-table">
         <thead>
           <tr>
+            <th>No</th>
             <th>Full Name</th>
             <th>Email</th>
             <th>Phone Number</th>
@@ -304,6 +305,7 @@ const UserTable = () => {
         <tbody>
           {currentUsers.map((user, index) => (
             <tr key={user.userId || index}>
+              <td>{indexOfFirstUser + index + 1}</td>
               <td>{user.username}</td>
               <td>{user.email}</td>
               <td>{user.phoneNumber}</td>

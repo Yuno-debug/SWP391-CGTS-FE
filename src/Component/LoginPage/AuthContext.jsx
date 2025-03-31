@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ Fetch user info khi app load lần đầu
+  // ✅ Fetch user info khi app load lần đầu hoặc khi userId thay đổi
   useEffect(() => {
     if (userId) fetchUserInfo(userId);
   }, [userId]);

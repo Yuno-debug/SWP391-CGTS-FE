@@ -18,6 +18,8 @@ import SignupPage from "./Component/SignUp/Signup";
 import PaymentSuccess from "./Component/Membership/PaymentSuccess/PaymentResultPage.jsx";
 import ConsultationResponse from './Component/MemPage/ConsultationResponse.jsx';
 import DoctorMem from './Component/MemPage/DoctorMem.jsx';
+import DoctorProfile from './Component/Doctor/DoctorProfile.jsx';
+import ConsultationRequest from './Component/MemPage/ConsultationRequest.jsx';
 
 const App = () => {
   const [prices, setPrices] = useState({
@@ -50,6 +52,8 @@ const App = () => {
           <Route path="/paymentsuccess" element={<PaymentSuccess />} /> 
           <Route path="/ConsultationResponse" element={<ConsultationResponse />} />
           <Route path="/doctors-list" element={<DoctorMem />} />
+          <Route path="/doctor/:doctorId" element={<DoctorProfile />} />
+          <Route path="/ConsultationRequest" element={<ConsultationRequest />} />
         </Routes>
       </Router>
     </AuthProvider>

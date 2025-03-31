@@ -6,6 +6,7 @@ import axios from 'axios';
 import Header from '../../Component/HomePage/NavBar/NavBar';
 import Footer from '../../Component/HomePage/Footer/Footer';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCalendarAlt, FaClock } from 'react-icons/fa';
+import defaultAvatar from '../../assets/userAvatar.svg'; // Import the default avatar
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5200";
 
@@ -68,7 +69,7 @@ const Profile = ({ isLoggedIn }) => {
         </div>
         <div className="profile-header-section">
           <img
-            src={userData.profilePicture || "https://via.placeholder.com/150"}
+            src={userData.profilePicture || defaultAvatar} // Use defaultAvatar if profilePicture is not available
             alt="Profile"
             className="profile-user-avatar"
           />
