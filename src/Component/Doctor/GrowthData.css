@@ -50,7 +50,7 @@
 
 .summary-card h4 {
   margin: 0;
-  font-size: 20x;
+  font-size: 20px;
   color: black;
 }
 
@@ -80,10 +80,14 @@
   border-radius: 4px;
 }
 
+.growth-data-table-container {
+  overflow-x: auto;
+}
+
 .growth-data-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .growth-data-table th,

@@ -327,3 +327,62 @@
     font-size: 16px;
     font-weight: bold;
 }
+.doctor-item {
+    position: relative;
+    transition: all 0.3s ease;
+    /* Smooth transition for hover effect */
+}
+
+.star-rating-input {
+    position: absolute;
+    bottom: -40px;
+    /* Position stars below the card */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+}
+
+.star {
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.star.full {
+    color: #ffd700;
+    /* Gold for filled stars */
+}
+
+.star.empty {
+    color: #ccc;
+    /* Gray for empty stars */
+}
+
+.star:hover {
+    transform: scale(1.2);
+    /* Slightly enlarge on hover like FB reactions */
+}
+
+.doctor-card {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    background: #fff;
+}
+
+.rating-display {
+    margin-top: 10px;
+}
+
+/* Ensure the card doesn't shift when stars appear */
+.doctor-item:hover .doctor-card {
+    margin-bottom: 40px;
+    /* Reserve space for stars */
+}

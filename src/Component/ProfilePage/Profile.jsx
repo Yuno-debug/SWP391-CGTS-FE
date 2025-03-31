@@ -65,7 +65,12 @@ const Profile = ({ isLoggedIn }) => {
       <Header isLoggedIn={isLoggedIn} />
       <div className="profile-page-wrapper">
         <div className="profile-cover-section">
-          <div className="profile-cover-gradient"></div>
+          <div className="profile-cover-gradient">
+  <div className="profile-welcome-text">
+    <h1>Welcome, {userData.username}!</h1>
+    <p>"Every child is a different kind of flower, and all together, they make this world a beautiful garden."</p>
+  </div>
+</div>
         </div>
         <div className="profile-header-section">
           <img

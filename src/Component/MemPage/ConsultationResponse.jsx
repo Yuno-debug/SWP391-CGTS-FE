@@ -4,6 +4,7 @@ import "./ConsultationResponse.css";
 import { AuthContext } from "../../Component/LoginPage/AuthContext";
 import Navbar from "../HomePage/NavBar/NavBar";
 import Footer from "../HomePage/Footer/Footer";
+import bgrAddChild from '../../assets/bgraddchild.png'; // Import the background image
 
 const ConsultationResponse = ({ isLoggedIn }) => {
   const { userId } = useContext(AuthContext);
@@ -86,64 +87,62 @@ const ConsultationResponse = ({ isLoggedIn }) => {
   }, [responses]);
 
   const fetchChildName = async (childId) => {
-  if (!childId || childNames[childId]) return; // Nếu đã có tên thì bỏ qua
+    if (!childId || childNames[childId]) return; // Nếu đã có tên thì bỏ qua
 
-  try {
-    const response = await axios.get(`http://localhost:5200/api/Child/${childId}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
+    try {
+      const response = await axios.get(`http://localhost:5200/api/Child/${childId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
 
-    if (response.data?.success) {
-      setChildNames((prev) => ({ ...prev, [childId]: response.data.data.name }));
-      console.log(`✅ Child ${childId}: ${response.data.data.name}`);
-    } else {
-      console.error(`❌ API không trả về tên cho Child ID: ${childId}`);
-      setChildNames((prev) => ({ ...prev, [childId]: "Unknown" }));
-    }
-  } catch (error) {
-    console.error("❌ Error fetching child name:", error);
-    setChildNames((prev) => ({ ...prev, [childId]: "Unknown" }));
-  }
-};
-
-
-  const fetchDoctorName = async (doctorId) => {
-  if (!doctorId || doctorNames[doctorId]) return; // Nếu đã có tên thì bỏ qua
-
-  try {
-    const response = await axios.get(`http://localhost:5200/api/Doctor/${doctorId}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-
-    if (response.data?.name) {
-      setDoctorNames((prev) => ({ ...prev, [doctorId]: response.data.name }));
-      console.log(`✅ Doctor ${doctorId}: ${response.data.name}`);
-    } else {
-      console.error(`❌ API không trả về tên bác sĩ cho ID: ${doctorId}`);
-      setDoctorNames((prev) => ({ ...prev, [doctorId]: "Unknown" }));
-    }
-  } catch (error) {
-    console.error("❌ Error fetching doctor name:", error);
-    setDoctorNames((prev) => ({ ...prev, [doctorId]: "Unknown" }));
-  }
-};
-useEffect(() => {
-  console.log("📢 Fetching child names...");
-  
-  const fetchAllChildNames = async () => {
-    for (const req of responses) {
-      if (req.childId && !childNames[req.childId]) {
-        await fetchChildName(req.childId);
+      if (response.data?.success) {
+        setChildNames((prev) => ({ ...prev, [childId]: response.data.data.name }));
+        console.log(`✅ Child ${childId}: ${response.data.data.name}`);
+      } else {
+        console.error(`❌ API không trả về tên cho Child ID: ${childId}`);
+        setChildNames((prev) => ({ ...prev, [childId]: "Unknown" }));
       }
+    } catch (error) {
+      console.error("❌ Error fetching child name:", error);
+      setChildNames((prev) => ({ ...prev, [childId]: "Unknown" }));
     }
   };
 
-  if (responses.length > 0) {
-    fetchAllChildNames();
-  }
-}, [responses]);
+  const fetchDoctorName = async (doctorId) => {
+    if (!doctorId || doctorNames[doctorId]) return; // Nếu đã có tên thì bỏ qua
 
+    try {
+      const response = await axios.get(`http://localhost:5200/api/Doctor/${doctorId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
 
+      if (response.data?.name) {
+        setDoctorNames((prev) => ({ ...prev, [doctorId]: response.data.name }));
+        console.log(`✅ Doctor ${doctorId}: ${response.data.name}`);
+      } else {
+        console.error(`❌ API không trả về tên bác sĩ cho ID: ${doctorId}`);
+        setDoctorNames((prev) => ({ ...prev, [doctorId]: "Unknown" }));
+      }
+    } catch (error) {
+      console.error("❌ Error fetching doctor name:", error);
+      setDoctorNames((prev) => ({ ...prev, [doctorId]: "Unknown" }));
+    }
+  };
+
+  useEffect(() => {
+    console.log("📢 Fetching child names...");
+    
+    const fetchAllChildNames = async () => {
+      for (const req of responses) {
+        if (req.childId && !childNames[req.childId]) {
+          await fetchChildName(req.childId);
+        }
+      }
+    };
+
+    if (responses.length > 0) {
+      fetchAllChildNames();
+    }
+  }, [responses]);
 
   useEffect(() => {
     console.log("📢 Fetching doctor names...");
@@ -161,56 +160,65 @@ useEffect(() => {
       fetchAllDoctorNames();
     }
   }, [consultationResponses]);
-  const handleChange = (e) => {
-  const { name, value } = e.target;
-  setFormData((prev) => ({ ...prev, [name]: value }));
-};
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <>
       <Navbar isLoggedIn={isLoggedIn} />
-      <div className="consultation-container">
-        <h2 className="consultation-title">Consultation Responses</h2>
-        <p className="consultation-subtitle">Here are the responses to your consultation requests.</p>
+      <div
+        className="consultation-page-container"
+        style={{
+          background: `url(${bgrAddChild}) no-repeat center center fixed`,
+          backgroundSize: 'cover',
+          minHeight: 'calc(100vh - 200px)', // Adjust based on Navbar/Footer height
+        }}
+      >
+        <div className="consultation-container">
+          <h2 className="consultation-title">Consultation Responses</h2>
+          <p className="consultation-subtitle">Here are the responses to your consultation requests.</p>
 
-        {loading ? (
-          <div className="loading">Loading...</div>
-        ) : error ? (
-          <div className="error-message">{error}</div>
-        ) : consultationResponses.length === 0 ? (
-          <div className="no-responses">No consultation responses found.</div>
-        ) : (
-          <table className="response-table">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Child Name</th>
-                <th>Description</th>
-                <th>Diagnosis</th>
-                <th>Doctor Name</th>
-                <th>Response</th>
-                <th>Response Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {consultationResponses.map((response,index) => {
-                const request = responses.find((req) => req.requestId === response.requestId);
-                return (
-                  <tr key={response.responseId}>
-                    <td>{index + 1}</td>
-                    <td>{request?.childId ? childNames[request.childId] || "Loading..." : "N/A"}</td>
-                    <td>{request?.description || "N/A"}</td>
-                    <td>{response.diagnosis || "No Diagnosis"}</td>
-                    <td>{doctorNames[response.doctorId] || "Loading..."}</td>
-                    <td dangerouslySetInnerHTML={{ __html: response.content }}></td>
-                    <td>{new Date(response.responseDate).toLocaleString()}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
+          {loading ? (
+            <div className="loading">Loading...</div>
+          ) : error ? (
+            <div className="error-message">{error}</div>
+          ) : consultationResponses.length === 0 ? (
+            <div className="no-responses">No consultation responses found.</div>
+          ) : (
+            <table className="response-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Child Name</th>
+                  <th>Description</th>
+                  <th>Diagnosis</th>
+                  <th>Doctor Name</th>
+                  <th>Response</th>
+                  <th>Response Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {consultationResponses.map((response, index) => {
+                  const request = responses.find((req) => req.requestId === response.requestId);
+                  return (
+                    <tr key={response.responseId}>
+                      <td>{index + 1}</td>
+                      <td>{request?.childId ? childNames[request.childId] || "Loading..." : "N/A"}</td>
+                      <td>{request?.description || "N/A"}</td>
+                      <td>{response.diagnosis || "No Diagnosis"}</td>
+                      <td>{doctorNames[response.doctorId] || "Loading..."}</td>
+                      <td dangerouslySetInnerHTML={{ __html: response.content }}></td>
+                      <td>{new Date(response.responseDate).toLocaleString()}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
       <Footer />
     </>

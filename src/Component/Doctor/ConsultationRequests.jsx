@@ -3,9 +3,9 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './ConsultationRequests.css';
-import { useNavigate } from 'react-router-dom'; // Add this import
+import { useNavigate } from 'react-router-dom';
 
-const ConsultationRequests = () => {
+const ConsultationRequests = (response) => {
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [children, setChildren] = useState([]);
@@ -13,7 +13,7 @@ const ConsultationRequests = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isChildrenLoaded, setIsChildrenLoaded] = useState(false);
-
+  
   const [currentPage, setCurrentPage] = useState(1);
   const requestsPerPage = 5;
 
@@ -26,10 +26,17 @@ const ConsultationRequests = () => {
   const [responseStatus, setResponseStatus] = useState('Active');
   const [diagnosis, setDiagnosis] = useState('');
 
+  const [isViewResponseModalOpen, setIsViewResponseModalOpen] = useState(false);
+  const [allResponses, setAllResponses] = useState([]);
+  const [selectedRequestResponses, setSelectedRequestResponses] = useState([]);
+  const [viewResponseLoading, setViewResponseLoading] = useState(false);
+
   const detailsModalRef = useRef(null);
   const responseModalRef = useRef(null);
+  const viewResponseModalRef = useRef(null);
+  const [doctorName, setDoctorName] = useState("Loading...");
 
-  const navigate = useNavigate(); // Add this hook
+  const navigate = useNavigate();
 
   const fetchChildren = async () => {
     try {
@@ -49,6 +56,25 @@ const ConsultationRequests = () => {
       setError(`Failed to fetch children: ${error.message}`);
     }
   };
+  useEffect(() => {
+    if (response?.doctorId) {
+      axios
+        .get(`/api/Doctor/${response.doctorId}`)
+        .then((res) => {
+          if (res.data && res.data.name) {
+            setDoctorName(res.data.name); // Set doctor name if it exists
+          } else {
+            setDoctorName("Doctor Name Not Found"); // Handle case if name is not found
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching doctor data:", error);
+          setDoctorName("N/A"); // Default fallback
+        });
+    } else {
+      setDoctorName("N/A"); // Fallback if doctorId is missing
+    }
+  }, [response?.doctorId]);
 
   const fetchRequests = async () => {
     setLoading(true);
@@ -79,10 +105,54 @@ const ConsultationRequests = () => {
     }
   };
 
+  const fetchAllResponses = async () => {
+    setViewResponseLoading(true);
+    try {
+      const response = await axios.get(
+        'http://localhost:5200/api/ConsultationResponse/get-all',
+        {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+        }
+      );
+      
+      if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
+        setAllResponses(response.data.data.$values);
+      } else {
+        setAllResponses([]);
+      }
+    } catch (error) {
+      console.error('Error fetching all responses:', error);
+      setError(`Failed to fetch responses: ${error.message}`);
+      setAllResponses([]);
+    } finally {
+      setViewResponseLoading(false);
+    }
+  };
+
+  const handleViewResponse = (requestId) => {
+    const filteredResponses = allResponses.filter(response => response.requestId === requestId);
+    setSelectedRequestResponses(filteredResponses);
+    setIsViewResponseModalOpen(true);
+  };
+
+  const closeViewResponseModal = () => {
+    setIsViewResponseModalOpen(false);
+    setSelectedRequestResponses([]);
+  };
+
+  const handleNavigateToGrowthData = () => {
+    if (selectedChildId) {
+      navigate(`/growth-data/${selectedChildId}`);
+    } else {
+      alert("Please select a child to view their growth data.");
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await fetchChildren();
       await fetchRequests();
+      await fetchAllResponses();
     };
     fetchData();
   }, []);
@@ -152,9 +222,8 @@ const ConsultationRequests = () => {
     }
   };
 
-  // New handler for navigating to ConsultationResponse
   const handleNavigateToResponse = (requestId) => {
-    navigate('/consultation-response'); // Adjust the route as needed
+    navigate('/consultation-response');
   };
 
   const openResponseModal = (request) => {
@@ -178,47 +247,53 @@ const ConsultationRequests = () => {
   };
 
   const handleSubmitResponse = async () => {
-    if (!responseContent || responseContent === '<p><br></p>') {
-      alert("Please enter a response.");
-      return;
-    }
+  if (!responseContent || responseContent === '<p><br></p>') {
+    alert("Please enter a response.");
+    return;
+  }
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setError("No authorization token found.");
-      return;
-    }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    setError("No authorization token found.");
+    return;
+  }
 
-    try {
-      const payload = {
-        requestId: selectedRequestForResponse.requestId,
-        childId: selectedRequestForResponse.childId,
-        childName: children.find(c => c.childId === selectedRequestForResponse.childId)?.name || 'Unknown Child',
-        content: responseContent,
-        status: responseStatus,
-        diagnosis: diagnosis || null,
-      };
+  if (!selectedRequestForResponse.doctorId) {
+    setError("Doctor ID is required.");
+    return;
+  }
 
-      await axios.post(
-        'http://localhost:5200/api/ConsultationResponse/create',
-        payload,
-        {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }
-      );
-      await fetchRequests();
-      closeResponseModal();
-    } catch (error) {
-      console.error('Error submitting consultation response:', error);
-      setError('Failed to submit response. Please try again.');
-    }
+  const payload = {
+    requestId: selectedRequestForResponse.requestId,
+    doctorId: selectedRequestForResponse.doctorId,  // Ensure doctorId is valid
+    content: responseContent,
+    attachments: "",  // Add file attachments if necessary
+    diagnosis: diagnosis || "",
   };
+
+  try {
+    await axios.post(
+      'http://localhost:5200/api/ConsultationResponse/create',
+      payload,
+      {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }
+    );
+    await fetchRequests();
+    await fetchAllResponses();
+    closeResponseModal();
+  } catch (error) {
+    console.error('Error submitting consultation response:', error);
+    setError('Failed to submit response. Please try again.');
+  }
+};
 
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === 'Escape') {
         if (isDetailsModalOpen) closeDetailsModal();
         if (isResponseModalOpen) closeResponseModal();
+        if (isViewResponseModalOpen) closeViewResponseModal();
       }
     };
 
@@ -229,9 +304,12 @@ const ConsultationRequests = () => {
       if (responseModalRef.current && !responseModalRef.current.contains(e.target)) {
         closeResponseModal();
       }
+      if (viewResponseModalRef.current && !viewResponseModalRef.current.contains(e.target)) {
+        closeViewResponseModal();
+      }
     };
 
-    if (isDetailsModalOpen || isResponseModalOpen) {
+    if (isDetailsModalOpen || isResponseModalOpen || isViewResponseModalOpen) {
       document.addEventListener('mousedown', handleOutsideClick);
       document.addEventListener('keydown', handleEsc);
     }
@@ -240,7 +318,7 @@ const ConsultationRequests = () => {
       document.removeEventListener('mousedown', handleOutsideClick);
       document.removeEventListener('keydown', handleEsc);
     };
-  }, [isDetailsModalOpen, isResponseModalOpen]);
+  }, [isDetailsModalOpen, isResponseModalOpen, isViewResponseModalOpen]);
 
   const totalRequests = requests.length;
   const activeRequests = requests.filter(r => r.status === 'Active').length;
@@ -428,13 +506,22 @@ const ConsultationRequests = () => {
                         <td>{request.lastUpdated ? new Date(request.lastUpdated).toLocaleDateString() : 'N/A'}</td>
                         <td>
                           <div className="action-buttons">
-                            <button className="create-response-button" onClick={() => handleCreateResponse(request)}>
+                            <button 
+                              className="create-response-button" 
+                              onClick={() => handleCreateResponse(request)}
+                            >
                               Create Response
                             </button>
-                            <button className="delete-button" onClick={() => handleNavigateToResponse(request.requestId)}>
-                              Delete
+                            <button 
+                              className="doctor-sidebar__submenu-item"
+                              onClick={() => handleViewResponse(request.requestId)}
+                            >
+                              <span className="doctor-sidebar__menu-text">View Response</span>
                             </button>
-                            <button className="details-button" onClick={() => openDetailsModal(request)}>
+                            <button 
+                              className="details-button" 
+                              onClick={() => openDetailsModal(request)}
+                            >
                               Details
                             </button>
                           </div>
@@ -601,6 +688,55 @@ const ConsultationRequests = () => {
                 </button>
                 <button onClick={closeResponseModal} className="modal-button cancel">
                   Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isViewResponseModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal animate-modal-in" ref={viewResponseModalRef}>
+            <button className="modal-close-button" onClick={closeViewResponseModal}>×</button>
+            <h2>Consultation Responses</h2>
+            <div className="modal-content">
+              {viewResponseLoading ? (
+                <div className="loading-spinner">
+                  <div className="spinner"></div>
+                  <p>Loading responses...</p>
+                </div>
+              ) : selectedRequestResponses.length > 0 ? (
+                selectedRequestResponses.map((response, index) => (
+                  <div key={response.responseId} className="response-item">
+                    <div className="modal-field">
+                      <label>Response : </label>
+                      <div 
+                        className="response-content" 
+                        dangerouslySetInnerHTML={{ __html: response.content || 'N/A' }} 
+                      />
+                    </div>
+                    <div className="modal-field">
+                      <label>Response Date</label>
+                      <p>{response.responseDate ? new Date(response.responseDate).toLocaleString() : 'N/A'}</p>
+                    </div>
+                    <div className="modal-field">
+                      <label>Status</label>
+                      <p>{response.status || 'N/A'}</p>
+                    </div>
+                    <div className="modal-field">
+                      <label>Diagnosis</label>
+                      <p>{response.diagnosis || 'N/A'}</p>
+                    </div>
+                    <hr />
+                  </div>
+                ))
+              ) : (
+                <p>No responses found for this request.</p>
+              )}
+              <div className="modal-buttons">
+                <button onClick={closeViewResponseModal} className="modal-button cancel">
+                  Close
                 </button>
               </div>
             </div>

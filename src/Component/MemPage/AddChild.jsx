@@ -226,7 +226,7 @@ const AddChild = ({ isLoggedIn }) => {
                             return (
                                 <div
                                     key={child.childId || `child-${index}`}
-                                    className={`addchild-child-card ${isSelectedForDetails || isSelectedForAlerts ? "addchild-child-card-selected" : ""}`}
+                                    className={`add-child-unique-card ${isSelectedForDetails || isSelectedForAlerts ? "add-child-unique-card-selected" : ""}`}
                                 >
                                     <div
                                         className="addchild-child-card-clickable-area"

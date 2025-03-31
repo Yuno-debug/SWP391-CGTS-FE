@@ -2,17 +2,22 @@
 
 /* Container */
 .cr-container {
+    min-height: calc(100vh - 200px);
+}
+
+/* Content Wrapper (Handles layout and overlay) */
+.cr-content-wrapper {
     padding: 40px;
     max-width: 1280px;
     margin: 0 auto;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
-    min-height: calc(100vh - 200px);
+    background-color: rgba(255, 255, 255, 0.9);
+    /* Semi-transparent white overlay */
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 /* Header */
-.cr-container h2 {
+.cr-content-wrapper h2 {
     color: #2c3e50;
     margin-bottom: 30px;
     font-size: 2rem;
@@ -209,6 +214,8 @@
     text-align: left;
     border-bottom: 1px solid #e9ecef;
     transition: all 0.3s ease;
+    vertical-align: middle;
+    /* Align icons and text vertically */
 }
 
 .cr-table th {
@@ -244,7 +251,7 @@
 }
 
 /* No data message */
-.cr-container p {
+.cr-content-wrapper p {
     text-align: center;
     color: #7f8c8d;
     font-size: 1.2rem;
@@ -252,13 +259,33 @@
     font-style: italic;
 }
 
+/* Icons in Table */
+.row-icon {
+    margin-right: 8px;
+    vertical-align: middle;
+    color: #555;
+}
+
+.cr-table th svg,
+.cr-table td svg {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Optional: Style the "No" column */
+.cr-table th:first-child,
+.cr-table td:first-child {
+    width: 50px;
+    text-align: center;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
-    .cr-container {
+    .cr-content-wrapper {
         padding: 20px;
     }
 
-    .cr-container h2 {
+    .cr-content-wrapper h2 {
         font-size: 1.6rem;
     }
 
@@ -308,35 +335,4 @@
         padding: 10px;
         font-size: 0.8rem;
     }
-}
-.cr-table th,
-.cr-table td {
-    padding: 10px;
-    text-align: left;
-    vertical-align: middle;
-    /* Align icons and text vertically */
-}
-
-.row-icon {
-    margin-right: 8px;
-    /* Space between icon and text */
-    vertical-align: middle;
-    /* Align icon with text */
-    color: #555;
-    /* Optional: Adjust icon color */
-}
-
-.cr-table th svg,
-.cr-table td svg {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-/* Optional: Style the "No" column */
-.cr-table th:first-child,
-.cr-table td:first-child {
-    width: 50px;
-    /* Fixed width for the "No" column */
-    text-align: center;
-    /* Center the number */
 }

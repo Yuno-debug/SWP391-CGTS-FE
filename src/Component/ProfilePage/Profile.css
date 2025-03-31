@@ -170,3 +170,47 @@ body {
   color: #666;
   padding: 50px;
 }
+.profile-cover-gradient {
+  position: relative;
+  height: 300px;
+  /* Điều chỉnh chiều cao theo ý muốn */
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  /* Màu gradient */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-welcome-text {
+  max-width: 80%;
+  font-family: 'Arial', sans-serif;
+}
+
+.profile-welcome-text h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.profile-welcome-text p {
+  font-size: 20px;
+  font-style: italic;
+  margin-top: 0;
+}
+
+.profile-welcome-text h1,
+.profile-welcome-text p {
+  transition: transform 0.3s ease-in-out;
+}
+
+.profile-welcome-text:hover h1 {
+  transform: scale(1.1);
+  /* Tạo hiệu ứng phóng to khi hover */
+}
+
+.profile-welcome-text:hover p {
+  transform: scale(1.05);
+  /* Tạo hiệu ứng phóng to khi hover */
+}

@@ -3,7 +3,8 @@ import './ConsultationRequest.css';
 import Navbar from '../HomePage/NavBar/NavBar';
 import Footer from '../HomePage/Footer/Footer'; 
 import { AuthContext } from '../LoginPage/AuthContext';
-import { FaChild, FaCalendarAlt, FaFileAlt, FaExclamationCircle, FaTag } from 'react-icons/fa'; // Importing icons from react-icons
+import { FaChild, FaCalendarAlt, FaFileAlt, FaExclamationCircle, FaTag } from 'react-icons/fa';
+import bgrAddChild from '../../assets/bgraddchild.png'; // Import the background image
 
 const ConsultationRequest = () => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -132,83 +133,91 @@ const ConsultationRequest = () => {
   return (
     <>
       <Navbar isLoggedIn={isLoggedIn} />
-      <div className="cr-container">
-        <button className="cr-create-btn" onClick={() => setIsModalOpen(true)}>
-          <span className="cr-plus-icon">+</span> Create Consultation Request
-        </button>
+      <div
+        className="cr-container"
+        style={{
+          background: `url(${bgrAddChild}) no-repeat center center fixed`,
+          backgroundSize: 'cover',
+        }}
+      >
+        <div className="cr-content-wrapper">
+          <button className="cr-create-btn" onClick={() => setIsModalOpen(true)}>
+            <span className="cr-plus-icon">+</span> Create Consultation Request
+          </button>
 
-        {isModalOpen && (
-          <div className="cr-modal">
-            <div className="cr-modal-content">
-              <h3>Create Consultation Request</h3>
-              <form onSubmit={handleSubmit}>
-                <label>
-                  Child:
-                  <select name="childId" value={formData.childId} onChange={handleChange} required>
-                    <option value="">-- Select a child --</option>
-                    {children.map((child) => (
-                      <option key={child.childId} value={child.childId}>
-                        {child.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+          {isModalOpen && (
+            <div className="cr-modal">
+              <div className="cr-modal-content">
+                <h3>Create Consultation Request</h3>
+                <form onSubmit={handleSubmit}>
+                  <label>
+                    Child:
+                    <select name="childId" value={formData.childId} onChange={handleChange} required>
+                      <option value="">-- Select a child --</option>
+                      {children.map((child) => (
+                        <option key={child.childId} value={child.childId}>
+                          {child.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
 
-                <label>
-                  Description:
-                  <textarea name="description" value={formData.description} onChange={handleChange} required />
-                </label>
+                  <label>
+                    Description:
+                    <textarea name="description" value={formData.description} onChange={handleChange} required />
+                  </label>
 
-                <label>
-                  Urgency:
-                  <select name="urgency" value={formData.urgency} onChange={handleChange}>
-                    <option value="Normal">Normal</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                  </select>
-                </label>
+                  <label>
+                    Urgency:
+                    <select name="urgency" value={formData.urgency} onChange={handleChange}>
+                      <option value="Normal">Normal</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                    </select>
+                  </label>
 
-                <label>
-                  Category:
-                  <input type="text" name="category" value={formData.category} onChange={handleChange} required />
-                </label>
+                  <label>
+                    Category:
+                    <input type="text" name="category" value={formData.category} onChange={handleChange} required />
+                  </label>
 
-                <div className="cr-modal-buttons">
-                  <button type="submit" className="cr-submit-btn">Submit</button>
-                  <button type="button" className="cr-cancel-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                </div>
-              </form>
+                  <div className="cr-modal-buttons">
+                    <button type="submit" className="cr-submit-btn">Submit</button>
+                    <button type="button" className="cr-cancel-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <h2>Consultation Requests</h2>
-        {requests.length === 0 && <p>No consultation requests found.</p>}
-        <div className="cr-table-container">
-          <table className="cr-table">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th><FaChild /> Child Name</th>
-                <th><FaCalendarAlt /> Request Date</th>
-                <th><FaFileAlt /> Description</th>
-                <th><FaExclamationCircle /> Urgency</th>
-                <th><FaTag /> Category</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.map((request, index) => (
-                <tr key={request.requestId || index}>
-                  <td>{index + 1}</td>
-                  <td><FaChild className="row-icon" /> {request.childName}</td>
-                  <td><FaCalendarAlt className="row-icon" /> {new Date(request.requestDate).toLocaleString()}</td>
-                  <td><FaFileAlt className="row-icon" /> {request.description || 'N/A'}</td>
-                  <td><FaExclamationCircle className="row-icon" /> {request.urgency || 'N/A'}</td>
-                  <td><FaTag className="row-icon" /> {request.category || 'N/A'}</td>
+          <h2>Consultation Requests</h2>
+          {requests.length === 0 && <p>No consultation requests found.</p>}
+          <div className="cr-table-container">
+            <table className="cr-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th><FaChild /> Child Name</th>
+                  <th><FaCalendarAlt /> Request Date</th>
+                  <th><FaFileAlt /> Description</th>
+                  <th><FaExclamationCircle /> Urgency</th>
+                  <th><FaTag /> Category</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {requests.map((request, index) => (
+                  <tr key={request.requestId || index}>
+                    <td>{index + 1}</td>
+                    <td><FaChild className="row-icon" /> {request.childName}</td>
+                    <td><FaCalendarAlt className="row-icon" /> {new Date(request.requestDate).toLocaleString()}</td>
+                    <td><FaFileAlt className="row-icon" /> {request.description || 'N/A'}</td>
+                    <td><FaExclamationCircle className="row-icon" /> {request.urgency || 'N/A'}</td>
+                    <td><FaTag className="row-icon" /> {request.category || 'N/A'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <Footer />

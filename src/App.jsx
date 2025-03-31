@@ -20,6 +20,7 @@ import ConsultationResponse from './Component/MemPage/ConsultationResponse.jsx';
 import DoctorMem from './Component/MemPage/DoctorMem.jsx';
 import DoctorProfile from './Component/Doctor/DoctorProfile.jsx';
 import ConsultationRequest from './Component/MemPage/ConsultationRequest.jsx';
+import GrowthRecords from './Component/Doctor/GrowthData.jsx';
 
 const App = () => {
   const [prices, setPrices] = useState({
@@ -54,6 +55,7 @@ const App = () => {
           <Route path="/doctors-list" element={<DoctorMem />} />
           <Route path="/doctor/:doctorId" element={<DoctorProfile />} />
           <Route path="/ConsultationRequest" element={<ConsultationRequest />} />
+          <Route path="/growth-data/:childId" element={<GrowthRecords />} />
         </Routes>
       </Router>
     </AuthProvider>

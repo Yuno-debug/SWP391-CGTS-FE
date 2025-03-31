@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../HomePage/NavBar/NavBar";  
-import Footer from "../HomePage/Footer/Footer";  
+import Navbar from "../HomePage/NavBar/NavBar";
+import Footer from "../HomePage/Footer/Footer";
 import "./DoctorMem.css";
 
 const DoctorMem = () => {
@@ -11,11 +11,10 @@ const DoctorMem = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedDoctorId, setSelectedDoctorId] = useState("");
-  const [selectedRating, setSelectedRating] = useState(0);
+  const [hoveredDoctorId, setHoveredDoctorId] = useState(null); // Track which doctor is hovered
   const [notification, setNotification] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1); // 🔹 Trang hiện tại
-  const doctorsPerPage = 3; // 🔹 Giới hạn hiển thị bác sĩ mỗi trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const doctorsPerPage = 3;
 
   useEffect(() => {
     fetch("/api/Doctor")
@@ -38,21 +37,13 @@ const DoctorMem = () => {
   }, [feedbacks]);
 
   const getDoctorRating = (doctorId) => {
-    const doctorFeedbacks = feedbacks.filter(fb => fb.doctorId === doctorId);
+    const doctorFeedbacks = feedbacks.filter((fb) => fb.doctorId === doctorId);
     if (doctorFeedbacks.length === 0) return 0;
     const totalStars = doctorFeedbacks.reduce((sum, fb) => sum + (fb.rating || 0), 0);
     return Math.min(5, (totalStars / doctorFeedbacks.length).toFixed(1));
   };
 
-  const handleDoctorChange = (e) => {
-    setSelectedDoctorId(e.target.value);
-  };
-
-  const handleStarClick = (rating) => {
-    setSelectedRating(rating);
-  };
-
-  const handleSubmitFeedback = async () => {
+  const handleStarClick = async (doctorId, rating) => {
     const userId = localStorage.getItem("userId");
     if (!userId) {
       setNotification("⚠️ Error: User not logged in");
@@ -60,19 +51,7 @@ const DoctorMem = () => {
       return;
     }
 
-    if (!selectedDoctorId) {
-      setNotification("⚠️ Error: Please select a doctor");
-      setTimeout(() => setNotification(null), 3000);
-      return;
-    }
-
-    if (selectedRating === 0) {
-      setNotification("⚠️ Error: Please select a rating");
-      setTimeout(() => setNotification(null), 3000);
-      return;
-    }
-
-    const numericDoctorId = Number(selectedDoctorId);
+    const numericDoctorId = Number(doctorId);
     if (isNaN(numericDoctorId) || numericDoctorId <= 0) {
       setNotification("⚠️ Error: Invalid Doctor ID");
       setTimeout(() => setNotification(null), 3000);
@@ -81,7 +60,7 @@ const DoctorMem = () => {
 
     const feedbackToSend = {
       doctorId: numericDoctorId,
-      rating: selectedRating,
+      rating: rating,
       userId: parseInt(userId) || 0,
     };
 
@@ -100,16 +79,14 @@ const DoctorMem = () => {
       const data = await res.json();
       const newFeedbackEntry = {
         doctorId: data.dto?.doctorId ?? numericDoctorId,
-        rating: data.dto?.rating ?? selectedRating,
+        rating: data.dto?.rating ?? rating,
         userId: data.dto?.userId ?? parseInt(userId),
         feedbackId: data.feedbackId,
         feedbackDate: data.feedbackDate,
       };
 
       setFeedbacks((prev) => [...prev, newFeedbackEntry]);
-
-      setSelectedDoctorId("");
-      setSelectedRating(0);
+      setHoveredDoctorId(null); // Hide stars after submission
       setNotification("✅ Rating submitted successfully!");
       setTimeout(() => setNotification(null), 3000);
     } catch (error) {
@@ -118,32 +95,24 @@ const DoctorMem = () => {
     }
   };
 
-  const renderRatingStars = () => (
-    <div className="rating-box">
-      <h3>Your Rating</h3>
-      <div className="star-rating-input">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <span
-            key={star}
-            className={`star ${selectedRating >= star ? "full" : "empty"}`}
-            onClick={() => handleStarClick(star)}
-          >
-            ★
-          </span>
-        ))}
-      </div>
-      <button onClick={handleSubmitFeedback} className="submit-rating-btn">
-        Submit Rating
-      </button>
+  const renderRatingStars = (doctorId) => (
+    <div className="star-rating-input" onMouseLeave={() => setHoveredDoctorId(null)}>
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span
+          key={star}
+          className={`star ${star <= getDoctorRating(doctorId) ? "full" : "empty"}`}
+          onClick={() => handleStarClick(doctorId, star)}
+        >
+          ★
+        </span>
+      ))}
     </div>
   );
 
-  // 🔹 Tính toán danh sách bác sĩ trên trang hiện tại
   const indexOfLastDoctor = currentPage * doctorsPerPage;
   const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
   const currentDoctors = doctors.slice(indexOfFirstDoctor, indexOfLastDoctor);
 
-  // 🔹 Xử lý chuyển trang
   const nextPage = () => {
     if (currentPage < Math.ceil(doctors.length / doctorsPerPage)) {
       setCurrentPage(currentPage + 1);
@@ -166,37 +135,21 @@ const DoctorMem = () => {
         <h1>Our Doctors</h1>
         {notification && <div className="notification">{notification}</div>}
 
-        <div className="rating-section centralized">
-          <h3>Rate a Doctor</h3>
-          <select
-            value={selectedDoctorId || ""}
-            onChange={handleDoctorChange}
-            className="rating-select"
-          >
-            <option value="">Select a Doctor</option>
-            {doctors.map((doctor) => {
-              const doctorId = doctor.doctorId || doctor.licenseNumber;
-              return (
-                <option key={doctorId} value={doctorId}>
-                  {doctor.name}
-                </option>
-              );
-            })}
-          </select>
-          {renderRatingStars()}
-        </div>
-
         <div className="doctor-list">
           {currentDoctors.map((doctor) => {
             const doctorId = doctor.doctorId || doctor.licenseNumber;
             return (
-              <div key={doctorId} className="doctor-item">
+              <div
+                key={doctorId}
+                className="doctor-item"
+                onMouseEnter={() => setHoveredDoctorId(doctorId)}
+              >
                 <div className="doctor-card">
-                  <img 
-                    src={doctor.hospital} 
-                    alt={doctor.name} 
-                    className="doctor-image" 
-                    onError={(e) => (e.target.src = "/default-doctor.jpg")} 
+                  <img
+                    src={doctor.hospital}
+                    alt={doctor.name}
+                    className="doctor-image"
+                    onError={(e) => (e.target.src = "/default-doctor.jpg")}
                   />
                   <h2>{doctor.name}</h2>
                   <p><strong>Email:</strong> {doctor.email}</p>
@@ -204,13 +157,13 @@ const DoctorMem = () => {
                   <div className="rating-display">
                     <strong>Rating:</strong> {getDoctorRating(doctorId)} / 5 ⭐
                   </div>
+                  {hoveredDoctorId === doctorId && renderRatingStars(doctorId)}
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* 🔹 Nút phân trang */}
         <div className="paginationMem">
           <button onClick={prevPage} disabled={currentPage === 1}>
             ⬅️ Previous
