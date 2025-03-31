@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import './ConsultationRequests.css';
+import { useNavigate } from 'react-router-dom'; // Add this import
 
 const ConsultationRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -17,7 +20,16 @@ const ConsultationRequests = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedDetailsRequest, setSelectedDetailsRequest] = useState(null);
 
+  const [isResponseModalOpen, setIsResponseModalOpen] = useState(false);
+  const [selectedRequestForResponse, setSelectedRequestForResponse] = useState(null);
+  const [responseContent, setResponseContent] = useState('');
+  const [responseStatus, setResponseStatus] = useState('Active');
+  const [diagnosis, setDiagnosis] = useState('');
+
   const detailsModalRef = useRef(null);
+  const responseModalRef = useRef(null);
+
+  const navigate = useNavigate(); // Add this hook
 
   const fetchChildren = async () => {
     try {
@@ -140,16 +152,86 @@ const ConsultationRequests = () => {
     }
   };
 
+  // New handler for navigating to ConsultationResponse
+  const handleNavigateToResponse = (requestId) => {
+    navigate('/consultation-response'); // Adjust the route as needed
+  };
+
+  const openResponseModal = (request) => {
+    setSelectedRequestForResponse(request);
+    setResponseContent('');
+    setResponseStatus('Active');
+    setDiagnosis('');
+    setIsResponseModalOpen(true);
+  };
+
+  const closeResponseModal = () => {
+    setIsResponseModalOpen(false);
+    setSelectedRequestForResponse(null);
+    setResponseContent('');
+    setResponseStatus('Active');
+    setDiagnosis('');
+  };
+
   const handleCreateResponse = (request) => {
-    window.location.href = `/consultation-response?requestId=${request.requestId}&childId=${request.childId}`;
+    openResponseModal(request);
+  };
+
+  const handleSubmitResponse = async () => {
+    if (!responseContent || responseContent === '<p><br></p>') {
+      alert("Please enter a response.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("No authorization token found.");
+      return;
+    }
+
+    try {
+      const payload = {
+        requestId: selectedRequestForResponse.requestId,
+        childId: selectedRequestForResponse.childId,
+        childName: children.find(c => c.childId === selectedRequestForResponse.childId)?.name || 'Unknown Child',
+        content: responseContent,
+        status: responseStatus,
+        diagnosis: diagnosis || null,
+      };
+
+      await axios.post(
+        'http://localhost:5200/api/ConsultationResponse/create',
+        payload,
+        {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }
+      );
+      await fetchRequests();
+      closeResponseModal();
+    } catch (error) {
+      console.error('Error submitting consultation response:', error);
+      setError('Failed to submit response. Please try again.');
+    }
   };
 
   useEffect(() => {
     const handleEsc = (e) => {
-      if (e.key === 'Escape' && isDetailsModalOpen) closeDetailsModal();
+      if (e.key === 'Escape') {
+        if (isDetailsModalOpen) closeDetailsModal();
+        if (isResponseModalOpen) closeResponseModal();
+      }
     };
 
-    if (isDetailsModalOpen) {
+    const handleOutsideClick = (e) => {
+      if (detailsModalRef.current && !detailsModalRef.current.contains(e.target)) {
+        closeDetailsModal();
+      }
+      if (responseModalRef.current && !responseModalRef.current.contains(e.target)) {
+        closeResponseModal();
+      }
+    };
+
+    if (isDetailsModalOpen || isResponseModalOpen) {
       document.addEventListener('mousedown', handleOutsideClick);
       document.addEventListener('keydown', handleEsc);
     }
@@ -158,13 +240,7 @@ const ConsultationRequests = () => {
       document.removeEventListener('mousedown', handleOutsideClick);
       document.removeEventListener('keydown', handleEsc);
     };
-  }, [isDetailsModalOpen]);
-
-  const handleOutsideClick = useCallback((e) => {
-    if (detailsModalRef.current && !detailsModalRef.current.contains(e.target)) {
-      closeDetailsModal();
-    }
-  }, []);
+  }, [isDetailsModalOpen, isResponseModalOpen]);
 
   const totalRequests = requests.length;
   const activeRequests = requests.filter(r => r.status === 'Active').length;
@@ -180,6 +256,25 @@ const ConsultationRequests = () => {
   const getRelationshipLabel = (relationship) => {
     return relationship === "D" ? "Dad" : relationship === "M" ? "Mom" : relationship;
   };
+
+  const quillModules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'align': [] }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'color': [] }, { 'background': [] }],
+      ['link'],
+      ['clean']
+    ],
+  };
+
+  const quillFormats = [
+    'header', 'bold', 'italic', 'underline', 'strike',
+    'align', 'list', 'bullet', 'indent',
+    'color', 'background', 'link'
+  ];
 
   if (!isChildrenLoaded || loading) return (
     <div className="loading-spinner">
@@ -225,12 +320,10 @@ const ConsultationRequests = () => {
         </div>
       </div>
 
-      {/* Children List */}
       <div className="children-section">
         <h3 className="children-requests-title"> Children's Request List</h3>
         <div className="addchild-child-list">
           {selectedChildId ? (
-            // Hiển thị trẻ được chọn với thông tin chi tiết
             children.filter(child => child.childId === selectedChildId).map((child) => (
               <div
                 key={child.childId}
@@ -256,7 +349,6 @@ const ConsultationRequests = () => {
               </div>
             ))
           ) : (
-            // Hiển thị tất cả trẻ có requests, chỉ hiện ảnh và tên
             childrenWithRequests.length > 0 ? (
               childrenWithRequests.map((child) => (
                 <div
@@ -289,7 +381,6 @@ const ConsultationRequests = () => {
         </div>
       </div>
 
-      {/* Table Section */}
       {selectedChildId && (
         <div className="requests-section">
           <div className="table-header">
@@ -340,7 +431,7 @@ const ConsultationRequests = () => {
                             <button className="create-response-button" onClick={() => handleCreateResponse(request)}>
                               Create Response
                             </button>
-                            <button className="delete-button" onClick={() => handleDeleteRequest(request.requestId)}>
+                            <button className="delete-button" onClick={() => handleNavigateToResponse(request.requestId)}>
                               Delete
                             </button>
                             <button className="details-button" onClick={() => openDetailsModal(request)}>
@@ -446,6 +537,71 @@ const ConsultationRequests = () => {
               </div>
               <div className="modal-buttons">
                 <button onClick={closeDetailsModal} className="modal-button cancel">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isResponseModalOpen && selectedRequestForResponse && (
+        <div className="modal-overlay">
+          <div className="modal animate-modal-in" ref={responseModalRef}>
+            <button className="modal-close-button" onClick={closeResponseModal}>×</button>
+            <h2>Create Consultation Response</h2>
+            <div className="modal-content">
+              <div className="modal-field">
+                <label>Child Name</label>
+                <input
+                  type="text"
+                  value={children.find(c => c.childId === selectedRequestForResponse.childId)?.name || 'N/A'}
+                  readOnly
+                  className="modal-input"
+                />
+              </div>
+              <div className="modal-field">
+                <label>Request Description</label>
+                <div className="response-content" dangerouslySetInnerHTML={{ __html: selectedRequestForResponse.description || 'N/A' }} />
+              </div>
+              <div className="modal-field">
+                <label>Response Content</label>
+                <ReactQuill
+                  value={responseContent}
+                  onChange={setResponseContent}
+                  modules={quillModules}
+                  formats={quillFormats}
+                  placeholder="Enter your response here..."
+                  className="modal-rich-text-editor"
+                />
+              </div>
+              <div className="modal-field">
+                <label>Status</label>
+                <select
+                  value={responseStatus}
+                  onChange={(e) => setResponseStatus(e.target.value)}
+                  className="modal-select"
+                >
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Pending">Pending</option>
+                </select>
+              </div>
+              <div className="modal-field">
+                <label>Diagnosis</label>
+                <input
+                  type="text"
+                  value={diagnosis}
+                  onChange={(e) => setDiagnosis(e.target.value)}
+                  placeholder="Enter diagnosis (optional)"
+                  className="modal-input"
+                />
+              </div>
+              <div className="modal-buttons">
+                <button onClick={handleSubmitResponse} className="modal-button submit">
+                  Submit
+                </button>
+                <button onClick={closeResponseModal} className="modal-button cancel">
+                  Cancel
+                </button>
               </div>
             </div>
           </div>

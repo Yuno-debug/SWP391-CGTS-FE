@@ -2,119 +2,78 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import './ConsultationResponses.css';
+import './ConsultationRequests.css';
+import { useNavigate } from 'react-router-dom'; // Add this import
 
-const ConsultationResponse = () => {
-  const [responses, setResponses] = useState([]);
-  const [filteredResponses, setFilteredResponses] = useState([]);
-  const [doctors, setDoctors] = useState({});
-  const [children, setChildren] = useState({});
+const ConsultationRequests = () => {
+  const [requests, setRequests] = useState([]);
+  const [filteredRequests, setFilteredRequests] = useState([]);
+  const [children, setChildren] = useState([]);
+  const [selectedChildId, setSelectedChildId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isChildrenLoaded, setIsChildrenLoaded] = useState(false);
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const responsesPerPage = 5;
+  const requestsPerPage = 5;
 
-  // Filter and search state
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All');
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedDetailsRequest, setSelectedDetailsRequest] = useState(null);
 
-  // Sort state
-  const [sortField, setSortField] = useState('responseId');
-  const [sortOrder, setSortOrder] = useState('asc');
-
-  // Modal state for Create/Edit Response
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedResponse, setSelectedResponse] = useState(null);
+  const [isResponseModalOpen, setIsResponseModalOpen] = useState(false);
+  const [selectedRequestForResponse, setSelectedRequestForResponse] = useState(null);
   const [responseContent, setResponseContent] = useState('');
   const [responseStatus, setResponseStatus] = useState('Active');
   const [diagnosis, setDiagnosis] = useState('');
 
-  // Modal state for Response Details
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [selectedDetailsResponse, setSelectedDetailsResponse] = useState(null);
-
-  const modalRef = useRef(null);
   const detailsModalRef = useRef(null);
+  const responseModalRef = useRef(null);
 
-  // Fetch child data
+  const navigate = useNavigate(); // Add this hook
+
   const fetchChildren = async () => {
     try {
       const response = await axios.get('http://localhost:5200/api/Child/get-all', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
       });
 
-      console.log("Children Response:", response.data);
-
       if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-        const childMap = response.data.data.$values.reduce((acc, child) => {
-          acc[child.id] = child.name; // Map childId to name
-          return acc;
-        }, {});
-        setChildren(childMap);
+        setChildren(response.data.data.$values);
+        setIsChildrenLoaded(true);
+      } else {
+        console.error("Unexpected children response format:", response.data);
+        setError("Failed to load children: Invalid response format.");
       }
     } catch (error) {
       console.error('Error fetching children:', error);
+      setError(`Failed to fetch children: ${error.message}`);
     }
   };
 
-  // Fetch doctor data using the correct API /api/Doctor
-  const fetchDoctors = async () => {
-    try {
-      const response = await axios.get('http://localhost:5200/api/Doctor', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem("token")}`
-        }
-      });
-
-      console.log("Doctors Response:", response.data);
-
-      if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-        const doctorMap = response.data.data.$values.reduce((acc, doctor) => {
-          acc[doctor.id] = doctor.name; // Giả sử API trả về trường 'name'
-          return acc;
-        }, {});
-        console.log("Doctor Map:", doctorMap); // Kiểm tra ánh xạ
-        setDoctors(doctorMap);
-      } else {
-        console.error("Unexpected response format for doctors:", response.data);
-      }
-    } catch (error) {
-      console.error('Error fetching doctors:', error);
-    }
-  };
-
-  const fetchResponses = async () => {
+  const fetchRequests = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:5200/api/ConsultationResponse/get-all', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem("token")}`
-        }
+      const response = await axios.get('http://localhost:5200/api/ConsultationRequest/get-all', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
       });
 
-      console.log("Consultation Responses Response:", response.data);
-
       if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-        const responsesWithTimestamps = response.data.data.$values.map(resp => ({
-          ...resp,
-          createdDate: resp.createdDate || new Date().toISOString(), // Sử dụng createdDate từ API nếu có
-          lastUpdated: resp.lastUpdated || new Date().toISOString(), // Sử dụng lastUpdated từ API nếu có
+        const requestsWithTimestamps = response.data.data.$values.map(req => ({
+          ...req,
+          childId: req.childId,
+          requestDate: req.requestDate || new Date().toISOString(),
+          lastUpdated: new Date().toISOString(),
         }));
-        setResponses(responsesWithTimestamps);
-        setFilteredResponses(responsesWithTimestamps);
+        setRequests(requestsWithTimestamps);
+        setFilteredRequests(requestsWithTimestamps);
       } else {
         console.error("Unexpected response format:", response.data);
-        setError("Invalid response format. Expected an array of responses in data.$values.");
+        setError("Invalid response format.");
       }
     } catch (error) {
-      console.error('Error fetching consultation responses:', error);
-      setError(`Failed to load consultation responses: ${error.response?.status ? `Error ${error.response.status}` : error.message}`);
+      console.error('Error fetching consultation requests:', error);
+      setError(`Failed to load requests: ${error.response?.status ? `Error ${error.response.status}` : error.message}`);
     } finally {
       setLoading(false);
     }
@@ -123,130 +82,58 @@ const ConsultationResponse = () => {
   useEffect(() => {
     const fetchData = async () => {
       await fetchChildren();
-      await fetchDoctors();
-      await fetchResponses();
+      await fetchRequests();
     };
     fetchData();
   }, []);
 
-  // Filter and search logic
   useEffect(() => {
-    let filtered = [...responses];
-
-    // Apply status filter
-    if (statusFilter !== 'All') {
-      filtered = filtered.filter(response => response.status === statusFilter);
+    if (selectedChildId) {
+      const filtered = requests.filter(request => request.childId === parseInt(selectedChildId));
+      setFilteredRequests(filtered);
+    } else {
+      setFilteredRequests(requests);
     }
+    setCurrentPage(1);
+  }, [selectedChildId, requests]);
 
-    // Apply search
-    if (searchTerm) {
-      filtered = filtered.filter(response =>
-        (response.responseId?.toString().includes(searchTerm) ||
-        response.requestId?.toString().includes(searchTerm) ||
-        children[response.childId]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctors[response.doctorId]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        response.content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        response.status?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        response.diagnosis?.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
+  const childrenWithRequests = children.filter(child =>
+    requests.some(request => request.childId === child.childId)
+  );
 
-    // Apply sorting
-    filtered.sort((a, b) => {
-      const fieldA = a[sortField] || '';
-      const fieldB = b[sortField] || '';
-      if (sortField === 'childId') {
-        const childA = children[fieldA] || fieldA;
-        const childB = children[fieldB] || fieldB;
-        return sortOrder === 'asc' ? childA.localeCompare(childB) : childB.localeCompare(childA);
-      }
-      if (sortField === 'doctorId') {
-        const doctorA = doctors[fieldA] || fieldA;
-        const doctorB = doctors[fieldB] || fieldB;
-        return sortOrder === 'asc' ? doctorA.localeCompare(doctorB) : doctorB.localeCompare(doctorA);
-      }
-      if (typeof fieldA === 'string') {
-        return sortOrder === 'asc' ? fieldA.localeCompare(fieldB) : fieldB.localeCompare(fieldA);
-      }
-      return sortOrder === 'asc' ? fieldA - fieldB : fieldB - fieldA;
-    });
-
-    setFilteredResponses(filtered);
-    setCurrentPage(1); // Reset to first page on filter/sort change
-  }, [searchTerm, statusFilter, sortField, sortOrder, responses, doctors, children]);
-
-  // Pagination logic
-  const indexOfLastResponse = currentPage * responsesPerPage;
-  const indexOfFirstResponse = indexOfLastResponse - responsesPerPage;
-  const currentResponses = filteredResponses.slice(indexOfFirstResponse, indexOfLastResponse);
-  const totalPages = Math.ceil(filteredResponses.length / responsesPerPage);
+  const indexOfLastRequest = currentPage * requestsPerPage;
+  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
+  const currentRequests = filteredRequests.slice(indexOfFirstRequest, indexOfLastRequest);
+  const totalPages = Math.ceil(filteredRequests.length / requestsPerPage);
 
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  // Sort handler
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('asc');
-    }
+  const handleChildSelect = (childId) => {
+    setSelectedChildId(childId);
   };
 
-  // Modal handlers for Create/Edit Response
-  const openCreateModal = (response) => {
-    setIsEditMode(false);
-    setSelectedResponse(response);
-    setResponseContent('');
-    setResponseStatus('Active');
-    setDiagnosis('');
-    setIsModalOpen(true);
+  const handleBack = () => {
+    setSelectedChildId(null);
   };
 
-  const openEditModal = (response) => {
-    setIsEditMode(true);
-    setSelectedResponse(response);
-    setResponseContent(response.content || '');
-    setResponseStatus(response.status || 'Active');
-    setDiagnosis(response.diagnosis || '');
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setIsEditMode(false);
-    setSelectedResponse(null);
-    setResponseContent('');
-    setResponseStatus('Active');
-    setDiagnosis('');
-  };
-
-  // Modal handlers for Response Details
-  const openDetailsModal = (response) => {
-    setSelectedDetailsResponse(response);
+  const openDetailsModal = (request) => {
+    setSelectedDetailsRequest(request);
     setIsDetailsModalOpen(true);
   };
 
   const closeDetailsModal = () => {
     setIsDetailsModalOpen(false);
-    setSelectedDetailsResponse(null);
+    setSelectedDetailsRequest(null);
   };
 
-  // Delete handler
-  const handleDeleteResponse = async (responseId) => {
-    if (!window.confirm('Are you sure you want to delete this response?')) {
-      return;
-    }
+  const handleDeleteRequest = async (requestId) => {
+    if (!window.confirm('Are you sure you want to delete this request?')) return;
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -255,45 +142,40 @@ const ConsultationResponse = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:5200/api/ConsultationResponse/delete/${responseId}`, {
+      await axios.delete(`http://localhost:5200/api/ConsultationRequest/delete/${requestId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      await fetchResponses(); // Refresh the responses
+      await fetchRequests();
     } catch (error) {
-      console.error("Error deleting consultation response:", error);
-      setError("Failed to delete response. Please try again.");
+      console.error("Error deleting request:", error);
+      setError("Failed to delete request.");
     }
   };
 
-  // Close modals on outside click
-  const handleOutsideClick = useCallback((e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      closeModal();
-    }
-    if (detailsModalRef.current && !detailsModalRef.current.contains(e.target)) {
-      closeDetailsModal();
-    }
-  }, []);
+  // Add new handler for navigating to ConsultationResponse
+  const handleNavigateToResponse = (requestId) => {
+    navigate('/consultation-response');
+  };
 
-  // Close modals on Escape key press
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') {
-        if (isModalOpen) closeModal();
-        if (isDetailsModalOpen) closeDetailsModal();
-      }
-    };
+  const openResponseModal = (request) => {
+    setSelectedRequestForResponse(request);
+    setResponseContent('');
+    setResponseStatus('Active');
+    setDiagnosis('');
+    setIsResponseModalOpen(true);
+  };
 
-    if (isModalOpen || isDetailsModalOpen) {
-      document.addEventListener('mousedown', handleOutsideClick);
-      document.addEventListener('keydown', handleEsc);
-    }
+  const closeResponseModal = () => {
+    setIsResponseModalOpen(false);
+    setSelectedRequestForResponse(null);
+    setResponseContent('');
+    setResponseStatus('Active');
+    setDiagnosis('');
+  };
 
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-      document.removeEventListener('keydown', handleEsc);
-    };
-  }, [isModalOpen, isDetailsModalOpen, handleOutsideClick]);
+  const handleCreateResponse = (request) => {
+    openResponseModal(request);
+  };
 
   const handleSubmitResponse = async () => {
     if (!responseContent || responseContent === '<p><br></p>') {
@@ -309,50 +191,72 @@ const ConsultationResponse = () => {
 
     try {
       const payload = {
-        requestId: selectedResponse.requestId,
-        doctorId: selectedResponse.doctorId,
-        childId: selectedResponse.childId,
-        childName: children[selectedResponse.childId] || 'Unknown Child',
+        requestId: selectedRequestForResponse.requestId,
+        childId: selectedRequestForResponse.childId,
+        childName: children.find(c => c.childId === selectedRequestForResponse.childId)?.name || 'Unknown Child',
         content: responseContent,
         status: responseStatus,
         diagnosis: diagnosis || null,
       };
 
-      if (isEditMode) {
-        await axios.put(
-          `http://localhost:5200/api/ConsultationResponse/update/${selectedResponse.responseId}`,
-          payload,
-          {
-            headers: { 'Authorization': `Bearer ${token}` }
-          }
-        );
-      } else {
-        await axios.post(
-          'http://localhost:5200/api/ConsultationResponse/create',
-          payload,
-          {
-            headers: { 'Authorization': `Bearer ${token}` }
-          }
-        );
-      }
-      await fetchResponses();
-      closeModal();
+      await axios.post(
+        'http://localhost:5200/api/ConsultationResponse/create',
+        payload,
+        {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }
+      );
+      await fetchRequests();
+      closeResponseModal();
     } catch (error) {
-      console.error(`Error ${isEditMode ? 'updating' : 'submitting'} consultation response:`, error);
-      setError(`Failed to ${isEditMode ? 'update' : 'submit'} response. Please try again.`);
+      console.error('Error submitting consultation response:', error);
+      setError('Failed to submit response. Please try again.');
     }
   };
 
-  // Calculate summary stats
-  const totalResponses = responses.length;
-  const activeResponses = responses.filter(r => r.status === 'Active').length;
-  const pendingResponses = responses.filter(r => r.status === 'Pending').length;
-  const inactiveResponses = responses.filter(r => r.status === 'Inactive').length;
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        if (isDetailsModalOpen) closeDetailsModal();
+        if (isResponseModalOpen) closeResponseModal();
+      }
+    };
 
-  // Get recent responses (last 3)
-  const recentResponses = responses.slice(0, 3);
+    const handleOutsideClick = (e) => {
+      if (detailsModalRef.current && !detailsModalRef.current.contains(e.target)) {
+        closeDetailsModal();
+      }
+      if (responseModalRef.current && !responseModalRef.current.contains(e.target)) {
+        closeResponseModal();
+      }
+    };
 
-  // React-Quill toolbar configuration
+    if (isDetailsModalOpen || isResponseModalOpen) {
+      document.addEventListener('mousedown', handleOutsideClick);
+      document.addEventListener('keydown', handleEsc);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [isDetailsModalOpen, isResponseModalOpen]);
+
+  const totalRequests = requests.length;
+  const activeRequests = requests.filter(r => r.status === 'Active').length;
+  const pendingRequests = requests.filter(r => r.status === 'Pending').length;
+  const inactiveRequests = requests.filter(r => r.status === 'Inactive').length;
+
+  const recentRequests = requests.slice(0, 3);
+
+  const getAvatarUrl = (child) => {
+    return child.allergies || "https://placehold.co/50x50?text=No+Image";
+  };
+
+  const getRelationshipLabel = (relationship) => {
+    return relationship === "D" ? "Dad" : relationship === "M" ? "Mom" : relationship;
+  };
+
   const quillModules = {
     toolbar: [
       [{ 'header': [1, 2, 3, false] }],
@@ -367,16 +271,12 @@ const ConsultationResponse = () => {
   };
 
   const quillFormats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike',
-    'align',
-    'list', 'bullet',
-    'indent',
-    'color', 'background',
-    'link',
+    'header', 'bold', 'italic', 'underline', 'strike',
+    'align', 'list', 'bullet', 'indent',
+    'color', 'background', 'link'
   ];
 
-  if (loading) return (
+  if (!isChildrenLoaded || loading) return (
     <div className="loading-spinner">
       <div className="spinner"></div>
       <p>Loading data...</p>
@@ -385,194 +285,215 @@ const ConsultationResponse = () => {
   if (error) return (
     <div className="error-message">
       <p>{error}</p>
-      <button onClick={fetchResponses} className="retry-button">
-        Retry
-      </button>
+      <button onClick={fetchRequests} className="retry-button">Retry</button>
     </div>
   );
 
   return (
-    <div className="consultation-response-container">
-      {/* Header Section */}
+    <div className="consultation-requests-container">
       <div className="page-header">
         <div className="header-left">
-          <h2>Consultation Responses Dashboard</h2>
-          <p>Manage and review all consultation responses here. Create, edit, or delete responses as needed.</p>
+          <h2>Consultation Requests Dashboard</h2>
+          <p>Select a child to view their consultation requests and create responses.</p>
         </div>
         <div className="header-right">
-          <button className="refresh-button" onClick={fetchResponses}>
-            Refresh
-          </button>
-          <button className="action-button" onClick={() => openCreateModal({ requestId: null, doctorId: null, childId: null })}>
-            Create New Response
-          </button>
+          <button className="refresh-button" onClick={fetchRequests}>Refresh</button>
         </div>
       </div>
 
-      {/* Summary Section */}
       <div className="summary-section">
         <div className="summary-card">
-          <h4>Total Responses</h4>
-          <div className="summary-value">{totalResponses}</div>
+          <h4>Total Requests</h4>
+          <div className="summary-value">{totalRequests}</div>
         </div>
         <div className="summary-card">
-          <h4>Active Responses</h4>
-          <div className="summary-value">{activeResponses}</div>
+          <h4>Active Requests</h4>
+          <div className="summary-value">{activeRequests}</div>
         </div>
         <div className="summary-card">
-          <h4>Pending Responses</h4>
-          <div className="summary-value">{pendingResponses}</div>
+          <h4>Pending Requests</h4>
+          <div className="summary-value">{pendingRequests}</div>
         </div>
         <div className="summary-card">
-          <h4>Inactive Responses</h4>
-          <div className="summary-value">{inactiveResponses}</div>
+          <h4>Inactive Requests</h4>
+          <div className="summary-value">{inactiveRequests}</div>
         </div>
       </div>
 
-      {/* Filter and Search Section */}
-      <div className="filter-section">
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Search by child, doctor, content, or status..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="status-filter">
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="All">All Statuses</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-            <option value="Pending">Pending</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Table Section */}
-      <div className="table-section">
-        <table className="consultation-response-table">
-          <thead>
-            <tr>
-              <th onClick={() => handleSort('childId')}>
-                CHILD NAME {sortField === 'childId' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th onClick={() => handleSort('doctorId')}>
-                DOCTOR NAME {sortField === 'doctorId' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th onClick={() => handleSort('content')}>
-                CONTENT {sortField === 'content' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th onClick={() => handleSort('createdDate')}>
-                DATE {sortField === 'createdDate' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th onClick={() => handleSort('status')}>
-                STATUS {sortField === 'status' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th onClick={() => handleSort('diagnosis')}>
-                DIAGNOSIS {sortField === 'diagnosis' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th>ACTION</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentResponses.length > 0 ? (
-              currentResponses.map((response, index) => (
-                <tr key={response.responseId || index} className="response-table-row">
-                  <td>{children[response.childId] || response.childId || 'N/A'}</td>
-                  <td>
-                    <div className="doctor-info">
-                      <span className="doctor-avatar">{doctors[response.doctorId]?.[0] || 'U'}</span>
-                      {doctors[response.doctorId] || response.doctorId || 'N/A'}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="response-content" dangerouslySetInnerHTML={{ __html: response.content || 'N/A' }} />
-                  </td>
-                  <td>{response.createdDate ? new Date(response.createdDate).toLocaleDateString() : 'N/A'}</td>
-                  <td>
-                    <span className={`status-badge status-${response.status?.toLowerCase() || 'unknown'}`}>
-                      {response.status || 'N/A'}
-                    </span>
-                  </td>
-                  <td>{response.diagnosis || 'N/A'}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button className="edit-button" onClick={() => openEditModal(response)}>
-                        Edit
-                      </button>
-                      <button className="delete-button" onClick={() => handleDeleteResponse(response.responseId)}>
-                        Delete
-                      </button>
-                      <button className="details-button" onClick={() => openDetailsModal(response)}>
-                        Details
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" style={{ textAlign: 'center' }}>
-                  No responses available.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <div className="pagination">
-          <span className="pagination-info">
-            Showing {indexOfFirstResponse + 1} to {Math.min(indexOfLastResponse, filteredResponses.length)} of {filteredResponses.length} entries
-          </span>
-          <div className="pagination-buttons">
-            <button
-              onClick={handlePrevPage}
-              disabled={currentPage === 1}
-              className={currentPage === 1 ? 'disabled' : ''}
-            >
-              Previous
-            </button>
-            <span className="current-page">{currentPage}</span>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className={currentPage === totalPages ? 'disabled' : ''}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Responses Section */}
-      <div className="recent-responses-section">
-        <h3>Recent Responses</h3>
-        <div className="recent-responses">
-          {recentResponses.length > 0 ? (
-            recentResponses.map(response => (
-              <div key={response.responseId} className="recent-response-card">
-                <div className="recent-response-header">
-                  <h4>Response #{response.responseId}</h4>
-                  <span className={`status-badge status-${response.status?.toLowerCase() || 'unknown'}`}>
-                    {response.status || 'N/A'}
-                  </span>
+      <div className="children-section">
+        <h3 className="children-requests-title"> Children's Request List</h3>
+        <div className="addchild-child-list">
+          {selectedChildId ? (
+            children.filter(child => child.childId === selectedChildId).map((child) => (
+              <div
+                key={child.childId}
+                className="addchild-child-card addchild-child-card-selected"
+              >
+                <div className="addchild-child-card-content">
+                  <img
+                    src={getAvatarUrl(child)}
+                    alt={`${child.name}'s Avatar`}
+                    className="addchild-child-card-avatar"
+                    onError={(e) => (e.target.src = "https://placehold.co/50x50?text=No+Image")}
+                  />
+                  <div className="addchild-child-card-name">{child.name}</div>
+                  <div className="addchild-child-card-details">
+                    <p>DOB: {new Date(child.dateOfBirth).toLocaleDateString()}</p>
+                    <p>Gender: {child.gender}</p>
+                    <p>Weight: {child.birthWeight} kg</p>
+                    <p>Height: {child.birthHeight} cm</p>
+                    <p>Blood: {child.bloodType || "N/A"}</p>
+                    <p>Rel: {getRelationshipLabel(child.relationship)}</p>
+                  </div>
                 </div>
-                <p><strong>Child:</strong> {children[response.childId] || 'N/A'}</p>
-                <p><strong>Doctor:</strong> {doctors[response.doctorId] || 'N/A'}</p>
-                <p><strong>Content:</strong> <span dangerouslySetInnerHTML={{ __html: response.content || 'N/A' }} /></p>
-                <p><strong>Created:</strong> {response.createdDate ? new Date(response.createdDate).toLocaleDateString() : 'N/A'}</p>
               </div>
             ))
           ) : (
-            <p>No recent responses available.</p>
+            childrenWithRequests.length > 0 ? (
+              childrenWithRequests.map((child) => (
+                <div
+                  key={child.childId}
+                  className="addchild-child-card"
+                  onClick={() => handleChildSelect(child.childId)}
+                >
+                  <div className="addchild-child-card-content">
+                    <img
+                      src={getAvatarUrl(child)}
+                      alt={`${child.name}'s Avatar`}
+                      className="addchild-child-card-avatar"
+                      onError={(e) => (e.target.src = "https://placehold.co/50x50?text=No+Image")}
+                    />
+                    <div className="addchild-child-card-name">{child.name}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="addchild-empty-state">
+                <img
+                  src="https://via.placeholder.com/300?text=No+Children"
+                  alt="No children"
+                  className="addchild-empty-illustration"
+                />
+                <p>No children with requests available.</p>
+              </div>
+            )
           )}
         </div>
       </div>
 
-      {/* Footer Section */}
+      {selectedChildId && (
+        <div className="requests-section">
+          <div className="table-header">
+            <button className="back-button" onClick={handleBack}>Back</button>
+            <h3>Requests for {children.find(c => c.childId === selectedChildId)?.name}</h3>
+          </div>
+          <div className="table-section">
+            <table className="consultation-requests-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>CHILD</th>
+                  <th>DESCRIPTION</th>
+                  <th>REQUEST DATE</th>
+                  <th>STATUS</th>
+                  <th>LAST UPDATED</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentRequests.length > 0 ? (
+                  currentRequests.map((request, index) => {
+                    const child = children.find(c => c.childId === request.childId);
+                    const childName = child ? child.name : 'Unknown Child';
+                    return (
+                      <tr key={request.requestId || index} className="request-table-row">
+                        <td>{indexOfFirstRequest + index + 1}</td>
+                        <td>
+                          <div className="child-info">
+                            <span className="child-avatar">{childName?.[0] || 'C'}</span>
+                            {childName}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="request-description" title={request.description || 'N/A'}>
+                            {request.description || 'N/A'}
+                          </div>
+                        </td>
+                        <td>{request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'N/A'}</td>
+                        <td>
+                          <span className={`status-badge status-${request.status?.toLowerCase() || 'unknown'}`}>
+                            {request.status || 'N/A'}
+                          </span>
+                        </td>
+                        <td>{request.lastUpdated ? new Date(request.lastUpdated).toLocaleDateString() : 'N/A'}</td>
+                        <td>
+                          <div className="action-buttons">
+                            <button className="create-response-button" onClick={() => handleCreateResponse(request)}>
+                              Create Response
+                            </button>
+                            <button className="delete-button" onClick={() => handleNavigateToResponse(request.requestId)}>
+                              Delete
+                            </button>
+                            <button className="details-button" onClick={() => openDetailsModal(request)}>
+                              Details
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: 'center' }}>No requests available for this child.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            <div className="pagination">
+              <span className="pagination-info">
+                Showing {indexOfFirstRequest + 1} to {Math.min(indexOfLastRequest, filteredRequests.length)} of {filteredRequests.length} entries
+              </span>
+              <div className="pagination-buttons">
+                <button onClick={handlePrevPage} disabled={currentPage === 1} className={currentPage === 1 ? 'disabled' : ''}>
+                  Previous
+                </button>
+                <span className="current-page">{currentPage}</span>
+                <button onClick={handleNextPage} disabled={currentPage === totalPages} className={currentPage === totalPages ? 'disabled' : ''}>
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="recent-requests-section">
+        <h3>Recent Requests</h3>
+        <div className="recent-requests">
+          {recentRequests.length > 0 ? (
+            recentRequests.map(request => {
+              const child = children.find(c => c.childId === request.childId);
+              const childName = child ? child.name : 'Unknown Child';
+              return (
+                <div key={request.requestId} className="recent-request-card">
+                  <div className="recent-request-header">
+                    <h4>Request #{request.requestId}</h4>
+                    <span className={`status-badge status-${request.status?.toLowerCase() || 'unknown'}`}>
+                      {request.status || 'N/A'}
+                    </span>
+                  </div>
+                  <p><strong>Child:</strong> {childName}</p>
+                  <p><strong>Description:</strong> {request.description || 'N/A'}</p>
+                  <p><strong>Request Date:</strong> {request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'N/A'}</p>
+                </div>
+              );
+            })
+          ) : (
+            <p>No recent requests available.</p>
+          )}
+        </div>
+      </div>
+
       <div className="page-footer">
         <div className="footer-left">
           <p>Last Updated: {new Date().toLocaleString()}</p>
@@ -584,32 +505,62 @@ const ConsultationResponse = () => {
         </div>
       </div>
 
-      {/* Modal for Creating/Editing Consultation Response */}
-      {isModalOpen && (
+      {isDetailsModalOpen && selectedDetailsRequest && (
         <div className="modal-overlay">
-          <div className="modal animate-modal-in" ref={modalRef}>
-            <button className="modal-close-button" onClick={closeModal}>
-              ×
-            </button>
-            <h2>{isEditMode ? 'Edit Consultation Response' : 'Create Consultation Response'}</h2>
+          <div className="modal animate-modal-in" ref={detailsModalRef}>
+            <button className="modal-close-button" onClick={closeDetailsModal} title="Close">×</button>
+            <h2>Request Details</h2>
+            <div className="modal-content">
+              <div className="modal-field">
+                <label>Request ID</label>
+                <p>{selectedDetailsRequest.requestId || 'N/A'}</p>
+              </div>
+              <div className="modal-field">
+                <label>Child</label>
+                <p>{children.find(c => c.childId === selectedDetailsRequest.childId)?.name || 'Unknown Child'}</p>
+              </div>
+              <div className="modal-field">
+                <label>Description</label>
+                <p>{selectedDetailsRequest.description || 'N/A'}</p>
+              </div>
+              <div className="modal-field">
+                <label>Status</label>
+                <p>{selectedDetailsRequest.status || 'N/A'}</p>
+              </div>
+              <div className="modal-field">
+                <label>Request Date</label>
+                <p>{selectedDetailsRequest.requestDate ? new Date(selectedDetailsRequest.requestDate).toLocaleString() : 'N/A'}</p>
+              </div>
+              <div className="modal-field">
+                <label>Last Updated</label>
+                <p>{selectedDetailsRequest.lastUpdated ? new Date(selectedDetailsRequest.lastUpdated).toLocaleString() : 'N/A'}</p>
+              </div>
+              <div className="modal-buttons">
+                <button onClick={closeDetailsModal} className="modal-button cancel">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isResponseModalOpen && selectedRequestForResponse && (
+        <div className="modal-overlay">
+          <div className="modal animate-modal-in" ref={responseModalRef}>
+            <button className="modal-close-button" onClick={closeResponseModal}>×</button>
+            <h2>Create Consultation Response</h2>
             <div className="modal-content">
               <div className="modal-field">
                 <label>Child Name</label>
                 <input
                   type="text"
-                  value={children[selectedResponse?.childId] || 'N/A'}
+                  value={children.find(c => c.childId === selectedRequestForResponse.childId)?.name || 'N/A'}
                   readOnly
                   className="modal-input"
                 />
               </div>
               <div className="modal-field">
-                <label>Doctor Name</label>
-                <input
-                  type="text"
-                  value={doctors[selectedResponse?.doctorId] || 'N/A'}
-                  readOnly
-                  className="modal-input"
-                />
+                <label>Request Description</label>
+                <div className="response-content" dangerouslySetInnerHTML={{ __html: selectedRequestForResponse.description || 'N/A' }} />
               </div>
               <div className="modal-field">
                 <label>Response Content</label>
@@ -646,53 +597,10 @@ const ConsultationResponse = () => {
               </div>
               <div className="modal-buttons">
                 <button onClick={handleSubmitResponse} className="modal-button submit">
-                  {isEditMode ? 'Update' : 'Submit'}
+                  Submit
                 </button>
-                <button onClick={closeModal} className="modal-button cancel">
+                <button onClick={closeResponseModal} className="modal-button cancel">
                   Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal for Response Details */}
-      {isDetailsModalOpen && selectedDetailsResponse && (
-        <div className="modal-overlay">
-          <div className="modal animate-modal-in" ref={detailsModalRef}>
-            <button className="modal-close-button" onClick={closeDetailsModal}>
-              ×
-            </button>
-            <h2>Response Details</h2>
-            <div className="modal-content">
-              <div className="modal-field">
-                <label>Child Name</label>
-                <p>{children[selectedDetailsResponse.childId] || selectedDetailsResponse.childId || 'N/A'}</p>
-              </div>
-              <div className="modal-field">
-                <label>Doctor Name</label>
-                <p>{doctors[selectedDetailsResponse.doctorId] || selectedDetailsResponse.doctorId || 'N/A'}</p>
-              </div>
-              <div className="modal-field">
-                <label>Response Content</label>
-                <div className="response-content" dangerouslySetInnerHTML={{ __html: selectedDetailsResponse.content || 'N/A' }} />
-              </div>
-              <div className="modal-field">
-                <label>Date</label>
-                <p>{selectedDetailsResponse.createdDate ? new Date(selectedDetailsResponse.createdDate).toLocaleString() : 'N/A'}</p>
-              </div>
-              <div className="modal-field">
-                <label>Status</label>
-                <p>{selectedDetailsResponse.status || 'N/A'}</p>
-              </div>
-              <div className="modal-field">
-                <label>Diagnosis</label>
-                <p>{selectedDetailsResponse.diagnosis || 'N/A'}</p>
-              </div>
-              <div className="modal-buttons">
-                <button onClick={closeDetailsModal} className="modal-button cancel">
-                  Close
                 </button>
               </div>
             </div>
@@ -703,4 +611,4 @@ const ConsultationResponse = () => {
   );
 };
 
-export default ConsultationResponse;
+export default ConsultationRequests;
