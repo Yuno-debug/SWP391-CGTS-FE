@@ -1,38 +1,43 @@
-/* 🌟 Container chính */
-.consultation-container {
+/* 🌟 Page Container */
+.consultation-page-container {
+    min-height: calc(100vh - 200px); /* Adjust based on Navbar/Footer height */
+  }
+  
+  /* 🌟 Container chính */
+  .consultation-container {
     max-width: 1000px;
     margin: 40px auto;
     padding: 30px;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white overlay */
     border-radius: 12px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.consultation-container:hover {
+  }
+  
+  .consultation-container:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-}
-
-/* 🌟 Tiêu đề */
-.consultation-title {
+  }
+  
+  /* 🌟 Tiêu đề */
+  .consultation-title {
     text-align: center;
     color: #1e3a8a;
     font-size: 30px;
     font-weight: bold;
     margin-bottom: 12px;
-}
-
-/* 🌟 Phụ đề */
-.consultation-subtitle {
+  }
+  
+  /* 🌟 Phụ đề */
+  .consultation-subtitle {
     text-align: center;
     color: #6b7280;
     font-size: 18px;
     margin-bottom: 25px;
-}
-
-/* 🌟 Bảng phản hồi */
-.response-table {
+  }
+  
+  /* 🌟 Bảng phản hồi */
+  .response-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 30px;
@@ -41,85 +46,85 @@
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* 🌟 Tiêu đề cột */
-.response-table th {
+  }
+  
+  /* 🌟 Tiêu đề cột */
+  .response-table th {
     background: #2563eb;
     color: white;
     font-weight: 600;
     text-transform: uppercase;
     padding: 16px;
     text-align: left;
-}
-
-/* 🌟 Ô dữ liệu */
-.response-table td {
+  }
+  
+  /* 🌟 Ô dữ liệu */
+  .response-table td {
     padding: 14px 18px;
     border-bottom: 1px solid #e5e7eb;
     color: #374151;
     font-size: 15px;
-}
-
-/* 🌟 Hàng xen kẽ */
-.response-table tbody tr:nth-child(even) {
+  }
+  
+  /* 🌟 Hàng xen kẽ */
+  .response-table tbody tr:nth-child(even) {
     background: #f8fafc;
-}
-
-/* 🌟 Hover hiệu ứng */
-.response-table tbody tr:hover {
+  }
+  
+  /* 🌟 Hover hiệu ứng */
+  .response-table tbody tr:hover {
     background: #dbeafe;
     transition: background 0.3s ease;
-}
-
-/* 🌟 Trạng thái đặc biệt */
-.status-active {
+  }
+  
+  /* 🌟 Trạng thái đặc biệt */
+  .status-active {
     color: #10b981;
     font-weight: bold;
-}
-
-.status-pending {
+  }
+  
+  .status-pending {
     color: #f59e0b;
     font-weight: bold;
-}
-
-.status-closed {
+  }
+  
+  .status-closed {
     color: #ef4444;
     font-weight: bold;
-}
-
-/* 🌟 Căn giữa nội dung */
-.response-table .center {
+  }
+  
+  /* 🌟 Căn giữa nội dung */
+  .response-table .center {
     text-align: center;
-}
-
-/* 🌟 Căn giữa icon */
-.icon {
+  }
+  
+  /* 🌟 Căn giữa icon */
+  .icon {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-/* 🌟 Căn giữa thông báo */
-.no-responses {
+  }
+  
+  /* 🌟 Căn giữa thông báo */
+  .no-responses {
     text-align: center;
     padding: 30px;
     font-size: 16px;
     font-style: italic;
     color: #9ca3af;
-}
-
-/* 🌟 Loading */
-.loading {
+  }
+  
+  /* 🌟 Loading */
+  .loading {
     text-align: center;
     font-size: 18px;
     color: #4b5563;
     padding: 20px;
     font-weight: bold;
-}
-
-/* 🌟 Thông báo lỗi */
-.error-message {
+  }
+  
+  /* 🌟 Thông báo lỗi */
+  .error-message {
     text-align: center;
     font-size: 16px;
     color: #dc2626;
@@ -127,10 +132,10 @@
     padding: 15px;
     border-radius: 8px;
     font-weight: bold;
-}
-
-/* 🌟 Nút mở modal */
-.open-modal-btn {
+  }
+  
+  /* 🌟 Nút mở modal */
+  .open-modal-btn {
     display: block;
     margin: 0 auto 20px;
     padding: 12px 24px;
@@ -142,15 +147,15 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.open-modal-btn:hover {
+  }
+  
+  .open-modal-btn:hover {
     background: #1e40af;
     transform: translateY(-2px);
-}
-
-/* 🌟 Modal overlay */
-.modal-overlay {
+  }
+  
+  /* 🌟 Modal overlay */
+  .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -162,10 +167,10 @@
     align-items: center;
     z-index: 1000;
     animation: fadeIn 0.3s ease-out;
-}
-
-/* 🌟 Nội dung modal */
-.modal-content {
+  }
+  
+  /* 🌟 Nội dung modal */
+  .modal-content {
     background: white;
     padding: 30px;
     border-radius: 12px;
@@ -174,19 +179,19 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     position: relative;
     animation: slideIn 0.3s ease-out;
-}
-
-/* 🌟 Tiêu đề modal */
-.modal-title {
+  }
+  
+  /* 🌟 Tiêu đề modal */
+  .modal-title {
     text-align: center;
     color: #1e3a8a;
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
-}
-
-/* 🌟 Nút đóng modal */
-.close-modal-btn {
+  }
+  
+  /* 🌟 Nút đóng modal */
+  .close-modal-btn {
     display: block;
     margin: 20px auto 0;
     padding: 10px 20px;
@@ -198,50 +203,48 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.close-modal-btn:hover {
+  }
+  
+  .close-modal-btn:hover {
     background: #b91c1c;
     transform: translateY(-2px);
-}
-
-/* 🌟 Hiệu ứng khi modal xuất hiện */
-@keyframes fadeIn {
+  }
+  
+  /* 🌟 Hiệu ứng khi modal xuất hiện */
+  @keyframes fadeIn {
     from {
-        opacity: 0;
-        transform: scale(0.95);
+      opacity: 0;
+      transform: scale(0.95);
     }
-
     to {
-        opacity: 1;
-        transform: scale(1);
+      opacity: 1;
+      transform: scale(1);
     }
-}
-
-@keyframes slideIn {
+  }
+  
+  @keyframes slideIn {
     from {
-        opacity: 0;
-        transform: translateY(-20px);
+      opacity: 0;
+      transform: translateY(-20px);
     }
-
     to {
-        opacity: 1;
-        transform: translateY(0);
+      opacity: 1;
+      transform: translateY(0);
     }
-}
-
-/* 🌟 Responsive cho mobile */
-@media (max-width: 768px) {
+  }
+  
+  /* 🌟 Responsive cho mobile */
+  @media (max-width: 768px) {
     .consultation-container {
-        padding: 20px;
+      padding: 20px;
     }
-
+  
     .response-table {
-        font-size: 14px;
+      font-size: 14px;
     }
-
+  
     .modal-content {
-        width: 90%;
-        padding: 20px;
+      width: 90%;
+      padding: 20px;
     }
-}
+  }
