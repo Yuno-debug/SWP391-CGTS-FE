@@ -18,10 +18,6 @@ const RatingFeedback = () => {
   const [sortField, setSortField] = useState("feedbackDate");
   const [sortOrder, setSortOrder] = useState("desc");
 
-  const user = {
-    username: "Dr. John Doe",
-  };
-
   const handleRefresh = () => {
     window.location.reload();
   };
@@ -60,16 +56,20 @@ const RatingFeedback = () => {
       }
     };
 
+    fetchFeedbacks();
+  }, [token]);
+
+  useEffect(() => {
     const fetchDoctors = async () => {
-      if (!token || !feedbacks.length) return;
+      if (!token || feedbacks.length === 0) return;
 
       const doctorIds = [...new Set(feedbacks.map(f => f.doctorId).filter(id => id))];
       const doctorPromises = doctorIds.map(async (doctorId) => {
         try {
-          const doctorResponse = await axios.get(`http://localhost:5200/api/Doctor/${doctorId}`, {
+          const response = await axios.get(`http://localhost:5200/api/Doctor/${doctorId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          return { doctorId, name: doctorResponse.data.name || "Unknown Doctor" };
+          return { doctorId, name: response.data.name || "Unknown Doctor" };
         } catch (err) {
           return { doctorId, name: "Unknown Doctor" };
         }
@@ -80,11 +80,12 @@ const RatingFeedback = () => {
         acc[doctorId] = name;
         return acc;
       }, {});
+
       setDoctors(doctorMap);
     };
 
-    fetchFeedbacks().then(fetchDoctors);
-  }, [token]);
+    fetchDoctors();
+  }, [feedbacks, token]);
 
   useEffect(() => {
     let filtered = [...feedbacks];
@@ -95,11 +96,8 @@ const RatingFeedback = () => {
 
     if (searchTerm) {
       filtered = filtered.filter(feedback =>
-        (feedback.feedbackId?.toString().includes(searchTerm) ||
-        doctors[feedback.doctorId]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (doctors[feedback.doctorId]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         feedback.rating?.toString().includes(searchTerm) ||
-        feedback.comment?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        feedback.feedbackType?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         new Date(feedback.feedbackDate).toLocaleString().toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
@@ -128,36 +126,21 @@ const RatingFeedback = () => {
     setCurrentPage(1);
   }, [feedbackTypeFilter, searchTerm, sortField, sortOrder, feedbacks, doctors]);
 
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
   const indexOfLastFeedback = currentPage * feedbacksPerPage;
   const indexOfFirstFeedback = indexOfLastFeedback - feedbacksPerPage;
   const currentFeedbacks = filteredFeedbacks.slice(indexOfFirstFeedback, indexOfLastFeedback);
   const totalPages = Math.ceil(filteredFeedbacks.length / feedbacksPerPage);
 
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortOrder("asc");
-    }
-  };
-
   if (loading) return <div className="rating-feedback-loading">Loading...</div>;
   if (error) return <div className="rating-feedback-error">{error}</div>;
-
-  const feedbackTypes = ["All", ...new Set(feedbacks.map(f => f.feedbackType).filter(type => type))];
 
   return (
     <div className="rating-feedback-container">
@@ -174,52 +157,12 @@ const RatingFeedback = () => {
       </header>
 
       <div className="rating-feedback-content">
-        <div className="filter-section">
-          <div className="search-bar">
-            <input
-              type="text"
-              placeholder="Search by doctor, comment, rating..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <div className="type-filter">
-            <label htmlFor="feedback-type-filter">Filter by Type:</label>
-            <select
-              id="feedback-type-filter"
-              value={feedbackTypeFilter}
-              onChange={(e) => setFeedbackTypeFilter(e.target.value)}
-              className="feedback-type-filter"
-            >
-              {feedbackTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
         <table className="rating-feedback-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort("feedbackDate")}>
-                Feedback Date {sortField === "feedbackDate" && (sortOrder === "asc" ? "↑" : "↓")}
-              </th>
-              <th onClick={() => handleSort("doctorId")}>
-                Doctor Name {sortField === "doctorId" && (sortOrder === "asc" ? "↑" : "↓")}
-              </th>
-              <th onClick={() => handleSort("rating")}>
-                Rating {sortField === "rating" && (sortOrder === "asc" ? "↑" : "↓")}
-              </th>
-              <th onClick={() => handleSort("comment")}>
-                Comment {sortField === "comment" && (sortOrder === "asc" ? "↑" : "↓")}
-              </th>
-              <th onClick={() => handleSort("feedbackType")}>
-                Type {sortField === "feedbackType" && (sortOrder === "asc" ? "↑" : "↓")}
-              </th>
-              <th onClick={() => handleSort("feedbackId")}>
-                ID {sortField === "feedbackId" && (sortOrder === "asc" ? "↑" : "↓")}
-              </th>
+              <th>Feedback Date</th>
+              <th>Doctor Name</th>
+              <th>Rating</th>
             </tr>
           </thead>
           <tbody>
@@ -227,16 +170,13 @@ const RatingFeedback = () => {
               currentFeedbacks.map((feedback) => (
                 <tr key={feedback.feedbackId}>
                   <td>{new Date(feedback.feedbackDate).toLocaleString()}</td>
-                  <td>{feedback.doctorId ? doctors[feedback.doctorId] || "Loading..." : "N/A"}</td>
+                  <td>{feedback.doctorId ? (doctors[feedback.doctorId] || "Fetching...") : "N/A"}</td>
                   <td>{feedback.rating}</td>
-                  <td>{feedback.comment || "N/A"}</td>
-                  <td>{feedback.feedbackType || "N/A"}</td>
-                  <td>{feedback.feedbackId}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="rating-feedback-no-data">
+                <td colSpan="3" className="rating-feedback-no-data">
                   No feedback available.
                 </td>
               </tr>

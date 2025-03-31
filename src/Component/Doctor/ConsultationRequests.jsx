@@ -5,56 +5,28 @@ import './ConsultationRequests.css';
 const ConsultationRequests = () => {
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
-  const [children, setChildren] = useState({});
+  const [children, setChildren] = useState([]);
+  const [selectedChildId, setSelectedChildId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isChildrenLoaded, setIsChildrenLoaded] = useState(false);
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const requestsPerPage = 5;
 
-  // Filter and search state
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All');
-
-  // Sort state
-  const [sortField, setSortField] = useState('requestId');
-  const [sortOrder, setSortOrder] = useState('asc');
-
-  // Modal state for Create/Edit Request
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const [requestDescription, setRequestDescription] = useState('');
-  const [requestStatus, setRequestStatus] = useState('Pending');
-  const [childId, setChildId] = useState('');
-
-  // Modal state for Request Details
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedDetailsRequest, setSelectedDetailsRequest] = useState(null);
 
-  const modalRef = useRef(null);
   const detailsModalRef = useRef(null);
 
   const fetchChildren = async () => {
     try {
       const response = await axios.get('http://localhost:5200/api/Child/get-all', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem("token")}`
-        }
+        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
       });
 
-      console.log("Children Response:", response.data);
-
       if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-        const childMap = response.data.data.$values.reduce((acc, child) => {
-          console.log("Child ID:", child.childId, "Name:", child.name);
-          acc[String(child.childId)] = child.name;
-          return acc;
-        }, {});
-        console.log("Child Map:", childMap);
-        setChildren(childMap);
+        setChildren(response.data.data.$values);
         setIsChildrenLoaded(true);
       } else {
         console.error("Unexpected children response format:", response.data);
@@ -71,32 +43,25 @@ const ConsultationRequests = () => {
     setError(null);
     try {
       const response = await axios.get('http://localhost:5200/api/ConsultationRequest/get-all', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem("token")}`
-        }
+        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
       });
 
-      console.log("Consultation Requests Response:", response.data);
-
       if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-        const requestsWithTimestamps = response.data.data.$values.map(req => {
-          console.log("Request Child ID:", req.childId);
-          return {
-            ...req,
-            childId: String(req.childId),
-            requestDate: req.requestDate || new Date().toISOString(),
-            lastUpdated: new Date().toISOString(),
-          };
-        });
+        const requestsWithTimestamps = response.data.data.$values.map(req => ({
+          ...req,
+          childId: req.childId,
+          requestDate: req.requestDate || new Date().toISOString(),
+          lastUpdated: new Date().toISOString(),
+        }));
         setRequests(requestsWithTimestamps);
         setFilteredRequests(requestsWithTimestamps);
       } else {
         console.error("Unexpected response format:", response.data);
-        setError("Invalid response format. Expected an array of requests in data.$values.");
+        setError("Invalid response format.");
       }
     } catch (error) {
       console.error('Error fetching consultation requests:', error);
-      setError(`Failed to load consultation requests: ${error.response?.status ? `Error ${error.response.status}` : error.message}`);
+      setError(`Failed to load requests: ${error.response?.status ? `Error ${error.response.status}` : error.message}`);
     } finally {
       setLoading(false);
     }
@@ -110,102 +75,41 @@ const ConsultationRequests = () => {
     fetchData();
   }, []);
 
-  // Filter and search logic
   useEffect(() => {
-    let filtered = [...requests];
-
-    // Apply status filter
-    if (statusFilter !== 'All') {
-      filtered = filtered.filter(request => request.status === statusFilter);
+    if (selectedChildId) {
+      const filtered = requests.filter(request => request.childId === parseInt(selectedChildId));
+      setFilteredRequests(filtered);
+    } else {
+      setFilteredRequests(requests);
     }
-
-    // Apply search
-    if (searchTerm) {
-      filtered = filtered.filter(request =>
-        (request.requestId?.toString().includes(searchTerm) ||
-        request.childId?.toString().includes(searchTerm) ||
-        children[request.childId]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        request.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        request.status?.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      const fieldA = a[sortField] || '';
-      const fieldB = b[sortField] || '';
-      if (sortField === 'childId') {
-        const childA = children[fieldA] || fieldA;
-        const childB = children[fieldB] || fieldB;
-        return sortOrder === 'asc' ? childA.localeCompare(childB) : childB.localeCompare(childA);
-      }
-      if (typeof fieldA === 'string') {
-        return sortOrder === 'asc' ? fieldA.localeCompare(fieldB) : fieldB.localeCompare(fieldA);
-      }
-      return sortOrder === 'asc' ? fieldA - fieldB : fieldB - fieldA;
-    });
-
-    setFilteredRequests(filtered);
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, sortField, sortOrder, requests, children]);
+  }, [selectedChildId, requests]);
 
-  // Pagination logic
+  const childrenWithRequests = children.filter(child =>
+    requests.some(request => request.childId === child.childId)
+  );
+
   const indexOfLastRequest = currentPage * requestsPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
   const currentRequests = filteredRequests.slice(indexOfFirstRequest, indexOfLastRequest);
   const totalPages = Math.ceil(filteredRequests.length / requestsPerPage);
 
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  // Sort handler
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('asc');
-    }
+  const handleChildSelect = (childId) => {
+    setSelectedChildId(childId);
   };
 
-  // Modal handlers for Create/Edit Request
-  const openCreateModal = (request) => {
-    setIsEditMode(false);
-    setSelectedRequest(request);
-    setRequestDescription('');
-    setRequestStatus('Pending');
-    setChildId('');
-    setIsModalOpen(true);
+  const handleBack = () => {
+    setSelectedChildId(null);
   };
 
-  const openEditModal = (request) => {
-    setIsEditMode(true);
-    setSelectedRequest(request);
-    setRequestDescription(request.description || '');
-    setRequestStatus(request.status || 'Pending');
-    setChildId(String(request.childId) || '');
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setIsEditMode(false);
-    setSelectedRequest(null);
-    setRequestDescription('');
-    setRequestStatus('Pending');
-    setChildId('');
-  };
-
-  // Modal handlers for Request Details
   const openDetailsModal = (request) => {
     setSelectedDetailsRequest(request);
     setIsDetailsModalOpen(true);
@@ -216,11 +120,8 @@ const ConsultationRequests = () => {
     setSelectedDetailsRequest(null);
   };
 
-  // Delete handler
   const handleDeleteRequest = async (requestId) => {
-    if (!window.confirm('Are you sure you want to delete this request?')) {
-      return;
-    }
+    if (!window.confirm('Are you sure you want to delete this request?')) return;
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -234,31 +135,21 @@ const ConsultationRequests = () => {
       });
       await fetchRequests();
     } catch (error) {
-      console.error("Error deleting consultation request:", error);
-      setError("Failed to delete request. Please try again.");
+      console.error("Error deleting request:", error);
+      setError("Failed to delete request.");
     }
   };
 
-  // Close modals on outside click
-  const handleOutsideClick = useCallback((e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      closeModal();
-    }
-    if (detailsModalRef.current && !detailsModalRef.current.contains(e.target)) {
-      closeDetailsModal();
-    }
-  }, []);
+  const handleCreateResponse = (request) => {
+    window.location.href = `/consultation-response?requestId=${request.requestId}&childId=${request.childId}`;
+  };
 
-  // Close modals on Escape key press
   useEffect(() => {
     const handleEsc = (e) => {
-      if (e.key === 'Escape') {
-        if (isModalOpen) closeModal();
-        if (isDetailsModalOpen) closeDetailsModal();
-      }
+      if (e.key === 'Escape' && isDetailsModalOpen) closeDetailsModal();
     };
 
-    if (isModalOpen || isDetailsModalOpen) {
+    if (isDetailsModalOpen) {
       document.addEventListener('mousedown', handleOutsideClick);
       document.addEventListener('keydown', handleEsc);
     }
@@ -267,67 +158,28 @@ const ConsultationRequests = () => {
       document.removeEventListener('mousedown', handleOutsideClick);
       document.removeEventListener('keydown', handleEsc);
     };
-  }, [isModalOpen, isDetailsModalOpen, handleOutsideClick]);
+  }, [isDetailsModalOpen]);
 
-  const handleSubmitRequest = async () => {
-    if (!requestDescription) {
-      alert("Please enter a description.");
-      return;
+  const handleOutsideClick = useCallback((e) => {
+    if (detailsModalRef.current && !detailsModalRef.current.contains(e.target)) {
+      closeDetailsModal();
     }
+  }, []);
 
-    if (!childId) {
-      alert("Please select a child.");
-      return;
-    }
-
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setError("No authorization token found.");
-      return;
-    }
-
-    try {
-      if (isEditMode) {
-        await axios.put(
-          `http://localhost:5200/api/ConsultationRequest/update/${selectedRequest.requestId}`,
-          {
-            childId: parseInt(childId),
-            description: requestDescription,
-            status: requestStatus,
-          },
-          {
-            headers: { 'Authorization': `Bearer ${token}` }
-          }
-        );
-      } else {
-        await axios.post(
-          'http://localhost:5200/api/ConsultationRequest/create',
-          {
-            childId: parseInt(childId),
-            description: requestDescription,
-            status: requestStatus,
-          },
-          {
-            headers: { 'Authorization': `Bearer ${token}` }
-          }
-        );
-      }
-      await fetchRequests();
-      closeModal();
-    } catch (error) {
-      console.error(`Error ${isEditMode ? 'updating' : 'submitting'} consultation request:`, error);
-      setError(`Failed to ${isEditMode ? 'update' : 'submit'} request. Please try again.`);
-    }
-  };
-
-  // Calculate summary stats
   const totalRequests = requests.length;
   const activeRequests = requests.filter(r => r.status === 'Active').length;
   const pendingRequests = requests.filter(r => r.status === 'Pending').length;
   const inactiveRequests = requests.filter(r => r.status === 'Inactive').length;
 
-  // Get recent requests (last 3)
   const recentRequests = requests.slice(0, 3);
+
+  const getAvatarUrl = (child) => {
+    return child.allergies || "https://placehold.co/50x50?text=No+Image";
+  };
+
+  const getRelationshipLabel = (relationship) => {
+    return relationship === "D" ? "Dad" : relationship === "M" ? "Mom" : relationship;
+  };
 
   if (!isChildrenLoaded || loading) return (
     <div className="loading-spinner">
@@ -338,31 +190,22 @@ const ConsultationRequests = () => {
   if (error) return (
     <div className="error-message">
       <p>{error}</p>
-      <button onClick={fetchRequests} className="retry-button">
-        Retry
-      </button>
+      <button onClick={fetchRequests} className="retry-button">Retry</button>
     </div>
   );
 
   return (
     <div className="consultation-requests-container">
-      {/* Header Section */}
       <div className="page-header">
         <div className="header-left">
           <h2>Consultation Requests Dashboard</h2>
-          <p>Manage and review all consultation requests here. Create, edit, or delete requests as needed.</p>
+          <p>Select a child to view their consultation requests and create responses.</p>
         </div>
         <div className="header-right">
-          <button className="refresh-button" onClick={fetchRequests}>
-            Refresh
-          </button>
-          <button className="action-button" onClick={() => openCreateModal({ childId: null })}>
-            Create New Request
-          </button>
+          <button className="refresh-button" onClick={fetchRequests}>Refresh</button>
         </div>
       </div>
 
-      {/* Summary Section */}
       <div className="summary-section">
         <div className="summary-card">
           <h4>Total Requests</h4>
@@ -382,140 +225,164 @@ const ConsultationRequests = () => {
         </div>
       </div>
 
-      {/* Filter and Search Section */}
-      <div className="filter-section">
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Search by child, description, or status..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="status-filter">
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="All">All Statuses</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-            <option value="Pending">Pending</option>
-          </select>
+      {/* Children List */}
+      <div className="children-section">
+        <h3 className="children-requests-title"> Children's Request List</h3>
+        <div className="addchild-child-list">
+          {selectedChildId ? (
+            // Hiển thị trẻ được chọn với thông tin chi tiết
+            children.filter(child => child.childId === selectedChildId).map((child) => (
+              <div
+                key={child.childId}
+                className="addchild-child-card addchild-child-card-selected"
+              >
+                <div className="addchild-child-card-content">
+                  <img
+                    src={getAvatarUrl(child)}
+                    alt={`${child.name}'s Avatar`}
+                    className="addchild-child-card-avatar"
+                    onError={(e) => (e.target.src = "https://placehold.co/50x50?text=No+Image")}
+                  />
+                  <div className="addchild-child-card-name">{child.name}</div>
+                  <div className="addchild-child-card-details">
+                    <p>DOB: {new Date(child.dateOfBirth).toLocaleDateString()}</p>
+                    <p>Gender: {child.gender}</p>
+                    <p>Weight: {child.birthWeight} kg</p>
+                    <p>Height: {child.birthHeight} cm</p>
+                    <p>Blood: {child.bloodType || "N/A"}</p>
+                    <p>Rel: {getRelationshipLabel(child.relationship)}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            // Hiển thị tất cả trẻ có requests, chỉ hiện ảnh và tên
+            childrenWithRequests.length > 0 ? (
+              childrenWithRequests.map((child) => (
+                <div
+                  key={child.childId}
+                  className="addchild-child-card"
+                  onClick={() => handleChildSelect(child.childId)}
+                >
+                  <div className="addchild-child-card-content">
+                    <img
+                      src={getAvatarUrl(child)}
+                      alt={`${child.name}'s Avatar`}
+                      className="addchild-child-card-avatar"
+                      onError={(e) => (e.target.src = "https://placehold.co/50x50?text=No+Image")}
+                    />
+                    <div className="addchild-child-card-name">{child.name}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="addchild-empty-state">
+                <img
+                  src="https://via.placeholder.com/300?text=No+Children"
+                  alt="No children"
+                  className="addchild-empty-illustration"
+                />
+                <p>No children with requests available.</p>
+              </div>
+            )
+          )}
         </div>
       </div>
 
       {/* Table Section */}
-      <div className="table-section">
-        <table className="consultation-requests-table">
-          <thead>
-            <tr>
-              <th>No</th> {/* Changed from REQUEST ID to No, removed sorting */}
-              <th onClick={() => handleSort('childId')}>
-                CHILD {sortField === 'childId' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th onClick={() => handleSort('description')}>
-                DESCRIPTION {sortField === 'description' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th onClick={() => handleSort('requestDate')}>
-                REQUEST DATE {sortField === 'requestDate' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th onClick={() => handleSort('status')}>
-                STATUS {sortField === 'status' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th onClick={() => handleSort('lastUpdated')}>
-                LAST UPDATED {sortField === 'lastUpdated' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
-              <th>ACTION</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentRequests.length > 0 ? (
-              currentRequests.map((request, index) => {
-                const childName = children[String(request.childId)] || 'Unknown Child';
-                if (childName === 'Unknown Child') {
-                  console.log("Missing childId in table:", request.childId, "children keys:", Object.keys(children));
-                }
-                return (
-                  <tr key={request.requestId || index} className="request-table-row">
-                    <td>{index + 1}</td> {/* Display row number (1, 2, 3, ...) */}
-                    <td>
-                      <div className="child-info">
-                        <span className="child-avatar">{childName?.[0] || 'C'}</span>
-                        {childName}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="request-description" title={request.description || 'N/A'}>
-                        {request.description || 'N/A'}
-                      </div>
-                    </td>
-                    <td>{request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'N/A'}</td>
-                    <td>
-                      <span className={`status-badge status-${request.status?.toLowerCase() || 'unknown'}`}>
-                        {request.status || 'N/A'}
-                      </span>
-                    </td>
-                    <td>{request.lastUpdated ? new Date(request.lastUpdated).toLocaleDateString() : 'N/A'}</td>
-                    <td>
-                      <div className="action-buttons">
-                        <button className="edit-button" onClick={() => openEditModal(request)}>
-                          Edit
-                        </button>
-                        <button className="delete-button" onClick={() => handleDeleteRequest(request.requestId)}>
-                          Delete
-                        </button>
-                        <button className="details-button" onClick={() => openDetailsModal(request)}>
-                          Details
-                        </button>
-                      </div>
-                    </td>
+      {selectedChildId && (
+        <div className="requests-section">
+          <div className="table-header">
+            <button className="back-button" onClick={handleBack}>Back</button>
+            <h3>Requests for {children.find(c => c.childId === selectedChildId)?.name}</h3>
+          </div>
+          <div className="table-section">
+            <table className="consultation-requests-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>CHILD</th>
+                  <th>DESCRIPTION</th>
+                  <th>REQUEST DATE</th>
+                  <th>STATUS</th>
+                  <th>LAST UPDATED</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentRequests.length > 0 ? (
+                  currentRequests.map((request, index) => {
+                    const child = children.find(c => c.childId === request.childId);
+                    const childName = child ? child.name : 'Unknown Child';
+                    return (
+                      <tr key={request.requestId || index} className="request-table-row">
+                        <td>{indexOfFirstRequest + index + 1}</td>
+                        <td>
+                          <div className="child-info">
+                            <span className="child-avatar">{childName?.[0] || 'C'}</span>
+                            {childName}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="request-description" title={request.description || 'N/A'}>
+                            {request.description || 'N/A'}
+                          </div>
+                        </td>
+                        <td>{request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'N/A'}</td>
+                        <td>
+                          <span className={`status-badge status-${request.status?.toLowerCase() || 'unknown'}`}>
+                            {request.status || 'N/A'}
+                          </span>
+                        </td>
+                        <td>{request.lastUpdated ? new Date(request.lastUpdated).toLocaleDateString() : 'N/A'}</td>
+                        <td>
+                          <div className="action-buttons">
+                            <button className="create-response-button" onClick={() => handleCreateResponse(request)}>
+                              Create Response
+                            </button>
+                            <button className="delete-button" onClick={() => handleDeleteRequest(request.requestId)}>
+                              Delete
+                            </button>
+                            <button className="details-button" onClick={() => openDetailsModal(request)}>
+                              Details
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: 'center' }}>No requests available for this child.</td>
                   </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan="7" style={{ textAlign: 'center' }}>
-                  No requests available.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <div className="pagination">
-          <span className="pagination-info">
-            Showing {indexOfFirstRequest + 1} to {Math.min(indexOfLastRequest, filteredRequests.length)} of {filteredRequests.length} entries
-          </span>
-          <div className="pagination-buttons">
-            <button
-              onClick={handlePrevPage}
-              disabled={currentPage === 1}
-              className={currentPage === 1 ? 'disabled' : ''}
-            >
-              Previous
-            </button>
-            <span className="current-page">{currentPage}</span>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className={currentPage === totalPages ? 'disabled' : ''}
-            >
-              Next
-            </button>
+                )}
+              </tbody>
+            </table>
+            <div className="pagination">
+              <span className="pagination-info">
+                Showing {indexOfFirstRequest + 1} to {Math.min(indexOfLastRequest, filteredRequests.length)} of {filteredRequests.length} entries
+              </span>
+              <div className="pagination-buttons">
+                <button onClick={handlePrevPage} disabled={currentPage === 1} className={currentPage === 1 ? 'disabled' : ''}>
+                  Previous
+                </button>
+                <span className="current-page">{currentPage}</span>
+                <button onClick={handleNextPage} disabled={currentPage === totalPages} className={currentPage === totalPages ? 'disabled' : ''}>
+                  Next
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Recent Requests Section */}
       <div className="recent-requests-section">
         <h3>Recent Requests</h3>
         <div className="recent-requests">
           {recentRequests.length > 0 ? (
             recentRequests.map(request => {
-              const childName = children[String(request.childId)] || 'Unknown Child';
-              if (childName === 'Unknown Child') {
-                console.log("Missing childId in recent requests:", request.childId, "children keys:", Object.keys(children));
-              }
+              const child = children.find(c => c.childId === request.childId);
+              const childName = child ? child.name : 'Unknown Child';
               return (
                 <div key={request.requestId} className="recent-request-card">
                   <div className="recent-request-header">
@@ -536,7 +403,6 @@ const ConsultationRequests = () => {
         </div>
       </div>
 
-      {/* Footer Section */}
       <div className="page-footer">
         <div className="footer-left">
           <p>Last Updated: {new Date().toLocaleString()}</p>
@@ -548,71 +414,10 @@ const ConsultationRequests = () => {
         </div>
       </div>
 
-      {/* Modal for Creating/Editing Consultation Request */}
-      {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal animate-modal-in" ref={modalRef}>
-            <button className="modal-close-button" onClick={closeModal} title="Close">
-              ×
-            </button>
-            <h2>{isEditMode ? 'Edit Consultation Request' : 'Create Consultation Request'}</h2>
-            <div className="modal-content">
-              <div className="modal-field">
-                <label>Child</label>
-                <select
-                  value={childId}
-                  onChange={(e) => setChildId(e.target.value)}
-                  className="modal-select"
-                >
-                  <option value="">Select a child</option>
-                  {Object.entries(children).map(([id, name]) => (
-                    <option key={id} value={id}>
-                      {name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="modal-field">
-                <label>Description</label>
-                <textarea
-                  value={requestDescription}
-                  onChange={(e) => setRequestDescription(e.target.value)}
-                  placeholder="Enter request description..."
-                  className="modal-textarea"
-                />
-              </div>
-              <div className="modal-field">
-                <label>Status</label>
-                <select
-                  value={requestStatus}
-                  onChange={(e) => setRequestStatus(e.target.value)}
-                  className="modal-select"
-                >
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                  <option value="Pending">Pending</option>
-                </select>
-              </div>
-              <div className="modal-buttons">
-                <button onClick={handleSubmitRequest} className="modal-button submit">
-                  {isEditMode ? 'Update' : 'Submit'}
-                </button>
-                <button onClick={closeModal} className="modal-button cancel">
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal for Request Details */}
       {isDetailsModalOpen && selectedDetailsRequest && (
         <div className="modal-overlay">
           <div className="modal animate-modal-in" ref={detailsModalRef}>
-            <button className="modal-close-button" onClick={closeDetailsModal} title="Close">
-              ×
-            </button>
+            <button className="modal-close-button" onClick={closeDetailsModal} title="Close">×</button>
             <h2>Request Details</h2>
             <div className="modal-content">
               <div className="modal-field">
@@ -621,7 +426,7 @@ const ConsultationRequests = () => {
               </div>
               <div className="modal-field">
                 <label>Child</label>
-                <p>{children[String(selectedDetailsRequest.childId)] || selectedDetailsRequest.childId || 'Unknown Child'}</p>
+                <p>{children.find(c => c.childId === selectedDetailsRequest.childId)?.name || 'Unknown Child'}</p>
               </div>
               <div className="modal-field">
                 <label>Description</label>
@@ -640,9 +445,7 @@ const ConsultationRequests = () => {
                 <p>{selectedDetailsRequest.lastUpdated ? new Date(selectedDetailsRequest.lastUpdated).toLocaleString() : 'N/A'}</p>
               </div>
               <div className="modal-buttons">
-                <button onClick={closeDetailsModal} className="modal-button cancel">
-                  Close
-                </button>
+                <button onClick={closeDetailsModal} className="modal-button cancel">Close</button>
               </div>
             </div>
           </div>

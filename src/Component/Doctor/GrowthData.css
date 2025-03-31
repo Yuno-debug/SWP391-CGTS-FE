@@ -50,8 +50,8 @@
 
 .summary-card h4 {
   margin: 0;
-  font-size: 16px;
-  color: #555;
+  font-size: 20x;
+  color:black;
 }
 
 .summary-value {
@@ -160,14 +160,23 @@
 }
 
 .recent-alerts-section h3 {
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: 700;
+  color: black;
+  margin-bottom: 20px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 6px;
+  transition: color 0.3s ease;
 }
 
 .recent-alerts {
   display: flex;
   gap: 20px;
+}
+.recent-alerts-section h3::before {
+  content: '🕒';
+  margin-right: 8px;
 }
 
 .recent-alert-card {

@@ -9,6 +9,7 @@ import ConsultationRequests from "./ConsultationRequests";
 import ConsultationResponses from "./ConsultationResponses";
 import GrowthData from "./GrowthData";
 import RatingFeedback from "./RatingFeedback";
+import DoctorProfile from "./DoctorProfile"; // Thêm import DoctorProfile
 import { AuthContext } from "../../Component/LoginPage/AuthContext";
 
 // Updated profile image with the provided URL
@@ -60,7 +61,7 @@ const DoctorPage = () => {
       case "feedback":
         return <RatingFeedback />;
       case "profile":
-        return <div><h1>Profile Page</h1></div>;
+        return <DoctorProfile isLoggedIn={true} standalone={false} />; // Hiển thị DoctorProfile
       default:
         return <DoctorDashboard />;
     }
@@ -85,10 +86,12 @@ const DoctorPage = () => {
               alt="Profile"
               className="doctor-sidebar__profile-picture"
             />
-            <div className="doctor-sidebar__profile-info">
-              <div className="doctor-sidebar__profile-name">John Doe</div>
-              <div className="doctor-sidebar__profile-role">Doctor</div>
-            </div>
+            {!sidebarCollapsed && (
+              <div className="doctor-sidebar__profile-info">
+                <div className="doctor-sidebar__profile-name">John Doe</div>
+                <div className="doctor-sidebar__profile-role">Doctor</div>
+              </div>
+            )}
           </div>
         </div>
         <nav className="doctor-sidebar__nav">
@@ -100,7 +103,7 @@ const DoctorPage = () => {
                 className={selectedSection === "dashboard" ? "doctor-sidebar__nav-item--active" : "doctor-sidebar__nav-item"}
               >
                 <FontAwesomeIcon icon={faHome} className="doctor-sidebar__menu-icon" />
-                <span className="doctor-sidebar__menu-text">Home</span>
+                {!sidebarCollapsed && <span className="doctor-sidebar__menu-text">Home</span>}
               </button>
             </li>
             <li>
@@ -110,14 +113,16 @@ const DoctorPage = () => {
                 aria-expanded={expandedSections["consultation"]}
               >
                 <FontAwesomeIcon icon={faStethoscope} className="doctor-sidebar__menu-icon" />
-                <span className="doctor-sidebar__menu-text">Consultation Requests</span>
-                <FontAwesomeIcon
-                  icon={expandedSections["consultation"] ? faChevronUp : faChevronDown}
-                  className="doctor-sidebar__chevron-icon"
-                />
+                {!sidebarCollapsed && <span className="doctor-sidebar__menu-text">Consultation Requests</span>}
+                {!sidebarCollapsed && (
+                  <FontAwesomeIcon
+                    icon={expandedSections["consultation"] ? faChevronUp : faChevronDown}
+                    className="doctor-sidebar__chevron-icon"
+                  />
+                )}
               </button>
-              {expandedSections["consultation"] && (
-                <ul className={`doctor-sidebar__submenu ${expandedSections["consultation"] ? 'doctor-sidebar__submenu--open' : ''}`}>
+              {expandedSections["consultation"] && !sidebarCollapsed && (
+                <ul className="doctor-sidebar__submenu doctor-sidebar__submenu--open">
                   <li>
                     <button onClick={() => setSelectedSection("consultation")} className="doctor-sidebar__submenu-item">
                       <span className="doctor-sidebar__menu-text">List</span>
@@ -133,14 +138,16 @@ const DoctorPage = () => {
                 aria-expanded={expandedSections["consultationResponses"]}
               >
                 <FontAwesomeIcon icon={faStethoscope} className="doctor-sidebar__menu-icon" />
-                <span className="doctor-sidebar__menu-text">Consultation Responses</span>
-                <FontAwesomeIcon
-                  icon={expandedSections["consultationResponses"] ? faChevronUp : faChevronDown}
-                  className="doctor-sidebar__chevron-icon"
-                />
+                {!sidebarCollapsed && <span className="doctor-sidebar__menu-text">Consultation Responses</span>}
+                {!sidebarCollapsed && (
+                  <FontAwesomeIcon
+                    icon={expandedSections["consultationResponses"] ? faChevronUp : faChevronDown}
+                    className="doctor-sidebar__chevron-icon"
+                  />
+                )}
               </button>
-              {expandedSections["consultationResponses"] && (
-                <ul className={`doctor-sidebar__submenu ${expandedSections["consultationResponses"] ? 'doctor-sidebar__submenu--open' : ''}`}>
+              {expandedSections["consultationResponses"] && !sidebarCollapsed && (
+                <ul className="doctor-sidebar__submenu doctor-sidebar__submenu--open">
                   <li>
                     <button onClick={() => setSelectedSection("consultationResponses")} className="doctor-sidebar__submenu-item">
                       <span className="doctor-sidebar__menu-text">List</span>
@@ -156,14 +163,16 @@ const DoctorPage = () => {
                 aria-expanded={expandedSections["growth"]}
               >
                 <FontAwesomeIcon icon={faChartLine} className="doctor-sidebar__menu-icon" />
-                <span className="doctor-sidebar__menu-text">Growth Data</span>
-                <FontAwesomeIcon
-                  icon={expandedSections["growth"] ? faChevronUp : faChevronDown}
-                  className="doctor-sidebar__chevron-icon"
-                />
+                {!sidebarCollapsed && <span className="doctor-sidebar__menu-text">Growth Data</span>}
+                {!sidebarCollapsed && (
+                  <FontAwesomeIcon
+                    icon={expandedSections["growth"] ? faChevronUp : faChevronDown}
+                    className="doctor-sidebar__chevron-icon"
+                  />
+                )}
               </button>
-              {expandedSections["growth"] && (
-                <ul className={`doctor-sidebar__submenu ${expandedSections["growth"] ? 'doctor-sidebar__submenu--open' : ''}`}>
+              {expandedSections["growth"] && !sidebarCollapsed && (
+                <ul className="doctor-sidebar__submenu doctor-sidebar__submenu--open">
                   <li>
                     <button onClick={() => setSelectedSection("growth")} className="doctor-sidebar__submenu-item">
                       <span className="doctor-sidebar__menu-text">Data</span>
@@ -178,7 +187,7 @@ const DoctorPage = () => {
                 className={selectedSection === "feedback" ? "doctor-sidebar__nav-item--active" : "doctor-sidebar__nav-item"}
               >
                 <FontAwesomeIcon icon={faStar} className="doctor-sidebar__menu-icon" />
-                <span className="doctor-sidebar__menu-text">Rating Feedback</span>
+                {!sidebarCollapsed && <span className="doctor-sidebar__menu-text">Rating Feedback</span>}
               </button>
             </li>
             <li className="doctor-sidebar__section-title">Pages</li>
@@ -188,13 +197,13 @@ const DoctorPage = () => {
                 className={selectedSection === "profile" ? "doctor-sidebar__nav-item--active" : "doctor-sidebar__nav-item"}
               >
                 <FontAwesomeIcon icon={faUser} className="doctor-sidebar__menu-icon" />
-                <span className="doctor-sidebar__menu-text">Profile</span>
+                {!sidebarCollapsed && <span className="doctor-sidebar__menu-text">Profile</span>}
               </button>
             </li>
             <li>
               <button onClick={handleLogoutAndRedirect} className="doctor-sidebar__logout">
                 <FontAwesomeIcon icon={faSignOutAlt} className="doctor-sidebar__menu-icon" />
-                <span className="doctor-sidebar__menu-text">Logout</span>
+                {!sidebarCollapsed && <span className="doctor-sidebar__menu-text">Logout</span>}
               </button>
             </li>
           </ul>
