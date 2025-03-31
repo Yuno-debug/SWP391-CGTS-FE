@@ -60,7 +60,7 @@ body {
 }
 
 /* Child Card */
-.addchild-child-card {
+.add-child-unique-card {
   background: #fff;
   padding: 10px;
   border-radius: 12px;
@@ -76,18 +76,20 @@ body {
   position: relative;
 }
 
-.addchild-child-card:hover {
+.add-child-unique-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.addchild-child-card-selected {
+.add-child-unique-card-selected {
   background: #6b48ff;
   color: white;
   box-shadow: 0 5px 15px rgba(107, 72, 255, 0.3);
+  width: 250px;
+  height: 150px;
 }
 
-.addchild-child-card-selected:hover {
+.add-child-unique-card-selected:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(107, 72, 255, 0.4);
 }
@@ -126,7 +128,7 @@ body {
   max-width: 100%;
 }
 
-.addchild-child-card-selected .addchild-child-card-name {
+.add-child-unique-card-selected .addchild-child-card-name {
   color: white;
 }
 
@@ -544,7 +546,7 @@ body {
     font-size: 24px;
   }
 
-  .addchild-child-card {
+  .add-child-unique-card {
     width: 150px;
     min-height: 100px;
   }
