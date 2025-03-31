@@ -37,7 +37,7 @@ const DoctorDashboard = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // Pagination state for Recent Users
+  // Pagination state for Recent Registrations
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
 
@@ -77,8 +77,8 @@ const DoctorDashboard = () => {
         position: 'top',
         labels: {
           font: {
-            size: 18, // Tăng kích thước font của legend
-            weight: 'bold', // Làm đậm
+            size: 18,
+            weight: 'bold',
           },
         },
       },
@@ -86,10 +86,10 @@ const DoctorDashboard = () => {
         display: true,
         text: 'Consultation Statistics by Month',
         font: {
-          size: 24, // Tăng kích thước font của tiêu đề
-          weight: 'bold', // Làm đậm
+          size: 24,
+          weight: 'bold',
         },
-        color: '#1e3a8a', // Màu chữ đồng bộ với giao diện
+        color: '#1e3a8a',
       },
     },
     scales: {
@@ -99,15 +99,15 @@ const DoctorDashboard = () => {
           display: true,
           text: 'Count',
           font: {
-            size: 18, // Tăng kích thước font của nhãn trục Y
-            weight: 'bold', // Làm đậm
+            size: 18,
+            weight: 'bold',
           },
           color: '#1e3a8a',
         },
         ticks: {
           font: {
-            size: 14, // Tăng kích thước font của số trên trục Y
-            weight: 'bold', // Làm đậm
+            size: 14,
+            weight: 'bold',
           },
           color: '#1e3a8a',
         },
@@ -117,15 +117,15 @@ const DoctorDashboard = () => {
           display: true,
           text: 'Month-Year',
           font: {
-            size: 18, // Tăng kích thước font của nhãn trục X
-            weight: 'bold', // Làm đậm
+            size: 18,
+            weight: 'bold',
           },
           color: '#1e3a8a',
         },
         ticks: {
           font: {
-            size: 14, // Tăng kích thước font của nhãn tháng trên trục X
-            weight: 'bold', // Làm đậm
+            size: 14,
+            weight: 'bold',
           },
           color: '#1e3a8a',
         },
@@ -191,15 +191,6 @@ const DoctorDashboard = () => {
     return () => clearInterval(timer);
   }, [currentDate]);
 
-  const getRoleName = (role) => {
-    switch (role) {
-      case 1: return "Admin";
-      case 2: return "Customer";
-      case 3: return "Doctor";
-      default: return "Unknown";
-    }
-  };
-
   const fetchAllData = async () => {
     setLoading(true);
     setError(null);
@@ -238,23 +229,25 @@ const DoctorDashboard = () => {
 
       const requests = consultationRequestsResponse.data?.data?.$values || [];
       const responses = consultationResponsesResponse.data?.data?.$values || [];
+      const usersData = usersResponse.data?.data?.$values || [];
 
       console.log('Requests:', requests);
       console.log('Responses:', responses);
+      console.log('Users:', usersData);
 
       // Group data by month-year
       const requestsGrouped = groupByMonthYear(requests, 'requestDate');
       const responsesGrouped = groupByMonthYear(responses, 'responseDate');
 
       // Generate all months for the current year
-      const currentYear = new Date().getFullYear(); // Có thể thay bằng năm từ dữ liệu nếu cần
+      const currentYear = new Date().getFullYear();
       const allMonths = generateAllMonths(currentYear);
 
       setTotalGrowthRecords(growthRecordsResponse.data?.totalGrowthRecords || growthRecordsResponse.data || 0);
       setTotalChildren(childrenResponse.data.count || 0);
       setTotalConsultationRequests(requests.length);
       setTotalConsultationResponses(responses.length);
-      setUsers(usersResponse.data?.data?.$values || []);
+      setUsers(usersData);
       setRequestsByMonth(requestsGrouped);
       setResponsesByMonth(responsesGrouped);
 
@@ -516,39 +509,30 @@ const DoctorDashboard = () => {
           )}
         </div>
 
-        {/* Recent Users Table */}
+        {/* Recent Registrations Table */}
         <div className="doctor-dashboard-user-table-section doctor-dashboard-animate-slide-right" style={{ animationDelay: '2.0s' }}>
-          <h3>Recent Requests</h3>
+          <h3>Recent Registrations</h3>
           <table className="doctor-dashboard-user-table">
             <thead>
               <tr>
                 <th>NAME</th>
                 <th>EMAIL</th>
-                <th>ROLE</th>
-                <th>STATUS</th>
+                <th>REGISTRATION DATE</th>
               </tr>
             </thead>
             <tbody>
-              {currentUsers.map((user, index) => {
-                const userStatus = user.status?.toLowerCase() === 'active' ? 'Active' : 'Inactive';
-                return (
-                  <tr
-                    key={user.userId || index}
-                    className="doctor-dashboard-user-table-row doctor-dashboard-animate-slide-up"
-                    style={{ animationDelay: `${2.2 + index * 0.05}s` }}
-                    onClick={() => handleRowClick(user)}
-                  >
-                    <td>{user.username || 'N/A'}</td>
-                    <td>{user.email || 'N/A'}</td>
-                    <td>{getRoleName(user.role) || 'N/A'}</td>
-                    <td>
-                      <span className={`doctor-dashboard-status-badge doctor-dashboard-status-${userStatus.toLowerCase()}`}>
-                        {userStatus}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
+              {currentUsers.map((user, index) => (
+                <tr
+                  key={user.userId || index}
+                  className="doctor-dashboard-user-table-row doctor-dashboard-animate-slide-up"
+                  style={{ animationDelay: `${2.2 + index * 0.05}s` }}
+                  onClick={() => handleRowClick(user)}
+                >
+                  <td>{user.username || 'N/A'}</td>
+                  <td>{user.email || 'N/A'}</td>
+                  <td>{user.registrationDate ? new Date(user.registrationDate).toLocaleDateString() : 'N/A'}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
           <div className="doctor-dashboard-pagination">

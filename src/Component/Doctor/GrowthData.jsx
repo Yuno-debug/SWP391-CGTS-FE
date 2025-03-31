@@ -1,119 +1,122 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './GrowthData.css';
 
-const GrowthRecords = () => {
-    const [growthRecords, setGrowthRecords] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+const GrowthData = () => {
+  const [growthData, setGrowthData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 5; // Số bản ghi trên mỗi trang
 
-    // 1️⃣ Lấy danh sách requestId đã được bác sĩ phản hồi
-    const fetchRespondedRequestIds = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) throw new Error("No authorization token found. Please log in again.");
-
-            const response = await axios.get("http://localhost:5200/api/ConsultationResponse/get-all", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-                return new Set(response.data.data.$values.map((resp) => resp.requestId));
-            } else {
-                throw new Error("Unexpected consultation response format.");
-            }
-        } catch (error) {
-            console.error("Error fetching consultation responses:", error);
-            return new Set();
+  useEffect(() => {
+    const fetchGrowthData = async () => {
+      try {
+        const response = await axios.get('/api/growth-records');
+        
+        if (response && response.data && response.data.$values) {
+          setGrowthData(response.data.$values); // Lưu dữ liệu vào state
+        } else {
+          setError('Không có dữ liệu phát triển nào.');
         }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Đã xảy ra lỗi khi tải dữ liệu.');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // 2️⃣ Lấy danh sách childId từ ConsultationRequest dựa trên requestId đã phản hồi
-    const fetchChildIdsByRequest = async (respondedRequestIds) => {
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) throw new Error("No authorization token found. Please log in again.");
+    fetchGrowthData();
+  }, []);
 
-            const response = await axios.get("http://localhost:5200/api/ConsultationRequest/get-all", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+  // Tính toán chỉ số bản ghi cho trang hiện tại
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = growthData.slice(indexOfFirstRecord, indexOfLastRecord);
+  const totalPages = Math.ceil(growthData.length / recordsPerPage);
 
-            if (response.data?.success && Array.isArray(response.data?.data?.$values)) {
-                const childIds = new Set(
-                    response.data.data.$values
-                        .filter((req) => respondedRequestIds.has(req.requestId)) // Chỉ lấy request đã phản hồi
-                        .map((req) => req.childId) // Lấy childId tương ứng
-                        .filter((id) => id != null) // Lọc bỏ null
-                );
-                return childIds;
-            } else {
-                throw new Error("Unexpected consultation request format.");
-            }
-        } catch (error) {
-            console.error("Error fetching consultation requests:", error);
-            return new Set();
-        }
-    };
+  // Hàm điều hướng trang
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
-    // 3️⃣ Lọc GrowthRecords dựa trên childId
-    const fetchGrowthRecords = async (respondedChildIds) => {
-        try {
-            setLoading(true);
-            const token = localStorage.getItem("token");
-            if (!token) throw new Error("No authorization token found. Please log in again.");
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
-            const response = await axios.get("http://localhost:5200/api/growth-records", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+  if (loading) {
+    return <div>Loading growth data...</div>;
+  }
 
-            if (response.data?.$values && Array.isArray(response.data.$values)) {
-                const filteredRecords = response.data.$values.filter((record) =>
-                    respondedChildIds.has(record.childId) // Chỉ lấy Growth Records có childId đã phản hồi
-                );
-                setGrowthRecords(filteredRecords);
-            } else {
-                throw new Error("Unexpected growth records format.");
-            }
-        } catch (error) {
-            console.error("Error fetching growth records:", error);
-            setError(`Failed to load growth records: ${error.message}`);
-        } finally {
-            setLoading(false);
-        }
-    };
+  if (error) {
+    return <div>{error}</div>;
+  }
 
-    // 4️⃣ Gọi API khi component được mount
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const respondedRequestIds = await fetchRespondedRequestIds(); // Lấy requestId đã phản hồi
-                const respondedChildIds = await fetchChildIdsByRequest(respondedRequestIds); // Lấy childId tương ứng
-                await fetchGrowthRecords(respondedChildIds); // Chỉ lấy Growth Records đã phản hồi
-            } catch (error) {
-                console.error("Error during initial fetch:", error);
-            }
-        };
-        fetchData();
-    }, []);
+  return (
+    <div className="growth-data-container">
+      <div className="page-header">
+        <h2>Growth Records</h2>
+        <p>All growth data for children</p>
+      </div>
+      
+      <div className="growth-data-table-container">
+        <table className="growth-data-table">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Weight (kg)</th>
+              <th>Height (cm)</th>
+              <th>BMI</th>
+              <th>Recorded By</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentRecords.map((record) => (
+              <tr
+                key={record.recordId}
+                className={record.bmi > 18.5 ? 'bmi-high' : 'bmi-low'}
+              >
+                <td>{record.month}</td>
+                <td>{record.weight}</td>
+                <td>{record.height}</td>
+                <td>{record.bmi}</td>
+                <td>{record.recordedByUser}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-    return (
-        <div>
-            <h2>Growth Records with Doctor's Response</h2>
-            {loading && <p>Loading...</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <ul>
-                {growthRecords.length > 0 ? (
-                    growthRecords.map((record) => (
-                        <li key={record.recordId}>
-                            <strong>Month:</strong> {record.month}, <strong>Weight:</strong> {record.weight} kg,{" "}
-                            <strong>Height:</strong> {record.height} cm
-                        </li>
-                    ))
-                ) : (
-                    <p>No growth records found.</p>
-                )}
-            </ul>
+        {/* Phần phân trang */}
+        <div className="pagination">
+          <span className="pagination-info">
+            Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, growthData.length)} of {growthData.length} entries
+          </span>
+          <div className="pagination-buttons">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className={currentPage === 1 ? 'pagination-button-disabled' : ''}
+            >
+              Previous
+            </button>
+            <span className="current-page">{currentPage}</span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className={currentPage === totalPages ? 'pagination-button-disabled' : ''}
+            >
+              Next
+            </button>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
-export default GrowthRecords;
+export default GrowthData;
