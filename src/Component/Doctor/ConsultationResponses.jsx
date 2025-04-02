@@ -403,9 +403,6 @@ const ConsultationResponse = () => {
           <button className="refresh-button" onClick={fetchResponses}>
             Refresh
           </button>
-          <button className="action-button" onClick={() => openCreateModal({ requestId: null, doctorId: null, childId: null })}>
-            Create New Response
-          </button>
         </div>
       </div>
 
@@ -460,9 +457,6 @@ const ConsultationResponse = () => {
               <th onClick={() => handleSort('childId')}>
                 CHILD NAME {sortField === 'childId' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
-              <th onClick={() => handleSort('doctorId')}>
-                DOCTOR NAME {sortField === 'doctorId' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </th>
               <th onClick={() => handleSort('content')}>
                 CONTENT {sortField === 'content' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
@@ -483,12 +477,6 @@ const ConsultationResponse = () => {
               currentResponses.map((response, index) => (
                 <tr key={response.responseId || index} className="response-table-row">
                   <td>{children[response.childId] || response.childId || 'N/A'}</td>
-                  <td>
-                    <div className="doctor-info">
-                      <span className="doctor-avatar">{doctors[response.doctorId]?.[0] || 'U'}</span>
-                      {doctors[response.doctorId] || response.doctorId || 'N/A'}
-                    </div>
-                  </td>
                   <td>
                     <div className="response-content" dangerouslySetInnerHTML={{ __html: response.content || 'N/A' }} />
                   </td>
@@ -657,7 +645,7 @@ const ConsultationResponse = () => {
         </div>
       )}
 
-      {/* Modal for Response Details */}
+      {/* Modal for Response Details */} 
       {isDetailsModalOpen && selectedDetailsResponse && (
         <div className="modal-overlay">
           <div className="modal animate-modal-in" ref={detailsModalRef}>

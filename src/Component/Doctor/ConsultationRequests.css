@@ -296,28 +296,36 @@
 /** TABLE SECTION **/
 .table-section {
   background: var(--white);
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: var(--shadow-md);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    border: none;
+}
+.consultation-requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  /* Ensure borders are handled properly */
 }
 
 .consultation-requests-table th,
 .consultation-requests-table td {
   padding: 18px 20px;
-  border-bottom: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+    text-align: left;
 }
 
 .consultation-requests-table th {
   font-size: 14px;
-  font-weight: 600;
-  color: black;
-  text-transform: uppercase;
-  background: var(--gray-100);
+    font-weight: 600;
+    color: var(--gray-700);
+    /* Changed from black to match other text colors */
+    text-transform: uppercase;
+    background: var(--gray-100);
 }
 
 .consultation-requests-table td {
   font-size: 16px;
-  color: var(--gray-700);
+    color: var(--gray-700);
 }
 
 .consultation-requests-table tbody tr:nth-child(even) {

@@ -25,6 +25,7 @@ const WeatherIcon = ({ condition }) => {
 
 const DoctorDashboard = () => {
   const [users, setUsers] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [totalGrowthRecords, setTotalGrowthRecords] = useState(0);
   const [totalChildren, setTotalChildren] = useState(0);
   const [totalConsultationRequests, setTotalConsultationRequests] = useState(0);
@@ -37,9 +38,12 @@ const DoctorDashboard = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // Pagination state for Recent Users
+  // Pagination state for Recent Requests
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 5;
+  const itemsPerPage = 5;
+
+  // Sorting state for Recent Requests
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   // Weather state
   const [weatherLocation, setWeatherLocation] = useState('Ho Chi Minh City');
@@ -77,8 +81,8 @@ const DoctorDashboard = () => {
         position: 'top',
         labels: {
           font: {
-            size: 18, // Tăng kích thước font của legend
-            weight: 'bold', // Làm đậm
+            size: 18,
+            weight: 'bold',
           },
         },
       },
@@ -86,10 +90,10 @@ const DoctorDashboard = () => {
         display: true,
         text: 'Consultation Statistics by Month',
         font: {
-          size: 24, // Tăng kích thước font của tiêu đề
-          weight: 'bold', // Làm đậm
+          size: 24,
+          weight: 'bold',
         },
-        color: '#1e3a8a', // Màu chữ đồng bộ với giao diện
+        color: '#1e3a8a',
       },
     },
     scales: {
@@ -99,15 +103,15 @@ const DoctorDashboard = () => {
           display: true,
           text: 'Count',
           font: {
-            size: 18, // Tăng kích thước font của nhãn trục Y
-            weight: 'bold', // Làm đậm
+            size: 18,
+            weight: 'bold',
           },
           color: '#1e3a8a',
         },
         ticks: {
           font: {
-            size: 14, // Tăng kích thước font của số trên trục Y
-            weight: 'bold', // Làm đậm
+            size: 14,
+            weight: 'bold',
           },
           color: '#1e3a8a',
         },
@@ -117,15 +121,15 @@ const DoctorDashboard = () => {
           display: true,
           text: 'Month-Year',
           font: {
-            size: 18, // Tăng kích thước font của nhãn trục X
-            weight: 'bold', // Làm đậm
+            size: 18,
+            weight: 'bold',
           },
           color: '#1e3a8a',
         },
         ticks: {
           font: {
-            size: 14, // Tăng kích thước font của nhãn tháng trên trục X
-            weight: 'bold', // Làm đậm
+            size: 14,
+            weight: 'bold',
           },
           color: '#1e3a8a',
         },
@@ -191,15 +195,6 @@ const DoctorDashboard = () => {
     return () => clearInterval(timer);
   }, [currentDate]);
 
-  const getRoleName = (role) => {
-    switch (role) {
-      case 1: return "Admin";
-      case 2: return "Customer";
-      case 3: return "Doctor";
-      default: return "Unknown";
-    }
-  };
-
   const fetchAllData = async () => {
     setLoading(true);
     setError(null);
@@ -219,7 +214,7 @@ const DoctorDashboard = () => {
         consultationResponsesResponse,
         usersResponse,
       ] = await Promise.all([
-        axios.get("http://localhost:5200/api/growth-records/count", {
+        axios.get("http://localhost:5200/api/ConsultationResponse/count-children", {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
         axios.get('http://localhost:5200/api/Child/count', {
@@ -236,25 +231,46 @@ const DoctorDashboard = () => {
         }),
       ]);
 
-      const requests = consultationRequestsResponse.data?.data?.$values || [];
+      const requestsData = consultationRequestsResponse.data?.data?.$values || [];
       const responses = consultationResponsesResponse.data?.data?.$values || [];
+      const usersData = usersResponse.data?.data?.$values || [];
 
-      console.log('Requests:', requests);
-      console.log('Responses:', responses);
+      // Enrich requests with username and childName
+      const enrichedRequests = await Promise.all(
+        requestsData.map(async (request) => {
+          try {
+            const userResponse = await axios.get(`/api/UserAccount/${request.userId}`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const username = userResponse.data.success ? userResponse.data.data.username : 'Unknown';
+
+            const childResponse = await axios.get(`/api/Child/${request.childId}`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const childName = childResponse.data.success ? childResponse.data.data.name : 'Unknown';
+
+            return { ...request, username, childName };
+          } catch (error) {
+            console.error(`Error fetching details for request ${request.id}:`, error);
+            return { ...request, username: 'Unknown', childName: 'Unknown' };
+          }
+        })
+      );
 
       // Group data by month-year
-      const requestsGrouped = groupByMonthYear(requests, 'requestDate');
+      const requestsGrouped = groupByMonthYear(requestsData, 'requestDate');
       const responsesGrouped = groupByMonthYear(responses, 'responseDate');
 
       // Generate all months for the current year
-      const currentYear = new Date().getFullYear(); // Có thể thay bằng năm từ dữ liệu nếu cần
+      const currentYear = new Date().getFullYear();
       const allMonths = generateAllMonths(currentYear);
 
-      setTotalGrowthRecords(growthRecordsResponse.data?.totalGrowthRecords || growthRecordsResponse.data || 0);
+      setTotalGrowthRecords(growthRecordsResponse.data?.data || growthRecordsResponse.data || 0);
       setTotalChildren(childrenResponse.data.count || 0);
-      setTotalConsultationRequests(requests.length);
+      setTotalConsultationRequests(requestsData.length);
       setTotalConsultationResponses(responses.length);
-      setUsers(usersResponse.data?.data?.$values || []);
+      setUsers(usersData);
+      setRequests(enrichedRequests);
       setRequestsByMonth(requestsGrouped);
       setResponsesByMonth(responsesGrouped);
 
@@ -313,9 +329,48 @@ const DoctorDashboard = () => {
     console.log(`Clicked on ${title}`);
   };
 
-  const handleRowClick = (user) => {
-    console.log(`Clicked on user: ${user.username || 'N/A'}`);
+  const handleRowClick = (request) => {
+    console.log(`Clicked on request for: ${request.username || 'N/A'}`);
   };
+
+  // Sorting logic for requests
+  const sortData = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+
+    const sortedRequests = [...requests].sort((a, b) => {
+      const valueA = a[key] || '';
+      const valueB = b[key] || '';
+      if (key === 'requestDate') {
+        return direction === 'asc'
+          ? new Date(valueA) - new Date(valueB)
+          : new Date(valueB) - new Date(valueA);
+      }
+      return direction === 'asc'
+        ? valueA.toString().localeCompare(valueB.toString())
+        : valueB.toString().localeCompare(valueA.toString());
+    });
+    setRequests(sortedRequests);
+    setCurrentPage(1); // Reset to first page when sorting
+  };
+
+  const getSortIndicator = (key) => {
+    if (sortConfig.key === key) {
+      return sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
+    }
+    return '';
+  };
+
+  // Pagination logic for requests
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = requests.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(requests.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Mock calendar events
   const today = new Date();
@@ -369,20 +424,6 @@ const DoctorDashboard = () => {
 
   const formatMonthYear = () => {
     return currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
-  };
-
-  // Pagination logic
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(users.length / usersPerPage);
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
   // Updated progress data based on real API data
@@ -516,48 +557,47 @@ const DoctorDashboard = () => {
           )}
         </div>
 
-        {/* Recent Users Table */}
+        {/* Recent Requests Table */}
         <div className="doctor-dashboard-user-table-section doctor-dashboard-animate-slide-right" style={{ animationDelay: '2.0s' }}>
           <h3>Recent Requests</h3>
           <table className="doctor-dashboard-user-table">
             <thead>
               <tr>
-                <th>NAME</th>
-                <th>EMAIL</th>
-                <th>ROLE</th>
-                <th>STATUS</th>
+                <th>STT</th>
+                <th onClick={() => sortData('username')}>
+                  Username{getSortIndicator('username')}
+                </th>
+                <th onClick={() => sortData('childName')}>
+                  Child Name{getSortIndicator('childName')}
+                </th>
+                <th onClick={() => sortData('requestDate')}>
+                  Request Date{getSortIndicator('requestDate')}
+                </th>
               </tr>
             </thead>
             <tbody>
-              {currentUsers.map((user, index) => {
-                const userStatus = user.status?.toLowerCase() === 'active' ? 'Active' : 'Inactive';
-                return (
-                  <tr
-                    key={user.userId || index}
-                    className="doctor-dashboard-user-table-row doctor-dashboard-animate-slide-up"
-                    style={{ animationDelay: `${2.2 + index * 0.05}s` }}
-                    onClick={() => handleRowClick(user)}
-                  >
-                    <td>{user.username || 'N/A'}</td>
-                    <td>{user.email || 'N/A'}</td>
-                    <td>{getRoleName(user.role) || 'N/A'}</td>
-                    <td>
-                      <span className={`doctor-dashboard-status-badge doctor-dashboard-status-${userStatus.toLowerCase()}`}>
-                        {userStatus}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
+              {currentItems.map((request, index) => (
+                <tr
+                  key={request.id || index}
+                  className="doctor-dashboard-user-table-row doctor-dashboard-animate-slide-up"
+                  style={{ animationDelay: `${2.2 + index * 0.05}s` }}
+                  onClick={() => handleRowClick(request)}
+                >
+                  <td>{indexOfFirstItem + index + 1}</td>
+                  <td>{request.username}</td>
+                  <td>{request.childName}</td>
+                  <td>{new Date(request.requestDate).toLocaleDateString()}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
           <div className="doctor-dashboard-pagination">
             <span className="doctor-dashboard-pagination-info">
-              Showing {indexOfFirstUser + 1} to {Math.min(indexOfLastUser, users.length)} of {users.length} entries
+              Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, requests.length)} of {requests.length} entries
             </span>
             <div className="doctor-dashboard-pagination-buttons">
               <button
-                onClick={handlePrevPage}
+                onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={currentPage === 1 ? 'doctor-dashboard-pagination-button-disabled' : ''}
               >
@@ -565,7 +605,7 @@ const DoctorDashboard = () => {
               </button>
               <span className="doctor-dashboard-current-page">{currentPage}</span>
               <button
-                onClick={handleNextPage}
+                onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={currentPage === totalPages ? 'doctor-dashboard-pagination-button-disabled' : ''}
               >

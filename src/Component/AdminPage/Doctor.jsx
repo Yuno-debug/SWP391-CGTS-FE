@@ -11,6 +11,7 @@ const DoctorTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingDoctorId, setEditingDoctorId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(""); // State cho từ khóa tìm kiếm
 
   // Form states
   const [addFormData, setAddFormData] = useState({
@@ -199,15 +200,26 @@ const DoctorTable = () => {
     }
   };
 
+  // Xử lý thay đổi từ khóa tìm kiếm
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Lọc danh sách bác sĩ dựa trên từ khóa tìm kiếm
+  const filteredDoctors = doctors.filter(doctor =>
+    doctor.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    doctor.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Modal components using Portal
   const AddDoctorModal = () => {
     return createPortal(
       <div className="modal-overlay">
         <div className="modal-content">
           <div className="modal-header">
-            <h2 className="modal-title">Add New Doctor</h2>
+            <h2 className="modal-title"> Add New Doctor</h2>
             <button className="close-btn" onClick={() => setIsAddModalOpen(false)}>
-              &times;
+              ×
             </button>
           </div>
           
@@ -290,7 +302,7 @@ const DoctorTable = () => {
             </div>
             
             <div className="input-wrapper">
-              <label>Hospital</label>
+              <label>Avatar URL</label>
               <input
                 type="text"
                 value={addFormData.hospital}
@@ -317,11 +329,11 @@ const DoctorTable = () => {
           </div>
           
           <div className="form-buttons">
-            <button className="cancel-btn" onClick={() => setIsAddModalOpen(false)}>
-              Cancel
-            </button>
             <button className="submit-btn" onClick={handleAddSubmit}>
               Add Doctor
+            </button>
+            <button className="cancel-btn" onClick={() => setIsAddModalOpen(false)}>
+              Cancel
             </button>
           </div>
         </div>
@@ -337,7 +349,7 @@ const DoctorTable = () => {
           <div className="modal-header">
             <h2 className="modal-title">Edit Doctor</h2>
             <button className="close-btn" onClick={() => setIsEditModalOpen(false)}>
-              &times;
+              ×
             </button>
           </div>
           
@@ -391,7 +403,7 @@ const DoctorTable = () => {
             </div>
             
             <div className="input-wrapper">
-              <label>Hospital</label>
+              <label>Avatar URL</label>
               <input
                 type="text"
                 value={editFormData.hospital}
@@ -435,9 +447,21 @@ const DoctorTable = () => {
     <div className="doctor-table-container">
       <div className="doctor-header">
         <h2>Doctors Management</h2>
+      </div>
+
+      <div className="action-bar">
         <button className="Add-btn" onClick={() => setIsAddModalOpen(true)}>
-          Add New Doctor
+          <span>+</span> Add New Doctor
         </button>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+        </div>
       </div>
 
       {error && <p className="error-message">{error}</p>}
@@ -450,6 +474,7 @@ const DoctorTable = () => {
             <thead>
               <tr>
                 <th>No</th>
+                <th>Image</th>
                 <th>Full Name</th>
                 <th>Email</th>
                 <th>Phone</th>
@@ -461,9 +486,16 @@ const DoctorTable = () => {
               </tr>
             </thead>
             <tbody>
-              {doctors.map((doctor, index) => (
+              {filteredDoctors.map((doctor, index) => (
                 <tr key={doctor.id}>
-                  <td>{index + 1}</td> {/* STT column */}
+                  <td>{index + 1}</td>
+                  <td>
+                  <img
+                    src={doctor.hospital}
+                    alt={doctor.name}
+                    className="doctor-table-image"
+                  />
+                  </td>
                   <td>{doctor.name}</td>
                   <td>{doctor.email}</td>
                   <td>{doctor.phoneNumber}</td>

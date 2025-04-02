@@ -225,49 +225,63 @@ const UpdateGrowthMetrics = () => {
     }
   };
 
-  // Validate the modal form data before submission
-  const validateForm = () => {
-    let tempErrors = {};
-    const currentYear = new Date().getFullYear();
-    const birthYear = childBirthDate ? childBirthDate.getFullYear() : currentYear; // Estimate birth year if needed
-    const ageValue = parseInt(growthData.old);
-    const monthValue = parseInt(growthData.month);
+  const validateForm = () => {
+  let tempErrors = {};
+  const currentYear = new Date().getFullYear();
+  const birthYear = childBirthDate ? childBirthDate.getFullYear() : currentYear;
+  const ageValue = parseInt(growthData.old) || 0; // Default to 0 if not provided
+  const monthValue = parseInt(growthData.month);
 
-    if (!growthData.month) tempErrors.month = "Month is required";
-    else if (isNaN(monthValue) || monthValue < 1 || monthValue > 12) {
-      tempErrors.month = "Month must be between 1 and 12";
-    }
+  // Validate month
+  if (!growthData.month) tempErrors.month = "Month is required";
+  else if (isNaN(monthValue) || monthValue < 1 || monthValue > 12) {
+    tempErrors.month = "Month must be between 1 and 12";
+  }
 
-    if (!growthData.old) tempErrors.old = "Age (years) is required";
-    else if (isNaN(ageValue) || ageValue < 0 || ageValue > 19) { // Assuming max age 19
-      tempErrors.old = "Age must be between 0 and 19";
-    } else if (childBirthDate && (birthYear + ageValue > currentYear)) {
-        // Basic check: entered age shouldn't result in a future year
-        // tempErrors.old = "Calculated year seems to be in the future based on birth date.";
-        // This check might be too strict or complex, consider removing if causing issues
+  // Validate age
+  if (!growthData.old) tempErrors.old = "Age (years) is required";
+  else if (isNaN(ageValue) || ageValue < 0 || ageValue > 19) {
+    tempErrors.old = "Age must be between 0 and 19";
+  }
+
+  // Define limits based on age (newborn vs adolescent)
+  const isNewborn = ageValue === 0;
+  const limits = {
+    weight: isNewborn ? 5 : 100,              // 5 kg for newborns, 100 kg for adolescents
+    height: isNewborn ? 60 : 200,             // 60 cm for newborns, 200 cm for adolescents
+    headCircumference: isNewborn ? 40 : 60,   // 40 cm for newborns, 60 cm for adolescents
+    upperArmCircumference: isNewborn ? 15 : 40 // 15 cm for newborns, 40 cm for adolescents
+  };
+
+  // Validate numeric fields with limits
+  const numericFields = [
+    { key: 'weight', label: 'Weight' },
+    { key: 'height', label: 'Height' },
+    { key: 'headCircumference', label: 'Head Circumference' },
+    { key: 'upperArmCircumference', label: 'Upper Arm Circumference' }
+  ];
+
+  numericFields.forEach(({ key, label }) => {
+    const value = parseFloat(growthData[key]);
+    if (!growthData[key]) {
+      tempErrors[key] = `${label} is required`;
+    } else if (isNaN(value) || value <= 0) {
+      tempErrors[key] = `${label} must be a positive number`;
+    } else if (value > limits[key]) {
+      tempErrors[key] = `${label} cannot exceed ${limits[key]} ${key === 'weight' ? 'kg' : 'cm'} for ${isNewborn ? 'newborns' : 'adolescents'}`;
     }
+  });
 
-    // Validate numeric fields: required and positive
-    const numericFields = ['weight', 'height', 'headCircumference', 'upperArmCircumference'];
-    numericFields.forEach(field => {
-      const value = growthData[field];
-      const label = field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()); // Format label
-      if (!value) {
-        tempErrors[field] = `${label} is required`;
-      } else if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) {
-        tempErrors[field] = `${label} must be a positive number`;
-      }
-    });
+  // Validate recordedByUser
+  if (!growthData.recordedByUser.trim()) {
+    tempErrors.recordedByUser = "Recorded By is required";
+  } else if (growthData.recordedByUser.trim().length < 2) {
+    tempErrors.recordedByUser = "Recorded By must be at least 2 characters";
+  }
 
-    if (!growthData.recordedByUser.trim()) {
-      tempErrors.recordedByUser = "Recorded By is required";
-    } else if (growthData.recordedByUser.trim().length < 2) {
-      tempErrors.recordedByUser = "Recorded By must be at least 2 characters";
-    }
-
-    setFormErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0; // Return true if no errors
-  };
+  setFormErrors(tempErrors);
+  return Object.keys(tempErrors).length === 0;
+};
 
   // Handle form submission (Add New Record)
   const handleSubmit = async (e) => {
@@ -340,7 +354,7 @@ const UpdateGrowthMetrics = () => {
       // Display a more specific error message if available from the backend
       const backendMessage = error.response?.data?.message || error.response?.data?.title;
       setErrorMessage(
-        `Failed to add growth record: ${backendMessage || error.message}. Check console for details.`
+        `Please input correct month and old!!`
       );
     }
   };
@@ -375,7 +389,7 @@ const UpdateGrowthMetrics = () => {
           </div>
 
           {/* Display General Error Messages */}
-          {errorMessage && !isModalOpen && <p className="error-message">{errorMessage}</p>}
+          {errorMessage && !isModalOpen && <p className="error-messageUp">{errorMessage}</p>}
 
           {/* ----- Conditionally render Growth Records & Charts ----- */}
           {/* This section is hidden when the modal is open */}

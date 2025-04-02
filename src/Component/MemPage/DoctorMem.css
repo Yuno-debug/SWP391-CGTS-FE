@@ -3,6 +3,14 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    background-image: url('../../assets/bgraddchild.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 12px;
+        padding: 20px;
+        
+    
 }
 
 /* Tiêu đề chính */

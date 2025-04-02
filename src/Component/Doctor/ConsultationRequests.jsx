@@ -31,12 +31,63 @@ const ConsultationRequests = (response) => {
   const [selectedRequestResponses, setSelectedRequestResponses] = useState([]);
   const [viewResponseLoading, setViewResponseLoading] = useState(false);
 
+  const [currentDoctorId, setCurrentDoctorId] = useState(null); // State for doctorId
+
   const detailsModalRef = useRef(null);
   const responseModalRef = useRef(null);
   const viewResponseModalRef = useRef(null);
   const [doctorName, setDoctorName] = useState("Loading...");
 
   const navigate = useNavigate();
+
+  // Fetch doctorId using userId from localStorage
+  const fetchCurrentDoctorId = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId"); // Lấy userId từ localStorage
+
+      if (!token) {
+        setError("No authorization token found.");
+        console.log("Error: No token found in localStorage");
+        return;
+      }
+
+      if (!userId) {
+        setError("No userId found in localStorage.");
+        console.log("Error: No userId found in localStorage");
+        return;
+      }
+
+      console.log("Fetched userId from localStorage:", userId);
+
+      // Gọi API /api/Doctor để lấy danh sách bác sĩ
+      const doctorResponse = await axios.get('http://localhost:5200/api/Doctor', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      console.log("Raw Doctor response:", doctorResponse.data);
+
+      // Chỉ kiểm tra $values mà không cần success
+      if (Array.isArray(doctorResponse.data?.$values)) {
+        const doctor = doctorResponse.data.$values.find(d => d.userId === parseInt(userId));
+        if (doctor) {
+          setCurrentDoctorId(doctor.doctorId);
+          setDoctorName(doctor.name);
+          console.log("Fetched doctorId:", doctor.doctorId);
+        } else {
+          setError(`No doctor found for userId: ${userId}`);
+          console.log("No matching doctor found for userId:", userId);
+        }
+      } else {
+        setError("Failed to fetch doctor data: Invalid response format.");
+        console.log("Unexpected doctor response format:", doctorResponse.data);
+      }
+    } catch (error) {
+      console.error("Error fetching doctor ID:", error);
+      setError(`Failed to fetch doctor ID: ${error.message}`);
+    } finally {
+      setLoading(false); // Đảm bảo loading kết thúc sau khi fetch
+    }
+  };
 
   const fetchChildren = async () => {
     try {
@@ -56,23 +107,24 @@ const ConsultationRequests = (response) => {
       setError(`Failed to fetch children: ${error.message}`);
     }
   };
+
   useEffect(() => {
     if (response?.doctorId) {
       axios
         .get(`/api/Doctor/${response.doctorId}`)
         .then((res) => {
           if (res.data && res.data.name) {
-            setDoctorName(res.data.name); // Set doctor name if it exists
+            setDoctorName(res.data.name);
           } else {
-            setDoctorName("Doctor Name Not Found"); // Handle case if name is not found
+            setDoctorName("Doctor Name Not Found");
           }
         })
         .catch((error) => {
           console.error("Error fetching doctor data:", error);
-          setDoctorName("N/A"); // Default fallback
+          setDoctorName("N/A");
         });
     } else {
-      setDoctorName("N/A"); // Fallback if doctorId is missing
+      setDoctorName("N/A");
     }
   }, [response?.doctorId]);
 
@@ -150,6 +202,7 @@ const ConsultationRequests = (response) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      await fetchCurrentDoctorId(); // Fetch doctorId first
       await fetchChildren();
       await fetchRequests();
       await fetchAllResponses();
@@ -227,6 +280,7 @@ const ConsultationRequests = (response) => {
   };
 
   const openResponseModal = (request) => {
+    console.log("Opening response modal with request:", request);
     setSelectedRequestForResponse(request);
     setResponseContent('');
     setResponseStatus('Active');
@@ -247,46 +301,65 @@ const ConsultationRequests = (response) => {
   };
 
   const handleSubmitResponse = async () => {
-  if (!responseContent || responseContent === '<p><br></p>') {
-    alert("Please enter a response.");
-    return;
-  }
+    // Validate response content
+    if (!responseContent || responseContent === '<p><br></p>') {
+      alert("Please enter a response.");
+      return;
+    }
 
-  const token = localStorage.getItem("token");
-  if (!token) {
-    setError("No authorization token found.");
-    return;
-  }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("No authorization token found.");
+      console.log("Error: No token found in localStorage");
+      return;
+    }
 
-  if (!selectedRequestForResponse.doctorId) {
-    setError("Doctor ID is required.");
-    return;
-  }
+    // Ensure doctorId and requestId exist
+    if (!currentDoctorId || !selectedRequestForResponse?.requestId) {
+      setError("Missing required fields (doctorId or requestId).");
+      console.log("Error: Missing doctorId or requestId", {
+        doctorId: currentDoctorId,
+        requestId: selectedRequestForResponse?.requestId
+      });
+      return;
+    }
 
-  const payload = {
-    requestId: selectedRequestForResponse.requestId,
-    doctorId: selectedRequestForResponse.doctorId,  // Ensure doctorId is valid
-    content: responseContent,
-    attachments: "",  // Add file attachments if necessary
-    diagnosis: diagnosis || "",
+    // Construct payload matching the API format
+    const payload = {
+      requestId: selectedRequestForResponse.requestId, // Use actual requestId
+      doctorId: currentDoctorId,                       // Use fetched doctorId
+      content: responseContent,                        // Rich text content
+      attachments: "",                                 // Empty string if no attachments
+      diagnosis: diagnosis || ""                       // Optional diagnosis, default to empty string
+    };
+
+    console.log("Submitting response with payload:", payload);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:5200/api/ConsultationResponse/create',
+        payload,
+        {
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      console.log("Response submitted successfully:", response.data);
+      await fetchRequests();       // Refresh requests
+      await fetchAllResponses();   // Refresh responses
+      closeResponseModal();        // Close the modal
+    } catch (error) {
+      console.error("Error submitting consultation response:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+      setError(`Failed to submit response: ${error.response?.data?.message || error.message}`);
+    }
   };
-
-  try {
-    await axios.post(
-      'http://localhost:5200/api/ConsultationResponse/create',
-      payload,
-      {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }
-    );
-    await fetchRequests();
-    await fetchAllResponses();
-    closeResponseModal();
-  } catch (error) {
-    console.error('Error submitting consultation response:', error);
-    setError('Failed to submit response. Please try again.');
-  }
-};
 
   useEffect(() => {
     const handleEsc = (e) => {
@@ -421,7 +494,6 @@ const ConsultationRequests = (response) => {
                     <p>Weight: {child.birthWeight} kg</p>
                     <p>Height: {child.birthHeight} cm</p>
                     <p>Blood: {child.bloodType || "N/A"}</p>
-                    <p>Rel: {getRelationshipLabel(child.relationship)}</p>
                   </div>
                 </div>
               </div>

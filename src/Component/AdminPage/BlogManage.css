@@ -54,6 +54,16 @@ th {
     color: black;
 }
 
+/* Styling for the image in the table */
+.blog-table-image {
+    max-width: 100px;
+    /* Limit the width of the image */
+    height: auto;
+    /* Maintain aspect ratio */
+    border-radius: 4px;
+    /* Optional: rounded corners */
+}
+
 /* Nút trong table */
 td button {
     padding: 5px 10px;
@@ -112,7 +122,8 @@ td button:nth-child(3) {
 /* Modal (các class của react-modal có thể dùng chung) */
 .ReactModal__Overlay {
     background-color: rgba(0, 0, 0, 0.5) !important;
-    z-index: 1000 !important; /* Ensure the overlay is on top */
+    z-index: 1000 !important;
+    /* Ensure the overlay is on top */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -126,7 +137,8 @@ td button:nth-child(3) {
     border-radius: 8px;
     background-color: #fff;
     position: relative;
-    z-index: 1001 !important; /* Ensure the content is on top */
+    z-index: 1001 !important;
+    /* Ensure the content is on top */
 }
 
 /* Các class tùy chỉnh trong modal */
@@ -160,12 +172,13 @@ td button:nth-child(3) {
 
 .modal-quill {
     width: 100%;
-        min-height: 300px;
-        /* Đảm bảo editor có chiều cao tối thiểu */
-        max-height: 500px;
-        /* Hạn chế chiều cao tối đa */
-        overflow-y: auto;
+    min-height: 300px;
+    /* Đảm bảo editor có chiều cao tối thiểu */
+    max-height: 500px;
+    /* Hạn chế chiều cao tối đa */
+    overflow-y: auto;
 }
+
 .form-group {
     margin-bottom: 15px;
 }
@@ -176,6 +189,14 @@ td button:nth-child(3) {
     margin-top: 5px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    text-align: left;
+    /* Align text inside input fields to the left */
+}
+
+/* Ensure ReactQuill content aligns left */
+.form-group .ql-editor {
+    text-align: left !important;
+    /* Force left alignment for ReactQuill content */
 }
 
 .error {
@@ -193,6 +214,7 @@ td button:nth-child(3) {
 
 .blog-modal {
     padding: 20px;
+    ;
     max-width: 600px;
     margin: 50px auto;
     background: white;
@@ -201,4 +223,66 @@ td button:nth-child(3) {
 
 .blog-modal-overlay {
     background: rgba(0, 0, 0, 0.5);
+}
+
+/* Action bar containing the Add button and search */
+.action-bar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Group for Add button and search bar */
+.add-search-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Search container */
+.search-container {
+    flex: 1;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Ensure the create button aligns properly */
+.create-blog-btn {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.create-blog-btn:hover {
+    background-color: #218838;
+}
+
+.create-blog-btn span {
+    font-size: 18px;
+    margin-right: 8px;
 }

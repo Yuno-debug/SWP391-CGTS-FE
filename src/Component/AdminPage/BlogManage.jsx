@@ -21,6 +21,7 @@ const BlogManage = () => {
     category: "",
   });
   const [errors, setErrors] = useState({});
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
   useEffect(() => {
     fetchBlogs();
@@ -146,6 +147,13 @@ const BlogManage = () => {
     }
   };
 
+  // Filter blogs based on search query
+  const filteredBlogs = blogs.filter((blog) =>
+    blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    blog.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    blog.tags.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Config ReactQuill
   const modules = {
     toolbar: [
@@ -171,14 +179,28 @@ const BlogManage = () => {
   return (
     <div className="blog-management">
       <h2>Blog Management</h2>
-      <button className="create-blog-btn" onClick={openCreateModal}>
-        Add New Blog
-      </button>
+      <div className="action-bar">
+        <div className="add-search-group">
+          <button className="create-blog-btn" onClick={openCreateModal}>
+            <span>+</span> Add New Blog
+          </button>
+          <div className="search-container">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search by title, category, or tags..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
       <div className="table-container">
         <table>
           <thead>
             <tr>
               <th>No</th>
+              <th>Image</th> {/* New Image column */}
               <th>Title</th>
               <th>Category</th>
               <th>Tags</th>
@@ -187,9 +209,16 @@ const BlogManage = () => {
             </tr>
           </thead>
           <tbody>
-            {blogs.map((blog, index) => (
+            {filteredBlogs.map((blog, index) => (
               <tr key={blog.blogId}>
                 <td>{index + 1}</td>
+                <td>
+                  <img
+                    src={blog.image}
+                    alt={blog.title}
+                    className="blog-table-image"
+                  />
+                </td> {/* Display image */}
                 <td>{blog.title}</td>
                 <td>{blog.category}</td>
                 <td>{blog.tags}</td>
@@ -272,10 +301,10 @@ const BlogManage = () => {
           {errors.category && <span className="error">{errors.category}</span>}
         </div>
         <div className="modal-buttons">
-          <button className="create" onClick={handleCreateOrUpdateBlog}>
+          <button className="create-btn" onClick={handleCreateOrUpdateBlog}>
             {selectedBlog ? "Update" : "Create"}
           </button>
-          <button className="cancel" onClick={closeModal}>
+          <button className="cancel-btn" onClick={closeModal}>
             Cancel
           </button>
         </div>

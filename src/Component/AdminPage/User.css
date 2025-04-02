@@ -220,7 +220,7 @@
 }
 
 .modal-buttons button[type="button"] {
-  background-color: #e5e7eb;
+  background-color: red;
   color: #ffffff;
 }
 
@@ -300,4 +300,76 @@
 
 .user-table th button:hover {
   color: #007bff;
+}
+/* Container chứa bộ lọc và thanh tìm kiếm */
+.filter-search-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+/* Bộ lọc trạng thái */
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-container label {
+  font-size: 14px;
+  color: #333;
+}
+
+.filter-container select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Thanh tìm kiếm */
+.search-container {
+  flex: 1;
+  max-width: 300px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Đảm bảo các style khác không bị ảnh hưởng */
+.add-user-btn {
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.add-user-btn:hover {
+  background-color: #218838;
+}
+.cancel-button{
+  background-color: red;
 }

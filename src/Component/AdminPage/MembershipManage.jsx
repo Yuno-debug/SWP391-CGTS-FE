@@ -20,6 +20,7 @@ const MembershipManage = () => {
     maxChildrenAllowed: 0,
   });
   const [errors, setErrors] = useState({});
+  const [searchQuery, setSearchQuery] = useState(""); // State cho từ khóa tìm kiếm
 
   useEffect(() => {
     fetchMemberships();
@@ -159,6 +160,17 @@ const MembershipManage = () => {
     }
   };
 
+  // Xử lý thay đổi từ khóa tìm kiếm
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Lọc danh sách gói thành viên dựa trên từ khóa tìm kiếm
+  const filteredPlans = plans.filter(plan =>
+    plan.packageName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    plan.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Format price with thousand separators
   const formatPrice = (value) => {
     if (!value) return "";
@@ -176,9 +188,20 @@ const MembershipManage = () => {
       <h2 className="title-center">Membership Management</h2>
       <h3 className="subtitle-center">Admin Panel</h3>
 
-      <button className="create-membership-btn" onClick={openCreateModal}>
-        Create New Package
-      </button>
+      <div className="action-bar">
+        <button className="create-membership-btn" onClick={openCreateModal}>
+          <span>+</span> Create New Package
+        </button>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search by package name or description..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+        </div>
+      </div>
 
       <table className="membership-table">
         <thead>
@@ -193,7 +216,7 @@ const MembershipManage = () => {
           </tr>
         </thead>
         <tbody>
-          {plans.map((plan, index) => (
+          {filteredPlans.map((plan, index) => (
             <tr key={plan.packageId}>
               <td>{index + 1}</td>
               <td>{plan.packageName}</td>

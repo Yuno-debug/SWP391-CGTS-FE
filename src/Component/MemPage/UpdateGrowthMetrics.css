@@ -106,7 +106,7 @@ body {
 }
 
 /* Error message */
-.error-message {
+.error-messageUp {
   color: #e11d48;
   font-size: 14px;
   text-align: center;
@@ -116,6 +116,7 @@ body {
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid #fee2e2;
+  height: 20px;
 }
 
 /* Section titles */

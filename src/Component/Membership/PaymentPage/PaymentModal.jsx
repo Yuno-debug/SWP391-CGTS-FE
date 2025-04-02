@@ -67,7 +67,7 @@ const PaymentModal = ({ isOpen, onClose, packageInfo }) => {
     } catch (error) {
       console.error("❌ Payment processing error:", error);
       console.log("❗ Backend error details:", error.response?.data);
-      setError(error.response?.data?.message || "Payment failed. Please try again!");
+      setError(error.response?.data?.message || "Payment failed. Already paid");
     } finally {
       setLoading(false);
     }
@@ -86,7 +86,7 @@ const PaymentModal = ({ isOpen, onClose, packageInfo }) => {
             <strong>Method</strong> : <img src={VNPayLogo} alt="VNPay Logo" style={{ height: '20px', marginLeft: '5px', verticalAlign: 'middle' }} />
           </p>
         </div>
-        {error && <p className="error-message">{error}</p>}
+        {error && <p className="error-message-PAY">{error}</p>}
         <div className="button-group">
           <button className="cancel-btn" onClick={onClose}>Cancel</button>
           <button className="continue-btn" onClick={handlePayment} disabled={loading}>

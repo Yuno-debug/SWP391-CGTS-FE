@@ -201,12 +201,13 @@ select:focus {
 }
 
 /* Thông báo lỗi */
-.error-message {
+.error-message-PAY {
   color: #d32f2f;
   font-size: 14px;
   margin-top: 15px;
   font-style: italic;
   text-align: center;
+  height: 30PX;
 }
 
 /* Responsive design */

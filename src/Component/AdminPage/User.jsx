@@ -24,7 +24,8 @@ const UserTable = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(5);
-  const [selectedStatus, setSelectedStatus] = useState(''); // New state for selected status
+  const [selectedStatus, setSelectedStatus] = useState(''); // State cho bộ lọc trạng thái
+  const [searchQuery, setSearchQuery] = useState(''); // State cho từ khóa tìm kiếm
 
   useEffect(() => {
     fetchUsers();
@@ -54,24 +55,44 @@ const UserTable = () => {
     }
   };
 
-  // Get unique status values for dropdown
+  // Lấy danh sách trạng thái duy nhất cho dropdown
   const getUniqueStatuses = () => {
     const filteredUsers = users.filter(user => user.role !== 1);
     const statuses = [...new Set(filteredUsers.map(user => user.status))];
-    return ['All', ...statuses]; // Add 'All' option to show all users
+    return ['All', ...statuses];
   };
 
-  // Handle status selection
+  // Xử lý thay đổi trạng thái
   const handleStatusChange = (e) => {
     setSelectedStatus(e.target.value);
-    setCurrentPage(1); // Reset to first page when filtering
+    setCurrentPage(1); // Reset về trang đầu khi lọc
   };
 
-  // Filter users based on selected status
+  // Xử lý thay đổi từ khóa tìm kiếm
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset về trang đầu khi tìm kiếm
+  };
+
+  // Lọc người dùng dựa trên trạng thái và từ khóa tìm kiếm
   const getFilteredUsers = () => {
-    const filteredUsers = users.filter(user => user.role !== 1);
-    if (!selectedStatus || selectedStatus === 'All') return filteredUsers;
-    return filteredUsers.filter(user => user.status === selectedStatus);
+    let filteredUsers = users.filter(user => user.role !== 1);
+
+    // Lọc theo trạng thái
+    if (selectedStatus && selectedStatus !== 'All') {
+      filteredUsers = filteredUsers.filter(user => user.status === selectedStatus);
+    }
+
+    // Lọc theo từ khóa tìm kiếm
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filteredUsers = filteredUsers.filter(user =>
+        user.username?.toLowerCase().includes(query) ||
+        user.email?.toLowerCase().includes(query)
+      );
+    }
+
+    return filteredUsers;
   };
 
   const handleInputChange = (e) => {
@@ -194,7 +215,7 @@ const UserTable = () => {
     }
   };
 
-  // Logic phân trang with filtering
+  // Logic phân trang với lọc
   const filteredUsers = getFilteredUsers();
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
@@ -204,28 +225,40 @@ const UserTable = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-  <div className="user-table-container">
-    <h2>Users</h2>
-    {error && <p className="error-message">{error}</p>}
+    <div className="user-table-container">
+      <h2>Users</h2>
+      {error && <p className="error-message">{error}</p>}
 
-    <div className="filter-container">
-      <label htmlFor="statusFilter">Filter by Status:</label>
-      <select
-        id="statusFilter"
-        value={selectedStatus}
-        onChange={handleStatusChange}
-      >
-        {getUniqueStatuses().map(status => (
-          <option key={status} value={status}>
-            {status}
-          </option>
-        ))}
-      </select>
-    </div>
+      <div className="filter-search-container">
+        <div className="filter-container">
+          <label htmlFor="statusFilter">Filter by Status:</label>
+          <select
+            id="statusFilter"
+            value={selectedStatus}
+            onChange={handleStatusChange}
+          >
+            {getUniqueStatuses().map(status => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+        </div>
 
-    <button className="add-user-btn" onClick={() => setShowAddModal(true)}>
-      <span>+</span> Add User
-    </button>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search by username or email..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+        </div>
+      </div>
+
+      <button className="add-user-btn" onClick={() => setShowAddModal(true)}>
+        <span>+</span> Add User
+      </button>
 
       {showAddModal && (
         <div className="modal-overlay">

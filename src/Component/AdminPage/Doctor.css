@@ -356,3 +356,68 @@
         width: 100%;
     }
 }
+/* Action Bar chứa nút Add và thanh tìm kiếm */
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+/* Thanh tìm kiếm */
+.search-container {
+    flex: 1;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Style cho nút Add New Doctor */
+.Add-btn {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.Add-btn:hover {
+    background-color: #218838;
+}
+
+/* Đảm bảo style cho doctor-header không bị ảnh hưởng */
+.doctor-header {
+    margin-bottom: 20px;
+}
+
+.doctor-header h2 {
+    font-size: 24px;
+    color: #333;
+}
+.doctor-table-image {
+    max-width: 100px;
+    /* Limit the width of the image */
+    height: auto;
+    /* Maintain aspect ratio */
+    border-radius: 4px;
+    /* Optional: rounded corners */
+}

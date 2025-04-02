@@ -26,7 +26,6 @@ Chart.register(
 
 const Dashboard = ({ totalChildren, totalDoctors }) => {
   const chartRef = useRef(null);
-  const [requests, setRequests] = useState([]);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [monthlyRevenueData, setMonthlyRevenueData] = useState({
     labels: [],
@@ -45,10 +44,11 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
       },
     ],
   });
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Number of items per page
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const usersPerPage = 5;
+  const token = localStorage.getItem('authToken') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiWXVubyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFjdGl2ZSIsImV4cCI6MTc0MzQ5NTUxMSwiaXNzIjoiaHR0cHM6Ly90aXJlZC1sb29wcy1zaGFrZS5sb2NhLmx0IiwiYXVkIjoiaHR0cHM6Ly90aXJlZC1sb29wcy1zaGFrZS5sb2NhLmx0In0.GR2ApAFIGZocWEgBx_m8Ehc4jf09Vxe56TgmXtRdFms';
 
   useEffect(() => {
     const fetchTotalRevenue = async () => {
@@ -89,23 +89,30 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
         });
       } catch (error) {
         console.error("Error fetching monthly revenue:", error);
-        const daysInMonth = new Date(2025, selectedMonth, 0).getDate();
-        const labels = Array.from({ length: daysInMonth }, (_, i) => `Day ${i + 1}`);
-        setMonthlyRevenueData({
-          labels: labels,
-          datasets: [
-            {
-              ...monthlyRevenueData.datasets[0],
-              data: Array(daysInMonth).fill(0),
-            },
-          ],
+      }
+    };
+
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:5200/api/UserAccount/get-all', {
+          headers: { 'Authorization': `Bearer ${token}` }
         });
+        console.log('API Response:', response.data);
+        const userData = response.data.data?.$values || response.data.data || [];
+        // Lọc bỏ users có role = 1 (giả sử 1 là admin)
+        const filteredUsers = Array.isArray(userData) ? userData.filter(user => user.role !== 1) : [];
+        console.log('Filtered Users:', filteredUsers); // Log để kiểm tra
+        setUsers(filteredUsers);
+      } catch (error) {
+        console.error('Error fetching users:', error.response || error);
+        setUsers([]);
       }
     };
 
     fetchTotalRevenue();
     fetchMonthlyRevenue();
-  }, [selectedMonth]);
+    fetchUsers();
+  }, [selectedMonth, token]);
 
   const chartOptions = {
     responsive: true,
@@ -142,98 +149,14 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const requestsResponse = await axios.get('/api/ConsultationRequest/get-all', {
-          headers: {
-            'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-          }
-        });
-
-        if (requestsResponse.data?.success && Array.isArray(requestsResponse.data?.data?.$values)) {
-          const requestData = requestsResponse.data.data.$values;
-
-          const enrichedRequests = await Promise.all(
-            requestData.map(async (request) => {
-              try {
-                const userResponse = await axios.get(`/api/UserAccount/${request.userId}`, {
-                  headers: {
-                    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-                  }
-                });
-                const username = userResponse.data.success ? userResponse.data.data.username : 'Unknown';
-
-                const childResponse = await axios.get(`/api/Child/${request.childId}`, {
-                  headers: {
-                    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-                  }
-                });
-                const childName = childResponse.data.success ? childResponse.data.data.name : 'Unknown';
-
-                return {
-                  ...request,
-                  username,
-                  childName
-                };
-              } catch (error) {
-                console.error(`Error fetching details for request ${request.id}:`, error);
-                return {
-                  ...request,
-                  username: 'Unknown',
-                  childName: 'Unknown'
-                };
-              }
-            })
-          );
-
-          setRequests(enrichedRequests);
-        } else {
-          console.error("Unexpected requests response format:", requestsResponse.data);
-        }
-      } catch (error) {
-        console.error('Error fetching consultation requests:', error);
-      }
-    };
-
-    fetchRequests();
-  }, []);
-
-  const sortData = (key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
-
-    const sortedRequests = [...requests].sort((a, b) => {
-      const valueA = a[key] || '';
-      const valueB = b[key] || '';
-      if (key === 'requestDate') {
-        return direction === 'asc' 
-          ? new Date(valueA) - new Date(valueB)
-          : new Date(valueB) - new Date(valueA);
-      }
-      return direction === 'asc' 
-        ? valueA.toString().localeCompare(valueB.toString())
-        : valueB.toString().localeCompare(valueA.toString());
-    });
-    setRequests(sortedRequests);
-    setCurrentPage(1); // Reset to first page when sorting
+  const handleRowClick = (user) => {
+    console.log('Clicked user:', user);
   };
 
-  const getSortIndicator = (key) => {
-    if (sortConfig.key === key) {
-      return sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
-    }
-    return '';
-  };
-
-  // Pagination logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = requests.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(requests.length / itemsPerPage);
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(users.length / usersPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -284,32 +207,38 @@ const Dashboard = ({ totalChildren, totalDoctors }) => {
           <Line ref={chartRef} data={monthlyRevenueData} options={chartOptions} />
         </div>
       </div>
-      <div className="user-table-container">
-        <h3>Recent Requests</h3>
-        <table className="user-table">
+      <div className="doctor-dashboard-user-table-section doctor-dashboard-animate-slide-right" 
+           style={{ animationDelay: '2.0s' }}>
+        <h3>Recent Registrations</h3>
+        <table className="doctor-dashboard-user-table">
           <thead>
             <tr>
-              <th>STT</th>
-              <th onClick={() => sortData('username')}>
-                Username{getSortIndicator('username')}
-              </th>
-              <th onClick={() => sortData('childName')}>
-                Child Name{getSortIndicator('childName')}
-              </th>
-              <th onClick={() => sortData('requestDate')}>
-                Request Date{getSortIndicator('requestDate')}
-              </th>
+              <th>STT</th> {/* Thêm cột STT */}
+              <th>NAME</th>
+              <th>EMAIL</th>
+              <th>REGISTRATION DATE</th>
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((request, index) => (
-              <tr key={request.id || index}>
-                <td>{indexOfFirstItem + index + 1}</td>
-                <td>{request.username}</td>
-                <td>{request.childName}</td>
-                <td>{new Date(request.requestDate).toLocaleDateString()}</td>
+            {currentUsers.length > 0 ? (
+              currentUsers.map((user, index) => (
+                <tr
+                  key={user.userId || index}
+                  className="doctor-dashboard-user-table-row doctor-dashboard-animate-slide-up"
+                  style={{ animationDelay: `${2.2 + index * 0.05}s` }}
+                  onClick={() => handleRowClick(user)}
+                >
+                  <td>{indexOfFirstUser + index + 1}</td> {/* Hiển thị STT */}
+                  <td>{user.username || 'N/A'}</td>
+                  <td>{user.email || 'N/A'}</td>
+                  <td>{user.registrationDate ? new Date(user.registrationDate).toLocaleDateString() : 'N/A'}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4">No users found</td> {/* Cập nhật colSpan thành 4 */}
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
         <div className="pagination">

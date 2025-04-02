@@ -113,6 +113,12 @@ body {
   flex-grow: 1;
   overflow-y: auto;
   background-color: #f5f7fa;
+  background-image: url('../../assets/bgraddchild.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
+    padding: 20px;
 }
 
 /* Info section */

@@ -38,7 +38,7 @@ export default function Footer() {
         <div className="footer-section contact">
           <h4>Contact</h4>
           <p>Email: cgts@gmail.com</p>
-          <p>Phone: +123 456 7890</p>
+          <p>Phone: +84 912345678</p>
           <p>Address: Lưu Hữu Phước Tân Lập, Đông Hoà, Dĩ An, Bình Dương, Việt Nam</p>
         </div>
       </div>

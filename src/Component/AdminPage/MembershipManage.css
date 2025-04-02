@@ -24,13 +24,6 @@
     margin-bottom: 25px;
 }
 
-.subtitle-center {
-    color: #7f8c8d;
-    font-size: 22px;
-    font-weight: 500;
-    margin-bottom: 25px;
-}
-
 /* Form styling */
 form {
     display: flex;
@@ -114,23 +107,6 @@ button:hover {
     background: #c0392b;
 }
 
-.create-membership-btn {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.create-membership-btn:hover {
-    background-color: #218838;
-}
-
 /* Table styling */
 table {
     width: 100%;
@@ -173,9 +149,8 @@ tr:hover {
 }
 
 .membership-table th {
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
+    background-color: #f5f7fa;
+    color: black;
 }
 
 .membership-table tr:nth-child(even) {
@@ -255,7 +230,6 @@ tr:hover {
     z-index: 1001;
 }
 
-
 /* ===== Modal Title ===== */
 .modal-title {
     font-size: 24px;
@@ -320,12 +294,12 @@ button:hover {
 
 /* ===== Specific Button Colors ===== */
 .btn-create {
-    background-color: #28a745;
+    background-color: #007bff;
     color: white;
 }
 
 .btn-create:hover {
-    background-color: #218838;
+    background-color: #007bff;
 }
 
 .btn-update {
@@ -362,6 +336,7 @@ button:hover {
         font-size: 14px;
     }
 }
+
 .form-group input[type="text"] {
     text-align: right;
     /* Align numbers to the right */
@@ -372,4 +347,73 @@ button:hover {
     font-size: 0.9em;
     margin-top: 5px;
     display: block;
+}
+
+/* Action Bar chứa nút Create và thanh tìm kiếm */
+.action-bar {
+    display: flex;
+    justify-content: flex-start;
+    /* Changed to flex-start to move items to the left */
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+/* Thanh tìm kiếm */
+.search-container {
+    flex: 1;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Style cho nút Create New Package */
+.create-membership-btn {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.create-membership-btn:hover {
+    background-color: #218838;
+}
+
+/* Đảm bảo các style khác không bị ảnh hưởng */
+.title-center {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+}
+
+.subtitle-center {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 20px;
+}
+.btn-createMem{
+    background-color: #007bff;
 }
